@@ -1,0 +1,13 @@
+namespace PadTime.Domain.Common;
+
+/// <summary>
+/// Marker interface for domain events.
+/// Domain events represent something that happened in the domain.
+/// </summary>
+public interface IDomainEvent
+{
+    /// <summary>
+    /// When the event occurred (UTC).
+    /// </summary>
+    DateTime OccurredOnUtc { get; }
+}

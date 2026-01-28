@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>PadTime.Domain</RootNamespace>
+    <AssemblyName>PadTime.Domain</AssemblyName>
+    <Description>Domain layer - Entities, Value Objects, Domain Events, Business Rules</Description>
+  </PropertyGroup>
+
+  <!-- Domain has NO external dependencies (Clean Architecture) -->
+
+</Project>

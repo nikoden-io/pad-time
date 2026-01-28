@@ -1,8 +1,58 @@
-﻿.env
-.env.*
-.idea
-/src/.idea
-/src/IdentityServer/.idea
-/src/IdentityServer/bin
-/src/IdentityServer/obj
-/src/IdentityServer/diagnostics
+# os
+.DS_Store
+Thumbs.db
+
+# jetbrains / rider
+.idea/
+*.sln.iml
+
+# dotnet
+**/bin/
+**/obj/
+**/TestResults/
+**/*.user
+**/*.suo
+**/*.userosscache
+**/*.sln.docstates
+**/.vs/
+**/artifacts/
+
+# dotnet tooling
+**/project.lock.json
+**/project.fragment.lock.json
+**/Properties/launchSettings.json
+
+# ef core (optionnel si tu génères des migrations : NE PAS ignorer Migrations/)
+# **/Migrations/
+
+# angular / node
+**/node_modules/
+**/dist/
+**/out-tsc/
+**/.angular/
+**/.cache/
+**/coverage/
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+
+# angular env (à ignorer si tu y mets des secrets)
+**/src/environments/environment*.local.ts
+
+# dotenv / secrets
+**/.env
+**/.env.*
+!**/.env.example
+.env
+# containers / local data
+**/.docker/
+**/docker-data/
+**/postgres-data/
+**/*.sqlite
+**/*.db
+
+# build outputs divers
+*.tmp
+*.swp
