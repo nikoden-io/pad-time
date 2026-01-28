@@ -1,0 +1,7 @@
+﻿.env
+.env.*
+/src/.idea
+/src/IdentityServer/.idea
+/src/IdentityServer/bin
+/src/IdentityServer/obj
+/src/IdentityServer/diagnostics

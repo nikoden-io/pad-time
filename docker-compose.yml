@@ -1,0 +1,46 @@
+services:
+  # Identity Server Database
+  identity-db:
+    image: postgres:18-alpine
+    container_name: paddle-identity-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5433:5432"
+    volumes:
+      - identity-db-data:/var/lib/postgresql/data
+    networks:
+      - paddle-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
+  # Identity Server
+  identity-server:
+    build:
+      context: ./src/IdentityServer
+      dockerfile: Dockerfile
+    container_name: paddle-identity-server
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=${DB_HOST};Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+    ports:
+      - "5001:8080"
+    depends_on:
+      identity-db:
+        condition: service_healthy
+    networks:
+      - paddle-network
+
+volumes:
+  identity-db-data:
+    driver: local
+
+networks:
+  paddle-network:
+    driver: bridge
