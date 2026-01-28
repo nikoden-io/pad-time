@@ -2,6 +2,7 @@ using System.Globalization;
 using Duende.IdentityServer;
 using IdentityServer.Data;
 using IdentityServer.Models;
+using IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,8 +15,6 @@ internal static class HostingExtensions
 {
     public static WebApplicationBuilder ConfigureLogging(this WebApplicationBuilder builder)
     {
-        // Write most logs to the console but diagnostic data to a file.
-        // See https://docs.duendesoftware.com/identityserver/diagnostics/data
         builder.Services.AddSerilog(lc =>
         {
             lc.WriteTo.Logger(consoleLogger =>
@@ -56,7 +55,8 @@ internal static class HostingExtensions
         
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>();
 
         builder.Services
             .AddIdentityServer(options =>
@@ -66,7 +66,6 @@ internal static class HostingExtensions
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
 
-                // Use a large chunk size for diagnostic data in development where it will be redirected to a local file.
                 if (builder.Environment.IsDevelopment())
                 {
                     options.Diagnostics.ChunkSize = 1024 * 1024 * 10; // 10 MB
@@ -76,6 +75,7 @@ internal static class HostingExtensions
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
             .AddAspNetIdentity<ApplicationUser>()
+            .AddProfileService<CustomProfileService>() 
             .AddLicenseSummary();
 
         builder.Services.AddAuthentication()

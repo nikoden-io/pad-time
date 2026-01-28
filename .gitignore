@@ -1,5 +1,6 @@
 ﻿.env
 .env.*
+.idea
 /src/.idea
 /src/IdentityServer/.idea
 /src/IdentityServer/bin
