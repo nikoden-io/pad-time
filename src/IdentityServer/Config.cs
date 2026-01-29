@@ -53,6 +53,23 @@ public static class Config
         }
     ];
 
+    public static IEnumerable<ApiResource> ApiResources =>
+    [
+        new("padtime-api", "Pad'Time API")
+        {
+            Scopes = { "padel_api", "padel_admin", "padel_analytics" },
+            UserClaims =
+            {
+                CustomClaimTypes.FamilyName,
+                CustomClaimTypes.GivenName,
+                CustomClaimTypes.Matricule,
+                CustomClaimTypes.MemberCategory,
+                CustomClaimTypes.SiteId,
+                CustomClaimTypes.Role
+            }
+        }
+    ];
+
     public static IEnumerable<Client> Clients =>
     [
         // m2m client credentials flow client

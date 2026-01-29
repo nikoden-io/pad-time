@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   apiUrl: '/api/v1',
-  identityApiUrl: 'https://localhost:5001/api',
+  identityApiUrl: 'https://localhost:5002/api',
   oidc: {
     authority: 'https://identity.padtime.example.com',
     clientId: 'padtime-web',

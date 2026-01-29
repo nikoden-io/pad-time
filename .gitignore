@@ -46,12 +46,16 @@ Thumbs.db
 **/.env.*
 !**/.env.example
 .env
+
 # containers / local data
 **/.docker/
 **/docker-data/
 **/postgres-data/
 **/*.sqlite
 **/*.db
+
+# Docker certificates
+.docker/certs/*.pfx
 
 # build outputs divers
 *.tmp

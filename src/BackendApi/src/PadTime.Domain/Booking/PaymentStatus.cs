@@ -6,7 +6,7 @@ namespace PadTime.Domain.Booking;
 public enum PaymentStatus
 {
     /// <summary>
-    /// Payment not yet initiated.
+    /// Payment isn't yet initiated.
     /// </summary>
     Unpaid = 0,
 
