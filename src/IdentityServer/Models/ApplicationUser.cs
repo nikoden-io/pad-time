@@ -2,7 +2,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace IdentityServer.Models;
 
-// Add profile data for application users by adding properties to the ApplicationUser class
 public class ApplicationUser : IdentityUser
 {
+    public string Matricule { get; set; } = default!;
+    public string MemberCategory { get; set; } = "free"; // free|site|global
+    public string Role { get; set; } = "user"; // user|admin_site|admin_global
+    public string? SiteId { get; set; }
+    public string FirstName { get; set; } = default!;
+    public string LastName { get; set; } = default!;
 }
