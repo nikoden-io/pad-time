@@ -12,8 +12,8 @@ using PadTime.Infrastructure.Persistence;
 namespace PadTime.Infrastructure.Migrations
 {
     [DbContext(typeof(PadTimeDbContext))]
-    [Migration("20260106091319_initialMigration")]
-    partial class initialMigration
+    [Migration("20260129194505_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -327,10 +327,11 @@ namespace PadTime.Infrastructure.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("timezone");
 
-                    b.Property<uint>("Version")
+                    b.Property<long>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
                         .HasColumnName("version");
 
                     b.HasKey("Id");

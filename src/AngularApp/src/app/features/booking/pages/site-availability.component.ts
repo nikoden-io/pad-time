@@ -1,8 +1,8 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { ApiService } from '../../../core/services';
-import { Site, Court, TimeSlot } from '../../../core/models';
+import { ApiService } from '@core/services';
+import { Site, Court, TimeSlot } from '@core/models';
 import { CreateMatchModalComponent, CreateMatchData } from '../components/create-match-modal.component';
 
 @Component({

@@ -1,8 +1,10 @@
 using System.Globalization;
+using Microsoft.EntityFrameworkCore;
 using PadTime.API;
 using PadTime.API.Middleware;
 using PadTime.Application;
 using PadTime.Infrastructure;
+using PadTime.Infrastructure.Persistence;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -29,6 +31,18 @@ try
         .AddApiServices(builder.Configuration);
 
     var app = builder.Build();
+
+    // ========================================
+    // SEED DATA (Development only)
+    // ========================================
+    if (app.Environment.IsDevelopment())
+    {
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<PadTimeDbContext>();
+        context.Database.Migrate();
+        DbSeeder.SeedData(context);
+    }
+
 
     // Middleware pipeline
     app.UseMiddleware<ExceptionHandlingMiddleware>();
