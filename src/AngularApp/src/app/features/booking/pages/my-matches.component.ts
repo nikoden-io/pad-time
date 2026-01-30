@@ -1,8 +1,8 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { ApiService } from '../../../core/services';
-import { Match } from '../../../core/models';
+import { ApiService } from '@core/services';
+import { Match } from '@core/models';
 
 @Component({
   selector: 'app-my-matches',

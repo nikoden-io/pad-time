@@ -36,7 +36,8 @@ public sealed class SiteConfiguration : IEntityTypeConfiguration<Site>
 
         builder.Property(s => s.Version)
             .HasColumnName("version")
-            .IsRowVersion();
+            .HasDefaultValue(1u)
+            .IsConcurrencyToken();
 
         builder.HasMany(s => s.Courts)
             .WithOne()
