@@ -53,22 +53,42 @@ public static class DependencyInjection
         });
 
         // Authentication
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = configuration["Authentication:Authority"];
-                options.Audience = configuration["Authentication:Audience"];
-                options.RequireHttpsMetadata = !configuration.GetValue<bool>("Authentication:AllowHttp");
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var authority = configuration["Authentication:Authority"] ?? "https://localhost:5001";
+        var requireHttpsMetadata = configuration.GetValue<bool>("Authentication:RequireHttpsMetadata", true);
 
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ClockSkew = TimeSpan.FromMinutes(1)
-                };
-            });
+        options.Authority = authority;
+        options.Audience = configuration["Authentication:Audience"];
+        options.RequireHttpsMetadata = requireHttpsMetadata;
+
+        // For Docker: ignore SSL certificate validation when fetching metadata
+        if (!requireHttpsMetadata)
+        {
+            options.BackchannelHttpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+        }
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ClockSkew = TimeSpan.FromMinutes(1),
+
+            // Accept both Docker internal and external URLs
+            ValidIssuers = new[]
+            {
+                authority,
+                "https://localhost:5001",
+                "https://identity-server:443"
+            }
+        };
+    });
 
         // Authorization policies
         services.AddAuthorization(options =>

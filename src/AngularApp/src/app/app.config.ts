@@ -4,8 +4,8 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAuth } from 'angular-auth-oidc-client';
 
 import { routes } from './app.routes';
-import { authConfig } from './core/auth/auth.config';
-import { authInterceptor, errorInterceptor } from './core/interceptors';
+import { authConfig } from '@core/auth/auth.config';
+import { authInterceptor, errorInterceptor } from '@core/interceptors';
 
 export const appConfig: ApplicationConfig = {
   providers: [

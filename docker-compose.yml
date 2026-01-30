@@ -76,7 +76,7 @@ services:
       - ConnectionStrings__DefaultConnection=Host=${API_DB_HOST};Port=${API_DB_PORT};Database=${API_DB_NAME};Username=${API_DB_USER};Password=${API_DB_PASSWORD}
       - Authentication__Authority=https://identity-server:443
       - Authentication__Audience=padtime-api
-      - Authentication__AllowHttp=false
+      - Authentication__RequireHttpsMetadata=false
     ports:
       - "5002:443"
       - "5102:80"
