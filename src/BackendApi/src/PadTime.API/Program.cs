@@ -45,6 +45,7 @@ try
 
 
     // Middleware pipeline
+    app.UseMiddleware<RequestResponseLoggingMiddleware>();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
     if (app.Environment.IsDevelopment())

@@ -82,14 +82,60 @@ public static class DomainErrors
 
     public static class Site
     {
-        public static readonly PadTimeError NotFound =
-            new("site.not_found", "Site not found.");
+        public static readonly PadTimeError NotFound = new(
+            "site.not_found",
+            "Site not found.");
 
-        public static readonly PadTimeError Closed =
-            new("site.closed", "The site is closed on this date.");
+        public static readonly PadTimeError Closed = new(
+            "site.closed",
+            "The site is closed on this date.");
 
-        public static readonly PadTimeError NoSchedule =
-            new("site.no_schedule", "No schedule defined for this site and year.");
+        public static readonly PadTimeError InvalidSchedule = new(
+            "site.invalid_schedule",
+            "Invalid schedule configuration.");
+
+        public static readonly PadTimeError InvalidClosure = new(
+            "site.invalid_closure",
+            "Invalid closure configuration.");
+
+        public static readonly PadTimeError ScheduleConflict = new(
+            "site.schedule_conflict",
+            "Schedule conflicts with existing schedule.");
+
+        public static readonly PadTimeError ClosureConflictsWithBookings = new(
+            "site.closure_conflicts_with_bookings",
+            "Closure conflicts with existing bookings.");
+
+        public static readonly PadTimeError ClosureNotFound = new(
+            "site.closure_not_found",
+            "Closure not found.");
+
+        public static readonly PadTimeError ScheduleNotFound = new(
+            "site.schedule_not_found",
+            "Schedule not found.");
+
+        public static readonly PadTimeError CannotDeleteSiteWithActiveBookings = new(
+            "site.cannot_delete_with_active_bookings",
+            "Cannot delete site with active or future bookings. Consider deactivating instead.");
+
+        public static readonly PadTimeError SiteAlreadyDeactivated = new(
+            "site.already_deactivated",
+            "Site is already deactivated.");
+
+        public static readonly PadTimeError SiteAlreadyActive = new(
+            "site.already_active",
+            "Site is already active.");
+    }
+
+    public static class SiteSchedule
+    {
+        public static readonly PadTimeError InvalidDateRange = new(
+            "site_schedule.invalid_date_range",
+            "Schedule end date must be after start date.");
+
+        public static readonly PadTimeError InvalidTimeRange = new(
+            "site_schedule.invalid_time_range",
+            "Closing time must be after opening time.");
     }
 
     public static class Court
@@ -99,5 +145,11 @@ public static class DomainErrors
 
         public static readonly PadTimeError Inactive =
             new("court.inactive", "This court is not active.");
+
+        public static readonly PadTimeError DuplicateLabel =
+            new("court.duplicate_label", "A court with this label already exists for this site.");
+
+        public static readonly PadTimeError CannotDeleteWithActiveBookings =
+            new("court.cannot_delete_with_active_bookings", "Cannot delete court with active or future bookings. Consider deactivating the court instead.");
     }
 }

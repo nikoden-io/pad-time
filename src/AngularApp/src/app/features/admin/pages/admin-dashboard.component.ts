@@ -40,6 +40,9 @@ import { Site } from '../../../core/models';
         <div class="card">
           <h2>Quick Actions</h2>
           <div class="actions">
+            <a routerLink="/admin/sites" class="action-btn">
+              Manage Sites
+            </a>
             <a routerLink="/admin/analytics" class="action-btn">
               View Analytics
             </a>

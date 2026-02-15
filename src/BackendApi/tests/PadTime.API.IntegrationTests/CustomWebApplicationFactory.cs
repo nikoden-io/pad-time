@@ -1,10 +1,15 @@
 using System.Globalization;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PadTime.Infrastructure.Persistence;
 using Serilog;
 using Testcontainers.PostgreSql;
@@ -23,12 +28,6 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        // Reset Serilog for tests
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Warning()
-            .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
-            .CreateLogger();
-
         builder.ConfigureServices(services =>
         {
             // Remove existing DbContext
@@ -45,6 +44,14 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
             });
         });
 
+        // ⭐ CRITIQUE: ConfigureTestServices s'exécute APRÈS AddApiServices
+        builder.ConfigureTestServices(services =>
+        {
+            // Force bypass authentication
+            services.AddAuthentication("Test")
+                .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+        });
+
         builder.UseEnvironment("Development");
     }
 
@@ -52,7 +59,6 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
     {
         var host = base.CreateHost(builder);
 
-        // Ensure database is created after host is built
         using var scope = host.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<PadTimeDbContext>();
         db.Database.EnsureCreated();
@@ -68,5 +74,31 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
     public new async Task DisposeAsync()
     {
         await _postgresContainer.DisposeAsync();
+    }
+}
+
+public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+{
+    public TestAuthHandler(
+        IOptionsMonitor<AuthenticationSchemeOptions> options,
+        ILoggerFactory logger,
+        UrlEncoder encoder)
+        : base(options, logger, encoder)
+    {
+    }
+
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    {
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.Name, "TestUser"),
+            new Claim(ClaimTypes.Role, "admin_global"),
+            new Claim("sub", Guid.NewGuid().ToString())
+        };
+        var identity = new ClaimsIdentity(claims, "Test");
+        var principal = new ClaimsPrincipal(identity);
+        var ticket = new AuthenticationTicket(principal, "Test");
+
+        return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 }

@@ -7,7 +7,7 @@ namespace PadTime.API.Controllers;
 
 [ApiController]
 [Route("api/v1/me")]
-[Authorize(Policy = Policies.RequireUser)]
+//[Authorize(Policy = Policies.RequireUser)]
 public sealed class MeController : ControllerBase
 {
     private readonly ICurrentUser _currentUser;

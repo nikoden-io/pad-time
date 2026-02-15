@@ -1,30 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using PadTime.Application.Common.Interfaces.Repositories;
-using PadTime.Domain.Booking;
+using PadTime.Domain.Site;
 
 namespace PadTime.Infrastructure.Persistence.Repositories;
 
-public sealed class CourtRepository : ICourtRepository
+public sealed class CourtRepository(PadTimeDbContext context) : ICourtRepository
 {
-    private readonly PadTimeDbContext _context;
-
-    public CourtRepository(PadTimeDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Court?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _context.Courts
+        return await context.Courts
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
     }
 
-    public async Task<List<Court?>> GetBySiteIdAsync(Guid siteId, CancellationToken cancellationToken = default)
+    public async Task<List<Court>> GetBySiteIdAsync(Guid siteId, CancellationToken cancellationToken = default)
     {
-        return await _context.Courts
+        return await context.Courts
             .Where(c => c.SiteId == siteId)
             .OrderBy(c => c.Label)
-            .Select(c => (Court?)c)
             .ToListAsync(cancellationToken);
     }
 }

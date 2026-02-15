@@ -4,6 +4,7 @@ using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Booking;
 using PadTime.Domain.Common;
 using PadTime.Domain.Members;
+using PadTime.Domain.Site;
 
 namespace PadTime.Application.Booking.Commands.CreateMatch;
 
@@ -14,7 +15,6 @@ public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchComma
     private readonly ICourtRepository _courtRepository;
     private readonly IMemberRepository _memberRepository;
     private readonly IOrganizerDebtRepository _debtRepository;
-    private readonly IClosureRepository _closureRepository;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IUnitOfWork _unitOfWork;
@@ -25,7 +25,6 @@ public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchComma
         ICourtRepository courtRepository,
         IMemberRepository memberRepository,
         IOrganizerDebtRepository debtRepository,
-        IClosureRepository closureRepository,
         ICurrentUser currentUser,
         IDateTimeProvider dateTimeProvider,
         IUnitOfWork unitOfWork)
@@ -35,7 +34,6 @@ public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchComma
         _courtRepository = courtRepository;
         _memberRepository = memberRepository;
         _debtRepository = debtRepository;
-        _closureRepository = closureRepository;
         _currentUser = currentUser;
         _dateTimeProvider = dateTimeProvider;
         _unitOfWork = unitOfWork;
@@ -70,8 +68,8 @@ public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchComma
         if (debt is not null && debt.HasDebt)
             return DomainErrors.Billing.OrganizerDebtBlock;
 
-        // Validate site
-        var site = await _siteRepository.GetByIdAsync(request.SiteId, cancellationToken);
+        // Validate site (with schedules and closures)
+        var site = await _siteRepository.GetByIdWithSchedulesAndClosuresAsync(request.SiteId, cancellationToken);
         if (site is null)
             return DomainErrors.Site.NotFound;
 
@@ -92,9 +90,11 @@ public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchComma
         if (!court.IsActive)
             return DomainErrors.Court.Inactive;
 
-        // Check closure
-        var isClosed = await _closureRepository.IsClosedAsync(request.SiteId, matchDate, cancellationToken);
-        if (isClosed)
+        // Check if site/court is closed
+        if (site.IsClosedOn(matchDate))
+            return DomainErrors.Site.Closed;
+
+        if (site.IsCourtClosedOn(request.CourtId, matchDate))
             return DomainErrors.Site.Closed;
 
         // Check slot availability (anti double-booking)
@@ -103,7 +103,7 @@ public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchComma
             return DomainErrors.Booking.SlotConflict;
 
         // Calculate end time (90 minutes)
-        var endAtUtc = request.StartAtUtc.AddMinutes(SiteYearSchedule.SlotDurationMinutes);
+        var endAtUtc = request.StartAtUtc.AddMinutes(SiteSchedule.SlotDurationMinutes);
 
         // Create match
         var matchResult = Match.Create(

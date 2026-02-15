@@ -1,6 +1,104 @@
-/* Global styles for Pad'Time */
+/* ============================================================
+   Pad'Time — Global Styles
+   PrimeNG Aura theme + CSS custom properties + mobile-first
+   ============================================================ */
 
-* {
+/* ----- Breakpoints (mobile-first, matches BreakpointService) ---- */
+$bp-sm:  640px;
+$bp-md:  768px;
+$bp-lg:  1024px;
+$bp-xl:  1280px;
+$bp-2xl: 1536px;
+
+/* ----- Mixins --------------------------------------------------- */
+@mixin sm  { @media (min-width: $bp-sm)  { @content; } }
+@mixin md  { @media (min-width: $bp-md)  { @content; } }
+@mixin lg  { @media (min-width: $bp-lg)  { @content; } }
+@mixin xl  { @media (min-width: $bp-xl)  { @content; } }
+@mixin xxl { @media (min-width: $bp-2xl) { @content; } }
+
+/* ----- Design Tokens (Light) ------------------------------------ */
+:root {
+  /* Brand */
+  --pt-primary:      #4ade80;
+  --pt-primary-hover:#22c55e;
+  --pt-primary-text: #1a1a2e;
+
+  /* Surfaces */
+  --pt-bg:           #f5f5f5;
+  --pt-surface:      #ffffff;
+  --pt-surface-alt:  #f8fafc;
+  --pt-border:       #e2e8f0;
+  --pt-border-hover: #cbd5e1;
+
+  /* Text */
+  --pt-text:         #1a1a2e;
+  --pt-text-secondary:#64748b;
+  --pt-text-muted:   #94a3b8;
+
+  /* Feedback */
+  --pt-success:      #22c55e;
+  --pt-success-bg:   #d1fae5;
+  --pt-warning:      #f59e0b;
+  --pt-warning-bg:   #fef3c7;
+  --pt-danger:       #ef4444;
+  --pt-danger-bg:    #fee2e2;
+  --pt-info:         #3b82f6;
+  --pt-info-bg:      #dbeafe;
+
+  /* Shadows */
+  --pt-shadow-sm:    0 1px 2px rgba(0,0,0,0.05);
+  --pt-shadow:       0 2px 4px rgba(0,0,0,0.1);
+  --pt-shadow-lg:    0 10px 25px rgba(0,0,0,0.1);
+
+  /* Radii */
+  --pt-radius-sm:    4px;
+  --pt-radius:       8px;
+  --pt-radius-lg:    14px;
+  --pt-radius-full:  9999px;
+
+  /* Transitions */
+  --pt-transition:   150ms ease;
+
+  /* Layout */
+  --pt-navbar-height:56px;
+  --pt-content-max:  1200px;
+  --pt-gutter:       1rem;
+
+  @include md {
+    --pt-gutter: 1.5rem;
+  }
+  @include xl {
+    --pt-gutter: 2rem;
+  }
+}
+
+/* ----- Design Tokens (Dark — via PrimeNG .p-dark) --------------- */
+.p-dark {
+  --pt-bg:           #0f172a;
+  --pt-surface:      #1e293b;
+  --pt-surface-alt:  #1a2332;
+  --pt-border:       #334155;
+  --pt-border-hover: #475569;
+
+  --pt-text:         #f1f5f9;
+  --pt-text-secondary:#94a3b8;
+  --pt-text-muted:   #64748b;
+
+  --pt-success-bg:   rgba(34,197,94,0.15);
+  --pt-warning-bg:   rgba(245,158,11,0.15);
+  --pt-danger-bg:    rgba(239,68,68,0.15);
+  --pt-info-bg:      rgba(59,130,246,0.15);
+
+  --pt-shadow-sm:    0 1px 2px rgba(0,0,0,0.3);
+  --pt-shadow:       0 2px 4px rgba(0,0,0,0.4);
+  --pt-shadow-lg:    0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* ----- Reset ---------------------------------------------------- */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -11,156 +109,255 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  color: #1a1a2e;
-  background-color: #f5f5f5;
+  color: var(--pt-text);
+  background-color: var(--pt-bg);
+  transition: color var(--pt-transition), background-color var(--pt-transition);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  color: inherit;
+a { color: inherit; }
+button { font-family: inherit; }
+
+/* ----- View Transition (dark mode animation) -------------------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
-button {
-  font-family: inherit;
-}
-
-/* Utility classes */
+/* ----- Container ------------------------------------------------ */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  width: 100%;
+  max-width: var(--pt-content-max);
+  margin-inline: auto;
+  padding-inline: var(--pt-gutter);
 }
 
-.text-center {
-  text-align: center;
+.container--fluid {
+  max-width: none;
 }
 
-.mt-1 { margin-top: 0.25rem; }
-.mt-2 { margin-top: 0.5rem; }
-.mt-3 { margin-top: 1rem; }
-.mt-4 { margin-top: 1.5rem; }
-.mt-5 { margin-top: 2rem; }
+/* ----- Responsive Grid ------------------------------------------ */
+.grid {
+  display: grid;
+  gap: var(--pt-gutter);
+  grid-template-columns: 1fr;
 
-.mb-1 { margin-bottom: 0.25rem; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-3 { margin-bottom: 1rem; }
-.mb-4 { margin-bottom: 1.5rem; }
-.mb-5 { margin-bottom: 2rem; }
+  @include sm  { &--sm-2  { grid-template-columns: repeat(2, 1fr); } }
+  @include md  { &--md-2  { grid-template-columns: repeat(2, 1fr); } }
+  @include md  { &--md-3  { grid-template-columns: repeat(3, 1fr); } }
+  @include lg  { &--lg-3  { grid-template-columns: repeat(3, 1fr); } }
+  @include lg  { &--lg-4  { grid-template-columns: repeat(4, 1fr); } }
+  @include xl  { &--xl-4  { grid-template-columns: repeat(4, 1fr); } }
+}
 
-/* Button styles */
+/* ----- Stack (vertical flex) ------------------------------------ */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pt-gutter);
+}
+
+.stack--sm { gap: 0.5rem; }
+.stack--lg { gap: 2rem; }
+
+/* ----- Cluster (horizontal flex wrap) --------------------------- */
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pt-gutter);
+  align-items: center;
+}
+
+/* ----- Responsive visibility ------------------------------------ */
+.hide-mobile   { @media (max-width: #{$bp-md - 1px}) { display: none !important; } }
+.hide-desktop  { @include md { display: none !important; } }
+.show-mobile   { display: none !important; @media (max-width: #{$bp-md - 1px}) { display: initial !important; } }
+.show-desktop  { display: none !important; @include md { display: initial !important; } }
+
+/* ----- Spacing utilities ---------------------------------------- */
+@each $i, $val in (0: 0, 1: 0.25rem, 2: 0.5rem, 3: 1rem, 4: 1.5rem, 5: 2rem, 6: 3rem) {
+  .mt-#{$i} { margin-top: $val; }
+  .mb-#{$i} { margin-bottom: $val; }
+  .ml-#{$i} { margin-left: $val; }
+  .mr-#{$i} { margin-right: $val; }
+  .mx-#{$i} { margin-inline: $val; }
+  .my-#{$i} { margin-block: $val; }
+  .pt-#{$i} { padding-top: $val; }
+  .pb-#{$i} { padding-bottom: $val; }
+  .pl-#{$i} { padding-left: $val; }
+  .pr-#{$i} { padding-right: $val; }
+  .px-#{$i} { padding-inline: $val; }
+  .py-#{$i} { padding-block: $val; }
+  .p-#{$i}  { padding: $val; }
+  .gap-#{$i}{ gap: $val; }
+}
+
+/* ----- Text utilities ------------------------------------------- */
+.text-center    { text-align: center; }
+.text-left      { text-align: left; }
+.text-right     { text-align: right; }
+.text-primary   { color: var(--pt-primary); }
+.text-secondary { color: var(--pt-text-secondary); }
+.text-muted     { color: var(--pt-text-muted); }
+.text-danger    { color: var(--pt-danger); }
+.text-success   { color: var(--pt-success); }
+.font-bold      { font-weight: 700; }
+.font-medium    { font-weight: 500; }
+.text-sm        { font-size: 0.875rem; }
+.text-lg        { font-size: 1.125rem; }
+.text-xl        { font-size: 1.25rem; }
+.text-truncate  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ----- Card (themed) -------------------------------------------- */
+.card {
+  background: var(--pt-surface);
+  padding: 1.5rem;
+  border-radius: var(--pt-radius);
+  box-shadow: var(--pt-shadow);
+  border: 1px solid var(--pt-border);
+  transition: background var(--pt-transition), border-color var(--pt-transition);
+}
+
+.card--interactive {
+  cursor: pointer;
+  &:hover {
+    border-color: var(--pt-border-hover);
+    box-shadow: var(--pt-shadow-lg);
+  }
+}
+
+/* ----- Buttons (themed) ----------------------------------------- */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: var(--pt-radius-sm);
   border: none;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
-  transition: opacity 0.2s, background-color 0.2s;
+  transition: opacity var(--pt-transition), background-color var(--pt-transition);
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   &:hover:not(:disabled) {
     opacity: 0.9;
   }
 }
 
-.btn-primary {
-  background-color: #4ade80;
-  color: #1a1a2e;
-}
+.btn-primary   { background: var(--pt-primary); color: var(--pt-primary-text); }
+.btn-secondary { background: var(--pt-border); color: var(--pt-text); }
+.btn-danger    { background: var(--pt-danger); color: #fff; }
+.btn-outline   { background: transparent; border: 1px solid var(--pt-border); color: var(--pt-text); }
+.btn-ghost     { background: transparent; color: var(--pt-text-secondary); &:hover { background: var(--pt-surface-alt); } }
 
-.btn-secondary {
-  background-color: #e5e7eb;
-  color: #374151;
-}
-
-.btn-danger {
-  background-color: #ef4444;
-  color: white;
-}
-
-.btn-outline {
-  background-color: transparent;
-  border: 1px solid currentColor;
-}
-
-/* Card styles */
-.card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Form styles */
-.form-group {
-  margin-bottom: 1rem;
-}
+/* ----- Form inputs (themed) ------------------------------------- */
+.form-group { margin-bottom: 1rem; }
 
 .form-label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--pt-text);
 }
 
 .form-input {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
+  border: 1px solid var(--pt-border);
+  border-radius: var(--pt-radius-sm);
   font-size: 1rem;
-  transition: border-color 0.2s;
+  background: var(--pt-surface);
+  color: var(--pt-text);
+  transition: border-color var(--pt-transition);
 
   &:focus {
     outline: none;
-    border-color: #4ade80;
+    border-color: var(--pt-primary);
   }
-
   &.is-invalid {
-    border-color: #ef4444;
+    border-color: var(--pt-danger);
   }
 }
 
 .form-error {
-  color: #ef4444;
+  color: var(--pt-danger);
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
 
-/* Status badges */
+/* ----- Badges (themed) ------------------------------------------ */
 .badge {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.5rem;
-  border-radius: 9999px;
+  border-radius: var(--pt-radius-full);
   font-size: 0.75rem;
   font-weight: 500;
 }
 
-.badge-success { background: #d1fae5; color: #065f46; }
-.badge-warning { background: #fef3c7; color: #92400e; }
-.badge-danger { background: #fee2e2; color: #991b1b; }
-.badge-info { background: #dbeafe; color: #1e40af; }
-.badge-gray { background: #f3f4f6; color: #374151; }
+.badge-success { background: var(--pt-success-bg); color: var(--pt-success); }
+.badge-warning { background: var(--pt-warning-bg); color: var(--pt-warning); }
+.badge-danger  { background: var(--pt-danger-bg);  color: var(--pt-danger); }
+.badge-info    { background: var(--pt-info-bg);    color: var(--pt-info); }
+.badge-gray    { background: var(--pt-surface-alt); color: var(--pt-text-secondary); }
 
-/* Loading spinner */
+/* ----- Spinner (themed) ----------------------------------------- */
 .spinner {
   display: inline-block;
   width: 1.5rem;
   height: 1.5rem;
-  border: 2px solid #e5e7eb;
-  border-top-color: #4ade80;
+  border: 2px solid var(--pt-border);
+  border-top-color: var(--pt-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ----- Page layout helpers -------------------------------------- */
+.page {
+  padding: var(--pt-gutter);
+  width: 100%;
+  max-width: var(--pt-content-max);
+  margin-inline: auto;
+}
+
+.page-header {
+  margin-bottom: var(--pt-gutter);
+}
+
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--pt-text);
+
+  @include md { font-size: 1.5rem; }
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: var(--pt-text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* ----- Divider -------------------------------------------------- */
+.divider {
+  border: none;
+  border-top: 1px solid var(--pt-border);
+  margin-block: 1rem;
+}
+
+/* ----- PrimeNG overrides (surface alignment) -------------------- */
+.p-dark {
+  color-scheme: dark;
 }

@@ -15,6 +15,12 @@ export const bookingRoutes: Routes = [
       import('./pages/sites-list.component').then((m) => m.SitesListComponent),
   },
   {
+    path: 'test-reservation',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/test-reservation.component').then((m) => m.TestReservationComponent),
+  },
+  {
     path: ':siteId',
     canActivate: [authGuard],
     loadComponent: () =>

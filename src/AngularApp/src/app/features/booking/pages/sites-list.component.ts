@@ -1,6 +1,6 @@
-﻿import { Component, inject, signal, OnInit } from '@angular/core';
-import { ApiService } from '@core/services';
-import { Site } from '@core/models';
+﻿import {Component, inject, signal, OnInit} from '@angular/core';
+import {ApiService} from '@core/services';
+import {Site} from '@core/models';
 
 @Component({
   selector: 'app-sites-list',
@@ -17,7 +17,6 @@ import { Site } from '@core/models';
             <div class="card">
               <div class="name">{{ site.name }}</div>
               <div class="meta">
-                <span class="id">{{ site.siteId }}</span>
                 <span class="tz">{{ site.timezone }}</span>
               </div>
             </div>
@@ -29,21 +28,58 @@ import { Site } from '@core/models';
     </div>
   `,
   styles: [`
-    .sites { max-width: 800px; margin: 0 auto; }
-    h1 { color: #1a1a2e; margin-bottom: 1.5rem; }
-    .list { display: flex; flex-direction: column; gap: 1rem; }
-    .card { background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,.08); }
-    .name { font-weight: 600; color: #1a1a2e; margin-bottom: .25rem; }
-    .meta { display: flex; gap: 1rem; color: #6b7280; font-size: .875rem; flex-wrap: wrap; }
-    .id { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .loading, .empty { text-align: center; padding: 2rem; color: #6b7280; }
+    .sites {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #1a1a2e;
+      margin-bottom: 1.5rem;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .card {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .08);
+    }
+
+    .name {
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: .25rem;
+    }
+
+    .meta {
+      display: flex;
+      gap: 1rem;
+      color: #6b7280;
+      font-size: .875rem;
+      flex-wrap: wrap;
+    }
+
+    .id {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .loading, .empty {
+      text-align: center;
+      padding: 2rem;
+      color: #6b7280;
+    }
   `],
 })
 export class SitesListComponent implements OnInit {
-  private readonly api = inject(ApiService);
-
   readonly sites = signal<Site[]>([]);
   readonly loading = signal(true);
+  private readonly api = inject(ApiService);
 
   ngOnInit(): void {
     this.api.getSites().subscribe({

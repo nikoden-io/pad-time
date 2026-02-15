@@ -13,7 +13,7 @@ namespace PadTime.API.Controllers;
 
 [ApiController]
 [Route("api/v1/matches")]
-[Authorize(Policy = Policies.RequireUser)]
+//[Authorize(Policy = Policies.RequireUser)]
 public sealed class MatchesController : ControllerBase
 {
     private readonly IMediator _mediator;

@@ -1,15 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '@env/environment';
 import {
   CurrentUser,
   Site,
   Court,
+  CreateCourtRequest,
+  CreateCourtResponse,
   AvailabilityResponse,
   Match,
   CreateMatchRequest,
   CreateMatchResponse,
+  CreateReservationRequest,
+  CreateReservationResponse,
   JoinMatchRequest,
   JoinMatchResponse,
   MatchListParams,
@@ -36,6 +40,10 @@ export class ApiService {
 
   getCourts(siteId: string): Observable<Court[]> {
     return this.http.get<Court[]>(`${this.baseUrl}/sites/${siteId}/courts`);
+  }
+
+  createCourt(siteId: string, request: CreateCourtRequest): Observable<CreateCourtResponse> {
+    return this.http.post<CreateCourtResponse>(`${this.baseUrl}/sites/${siteId}/courts`, request);
   }
 
   // Availability
@@ -78,6 +86,11 @@ export class ApiService {
 
   cancelMatch(matchId: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/matches/${matchId}/cancel`, {});
+  }
+
+  // Reservations
+  createReservation(request: CreateReservationRequest): Observable<CreateReservationResponse> {
+    return this.http.post<CreateReservationResponse>(`${this.baseUrl}/reservations`, request);
   }
 
   // Payments

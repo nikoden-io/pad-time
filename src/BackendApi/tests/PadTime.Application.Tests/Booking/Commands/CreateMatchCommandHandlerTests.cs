@@ -7,6 +7,7 @@ using PadTime.Domain.Billing;
 using PadTime.Domain.Booking;
 using PadTime.Domain.Common;
 using PadTime.Domain.Members;
+using PadTime.Domain.Site;
 using Xunit;
 
 namespace PadTime.Application.Tests.Booking.Commands;
@@ -18,7 +19,6 @@ public class CreateMatchCommandHandlerTests
     private readonly ICourtRepository _courtRepository;
     private readonly IMemberRepository _memberRepository;
     private readonly IOrganizerDebtRepository _debtRepository;
-    private readonly IClosureRepository _closureRepository;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IUnitOfWork _unitOfWork;
@@ -35,7 +35,6 @@ public class CreateMatchCommandHandlerTests
         _courtRepository = Substitute.For<ICourtRepository>();
         _memberRepository = Substitute.For<IMemberRepository>();
         _debtRepository = Substitute.For<IOrganizerDebtRepository>();
-        _closureRepository = Substitute.For<IClosureRepository>();
         _currentUser = Substitute.For<ICurrentUser>();
         _dateTimeProvider = Substitute.For<IDateTimeProvider>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
@@ -49,7 +48,6 @@ public class CreateMatchCommandHandlerTests
             _courtRepository,
             _memberRepository,
             _debtRepository,
-            _closureRepository,
             _currentUser,
             _dateTimeProvider,
             _unitOfWork);
@@ -62,8 +60,6 @@ public class CreateMatchCommandHandlerTests
         var member = SetupMember("G1234");
         SetupSite();
         SetupCourt();
-        _closureRepository.IsClosedAsync(Arg.Any<Guid>(), Arg.Any<DateOnly>(), Arg.Any<CancellationToken>())
-            .Returns(false);
         _matchRepository.ExistsForSlotAsync(Arg.Any<Guid>(), Arg.Any<DateTime>(), Arg.Any<CancellationToken>())
             .Returns(false);
 
@@ -112,8 +108,6 @@ public class CreateMatchCommandHandlerTests
         SetupMember("G1234");
         SetupSite();
         SetupCourt();
-        _closureRepository.IsClosedAsync(Arg.Any<Guid>(), Arg.Any<DateOnly>(), Arg.Any<CancellationToken>())
-            .Returns(false);
         _matchRepository.ExistsForSlotAsync(Arg.Any<Guid>(), Arg.Any<DateTime>(), Arg.Any<CancellationToken>())
             .Returns(true);
 
@@ -171,14 +165,30 @@ public class CreateMatchCommandHandlerTests
 
     private void SetupSite()
     {
-        var site = Site.Create("Test Site", "Europe/Brussels", _utcNow);
-        _siteRepository.GetByIdAsync(_siteId, Arg.Any<CancellationToken>())
+        var site = Site.Create(
+            "Test Site",
+            "123",
+            "Test Street",
+            "1000",
+            "Brussels",
+            "Belgium",
+            "Europe/Brussels",
+            _utcNow);
+        _siteRepository.GetByIdWithSchedulesAndClosuresAsync(_siteId, Arg.Any<CancellationToken>())
             .Returns(site);
     }
 
     private void SetupCourt()
     {
-        var site = Site.Create("Test Site", "Europe/Brussels", _utcNow);
+        var site = Site.Create(
+            "Test Site",
+            "123",
+            "Test Street",
+            "1000",
+            "Brussels",
+            "Belgium",
+            "Europe/Brussels",
+            _utcNow);
         var court = site.AddCourt("Court 1", _utcNow);
 
         // Use reflection to set the correct IDs

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard, adminGuard } from '../../core/guards';
+import { SitesStore } from './services/sites-store.service';
 
 export const adminRoutes: Routes = [
   {
@@ -9,9 +10,20 @@ export const adminRoutes: Routes = [
       import('./pages/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
   },
   {
-    path: 'sites/:siteId',
+    path: 'sites',
     canActivate: [authGuard, adminGuard],
-    loadComponent: () =>
-      import('./pages/site-overview.component').then((m) => m.SiteOverviewComponent),
+    providers: [SitesStore],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/sites-list.component').then((m) => m.SitesListComponent),
+      },
+      {
+        path: ':siteId',
+        loadComponent: () =>
+          import('./pages/site-detail.component').then((m) => m.SiteDetailComponent),
+      },
+    ],
   },
 ];

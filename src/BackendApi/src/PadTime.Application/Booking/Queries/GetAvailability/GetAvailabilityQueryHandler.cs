@@ -1,7 +1,6 @@
 using MediatR;
 using PadTime.Application.Common.Interfaces.Repositories;
-using PadTime.Domain.Booking;
-using PadTime.Domain.Common;
+using PadTime.Domain.Site;
 
 namespace PadTime.Application.Booking.Queries.GetAvailability;
 
@@ -10,33 +9,22 @@ public sealed class GetAvailabilityQueryHandler : IRequestHandler<GetAvailabilit
     private readonly ISiteRepository _siteRepository;
     private readonly ICourtRepository _courtRepository;
     private readonly IMatchRepository _matchRepository;
-    private readonly IClosureRepository _closureRepository;
 
     public GetAvailabilityQueryHandler(
         ISiteRepository siteRepository,
         ICourtRepository courtRepository,
-        IMatchRepository matchRepository,
-        IClosureRepository closureRepository)
+        IMatchRepository matchRepository)
     {
         _siteRepository = siteRepository;
         _courtRepository = courtRepository;
         _matchRepository = matchRepository;
-        _closureRepository = closureRepository;
     }
 
     public async Task<AvailabilityResult> Handle(GetAvailabilityQuery request, CancellationToken cancellationToken)
     {
-        // Check if site is closed
-        var isClosed = await _closureRepository.IsClosedAsync(request.SiteId, request.Date, cancellationToken);
-        if (isClosed)
-        {
-            return new AvailabilityResult(request.SiteId, request.Date, []);
-        }
-
-        // Get site with schedule
-        var site = await _siteRepository.GetByIdWithSchedulesAsync(
+        // Get site with schedules and closures
+        var site = await _siteRepository.GetByIdWithSchedulesAndClosuresAsync(
             request.SiteId,
-            request.Date.Year,
             cancellationToken);
 
         if (site is null)
@@ -44,21 +32,28 @@ public sealed class GetAvailabilityQueryHandler : IRequestHandler<GetAvailabilit
             return new AvailabilityResult(request.SiteId, request.Date, []);
         }
 
-        var schedule = site.GetScheduleForYear(request.Date.Year);
-        if (schedule is null)
+        // Check if site is closed
+        if (site.IsClosedOn(request.Date))
         {
             return new AvailabilityResult(request.SiteId, request.Date, []);
         }
 
         // Get courts
-        var courts = request.CourtId.HasValue
-            ? [await _courtRepository.GetByIdAsync(request.CourtId.Value, cancellationToken)]
-            : await _courtRepository.GetBySiteIdAsync(request.SiteId, cancellationToken);
+        List<Court> courts;
+        if (request.CourtId.HasValue)
+        {
+            var court = await _courtRepository.GetByIdAsync(request.CourtId.Value, cancellationToken);
+            courts = court is not null ? [court] : [];
+        }
+        else
+        {
+            courts = await _courtRepository.GetBySiteIdAsync(request.SiteId, cancellationToken);
+        }
 
-        courts = courts.Where(c => c is not null && c.IsActive).ToList()!;
+        courts = [.. courts.Where(c => c.IsActive)];
 
         // Get timezone for conversion
-        var timezone = TimeZoneInfo.FindSystemTimeZoneById(site.Timezone);
+        var timezone = site.GetTimeZone();
 
         // Generate slots and check availability
         var slots = new List<SlotAvailability>();
@@ -67,7 +62,11 @@ public sealed class GetAvailabilityQueryHandler : IRequestHandler<GetAvailabilit
         {
             if (court is null) continue;
 
-            foreach (var timeSlot in schedule.GenerateSlots(request.Date))
+            // Skip if court is closed
+            if (site.IsCourtClosedOn(court.Id, request.Date))
+                continue;
+
+            foreach (var timeSlot in site.GetAvailableSlots(request.Date, court.Id))
             {
                 var startUtc = timeSlot.ToUtcStart(timezone);
                 var endUtc = timeSlot.ToUtcEnd(timezone);
