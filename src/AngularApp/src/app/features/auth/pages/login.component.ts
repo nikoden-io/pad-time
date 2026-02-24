@@ -1,61 +1,100 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
+  imports: [RouterLink],
   template: `
-    <div class="login-container">
-      <div class="login-card">
-        <h1>Pad'Time</h1>
-        <p>Book your padel courts</p>
-        <button class="btn btn-primary" (click)="login()">
-          Sign in with your account
-        </button>
-      </div>
+    <h2 class="title">Welcome back</h2>
+    <p class="subtitle">Sign in to continue to Pad'Time</p>
+
+    <button class="btn-primary" (click)="login()">Sign in</button>
+
+    <div class="divider">
+      <span>New to Pad'Time?</span>
     </div>
+
+    <a routerLink="/auth/register" class="btn-outline">Create an account</a>
   `,
   styles: [`
-    .login-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    :host {
+      display: block;
     }
 
-    .login-card {
-      background: white;
-      padding: 3rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-
-    h1 {
+    .title {
       color: #1a1a2e;
-      margin-bottom: 0.5rem;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
     }
 
-    p {
+    .subtitle {
       color: #6b7280;
-      margin-bottom: 2rem;
+      font-size: 1rem;
+      margin: 0 0 2rem;
     }
 
     .btn-primary {
+      display: block;
+      width: 100%;
       background: #4ade80;
       color: #1a1a2e;
-      padding: 0.75rem 2rem;
+      padding: 0.75rem;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 1rem;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
+      text-align: center;
+      transition: background 0.15s ease;
     }
 
     .btn-primary:hover {
       background: #3bc76d;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.75rem 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #d1d5db;
+    }
+
+    .divider span {
+      color: #6b7280;
+      font-size: 0.875rem;
+      white-space: nowrap;
+    }
+
+    .btn-outline {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #4ade80;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #4ade80;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+      box-sizing: border-box;
+    }
+
+    .btn-outline:hover {
+      background: #4ade80;
+      color: #1a1a2e;
     }
   `],
 })

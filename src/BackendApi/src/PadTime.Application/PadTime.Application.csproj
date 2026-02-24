@@ -17,8 +17,4 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Sites\Commands\" />
-    </ItemGroup>
-
 </Project>

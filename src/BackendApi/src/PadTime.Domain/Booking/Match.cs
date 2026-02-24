@@ -166,7 +166,7 @@ public sealed class Match : AggregateRoot<Guid>
     }
 
     /// <summary>
-    /// J-1 transition: Private match with < 4 players becomes public.
+    /// J-1 transition: Private match with less than 4 players becomes public.
     /// </summary>
     public Result TransitionToPublicAtDeadline(DateTime utcNow)
     {

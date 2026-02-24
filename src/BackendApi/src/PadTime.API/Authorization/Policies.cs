@@ -6,4 +6,6 @@ public static class Policies
     public const string RequireAdmin = "RequireAdmin";
     public const string RequireGlobalAdmin = "RequireGlobalAdmin";
     public const string RequireSiteAdmin = "RequireSiteAdmin";
+    public const string RequireSiteAccess = "RequireSiteAccess";
+    public const string RequireSiteManagement = "RequireSiteManagement";
 }

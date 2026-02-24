@@ -36,6 +36,17 @@ public sealed class MatchRepository : IMatchRepository
                 cancellationToken);
     }
 
+    public async Task<bool> HasActiveBookingsForCourtAsync(Guid courtId, CancellationToken cancellationToken = default)
+    {
+        var now = DateTime.UtcNow;
+        return await _context.Matches
+            .AnyAsync(m =>
+                m.CourtId == courtId &&
+                m.EndAtUtc > now &&
+                m.Status != MatchStatus.Cancelled,
+                cancellationToken);
+    }
+
     public async Task<List<Match>> GetPublicMatchesAsync(
         Guid? siteId,
         DateTime fromUtc,

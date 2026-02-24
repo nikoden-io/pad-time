@@ -1,0 +1,200 @@
+<ng-container *transloco="let t; scope: 'sites'">
+  <p-dialog
+    (visibleChange)="visibleChange.emit($event)"
+    [breakpoints]="{ '960px': '90vw', '640px': '100vw' }"
+    [closable]="true"
+    [draggable]="false"
+    [header]="site()?.name || t('detail.title')"
+    [modal]="true"
+    [style]="{ width: '95vw', maxWidth: '900px' }"
+    [visible]="visible()"
+  >
+    @if (site(); as siteData) {
+      <div class="site-detail-content">
+        <div class="site-header">
+          <div class="site-title-section">
+            <h2 class="site-name">{{ siteData.name }}</h2>
+            <p-tag
+              [severity]="siteData.isActive ? 'success' : 'secondary'"
+              [value]="siteData.isActive ? t('status.active') : t('status.inactive')"
+            />
+          </div>
+          <p-button
+            (onClick)="edit.emit()"
+            icon="pi pi-pencil"
+            [label]="t('detail.editSite')"
+            size="small"
+          />
+        </div>
+
+        <p-divider/>
+
+        <div class="site-info-grid">
+          <div class="info-item">
+            <span class="info-label">{{ t('detail.address') }}</span>
+            <span class="info-value">
+              {{ siteData.streetNumber }} {{ siteData.street }}<br/>
+              {{ siteData.postcode }} {{ siteData.city }}<br/>
+              {{ siteData.country }}
+            </span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">{{ t('detail.timezone') }}</span>
+            <span class="info-value">{{ siteData.timezone }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">{{ t('detail.created') }}</span>
+            <span class="info-value">{{ siteData.createdAtUtc | date:'medium' }}</span>
+          </div>
+
+          @if (siteData.updatedAtUtc) {
+            <div class="info-item">
+              <span class="info-label">{{ t('detail.updated') }}</span>
+              <span class="info-value">{{ siteData.updatedAtUtc | date:'medium' }}</span>
+            </div>
+          }
+        </div>
+
+        <p-divider/>
+
+        <p-tabs value="0">
+          <p-tablist>
+            <p-tab value="0">
+              <i class="pi pi-building tab-icon"></i>
+              <span>{{ t('detail.tabs.courts') }} ({{ siteData.courts.length }})</span>
+            </p-tab>
+            <p-tab value="1">
+              <i class="pi pi-calendar tab-icon"></i>
+              <span>{{ t('detail.tabs.schedules') }} ({{ siteData.schedules.length }})</span>
+            </p-tab>
+            <p-tab value="2">
+              <i class="pi pi-ban tab-icon"></i>
+              <span>{{ t('detail.tabs.closures') }} ({{ siteData.closures.length }})</span>
+            </p-tab>
+          </p-tablist>
+
+          <p-tabpanels>
+            <p-tabpanel value="0">
+              @if (siteData.courts.length > 0) {
+                <div class="courts-list">
+                  @for (court of siteData.courts; track court.courtId) {
+                    <div class="court-card">
+                      <div class="court-info">
+                        <span class="court-label">{{ court.label }}</span>
+                        <p-tag
+                          [severity]="court.isActive ? 'success' : 'secondary'"
+                          [style]="{ fontSize: '0.75rem' }"
+                          [value]="court.isActive ? t('status.active') : t('status.inactive')"
+                        />
+                      </div>
+                      <span class="court-created">{{ t('detail.courts.created', {date: (court.createdAtUtc | date:'short')}) }}</span>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="empty-state">
+                  <i class="pi pi-building empty-icon"></i>
+                  <p>{{ t('detail.courts.empty') }}</p>
+                </div>
+              }
+            </p-tabpanel>
+
+            <p-tabpanel value="1">
+              @if (siteData.schedules.length > 0) {
+                <div class="schedules-list">
+                  @for (schedule of siteData.schedules; track schedule.scheduleId) {
+                    <div class="schedule-card">
+                      <div class="schedule-header">
+                        <span class="schedule-name">{{ schedule.name }}</span>
+                        <p-tag
+                          [style]="{ fontSize: '0.75rem' }"
+                          [value]="t('detail.schedules.priority', {priority: schedule.priority})"
+                          severity="info"
+                        />
+                      </div>
+                      <div class="schedule-details">
+                        <div class="schedule-time">
+                          <i class="pi pi-clock"></i>
+                          <span>{{ schedule.openingTime }} - {{ schedule.closingTime }}</span>
+                        </div>
+                        <div class="schedule-period">
+                          <i class="pi pi-calendar"></i>
+                          <span>{{ schedule.validFrom | date:'shortDate' }}
+                            @if (schedule.validUntil) {
+                              - {{ schedule.validUntil | date:'shortDate' }}
+                            } @else {
+                              - {{ t('detail.schedules.ongoing') }}
+                            }
+                          </span>
+                        </div>
+                        @if (schedule.applicableDays && schedule.applicableDays.length > 0) {
+                          <div class="schedule-days">
+                            <span class="days-label">{{ t('detail.schedules.days') }}</span>
+                            <div class="days-badges">
+                              @for (day of schedule.applicableDays; track day) {
+                                <span class="day-badge">{{ getDayName(day) }}</span>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="empty-state">
+                  <i class="pi pi-calendar empty-icon"></i>
+                  <p>{{ t('detail.schedules.empty') }}</p>
+                </div>
+              }
+            </p-tabpanel>
+
+            <p-tabpanel value="2">
+              @if (siteData.closures.length > 0) {
+                <div class="closures-list">
+                  @for (closure of siteData.closures; track closure.closureId) {
+                    <div class="closure-card">
+                      <div class="closure-header">
+                        <span class="closure-type">{{ closure.type }}</span>
+                        <span class="closure-reason">{{ closure.reason }}</span>
+                      </div>
+                      @if (closure.description) {
+                        <p class="closure-description">{{ closure.description }}</p>
+                      }
+                      <div class="closure-dates">
+                        <i class="pi pi-calendar"></i>
+                        <span>{{ closure.startDate | date:'shortDate' }}
+                          @if (closure.endDate !== closure.startDate) {
+                            - {{ closure.endDate | date:'shortDate' }}
+                          }
+                        </span>
+                      </div>
+                      @if (closure.modifiedOpeningTime) {
+                        <div class="closure-times">
+                          <i class="pi pi-clock"></i>
+                          <span>{{ t('detail.closures.modifiedHours', {open: closure.modifiedOpeningTime, close: closure.modifiedClosingTime}) }}</span>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="empty-state">
+                  <i class="pi pi-ban empty-icon"></i>
+                  <p>{{ t('detail.closures.empty') }}</p>
+                </div>
+              }
+            </p-tabpanel>
+          </p-tabpanels>
+        </p-tabs>
+      </div>
+    } @else {
+      <div class="loading-state">
+        <i class="pi pi-spin pi-spinner"></i>
+        <p>{{ t('global.common.loading') }}</p>
+      </div>
+    }
+  </p-dialog>
+</ng-container>

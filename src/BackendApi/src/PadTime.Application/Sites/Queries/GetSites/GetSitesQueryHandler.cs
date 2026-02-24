@@ -1,28 +1,53 @@
 ﻿using MediatR;
 using PadTime.Application.Common.Interfaces.Repositories;
-using PadTime.Domain.Booking;
+using PadTime.Application.Common.Models;
+using PadTime.Application.Sites.Queries.GetCourts;
 
 namespace PadTime.Application.Sites.Queries.GetSites;
 
 /// <summary>
 /// Handler for GetSitesQuery.
-/// Retrieves all active sites from the repository and maps them to DTOs.
+/// Retrieves sites with pagination, search, and filtering support.
 /// </summary>
-public sealed class GetSitesQueryHandler(ISiteRepository siteRepository) : IRequestHandler<GetSitesQuery, List<SiteDto>>
+public sealed class GetSitesQueryHandler(ISiteRepository siteRepository) 
+    : IRequestHandler<GetSitesQuery, PagedResult<SiteDto>>
 {
-    public async Task<List<SiteDto>> Handle(
+    public async Task<PagedResult<SiteDto>> Handle(
         GetSitesQuery request,
         CancellationToken cancellationToken)
     {
-        List<Site> sites = await siteRepository.GetAllActiveAsync(cancellationToken);
+        var pagedSites = await siteRepository.GetPagedAsync(
+            request.Page,
+            request.PageSize,
+            request.SearchTerm,
+            request.IsActive,
+            request.City,
+            request.Country,
+            cancellationToken);
 
-        var siteDtos = sites
+        var siteDtos = pagedSites.Items
             .Select(s => new SiteDto(
                 SiteId: s.Id,
                 Name: s.Name,
-                Timezone: s.Timezone))
+                StreetNumber: s.StreetNumber,
+                Street: s.Street,
+                Postcode: s.Postcode,
+                City: s.City,
+                Country: s.Country,
+                Timezone: s.Timezone,
+                IsActive: s.IsActive,
+                CreatedAtUtc: s.CreatedAtUtc,
+                CourtCount: s.Courts.Count,
+                Courts: s.Courts
+                    .OrderBy(c => c.Label)
+                    .Select(c => new CourtDto(c.Id, c.Label, c.IsActive))
+                    .ToList()))
             .ToList();
 
-        return siteDtos;
+        return new PagedResult<SiteDto>(
+            siteDtos,
+            pagedSites.Page,
+            pagedSites.PageSize,
+            pagedSites.TotalCount);
     }
 }

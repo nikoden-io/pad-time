@@ -24,6 +24,8 @@ public sealed class MeController : ControllerBase
     [ProducesResponseType(typeof(MeResponse), StatusCodes.Status200OK)]
     public IActionResult GetMe()
     {
+
+
         var response = new MeResponse(
             Subject: _currentUser.Subject,
             Matricule: _currentUser.Matricule,

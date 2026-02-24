@@ -1,0 +1,79 @@
+﻿{
+  "title": "Sitebeheer",
+  "newSite": "Nieuwe Site",
+  "list": {
+    "name": "Naam",
+    "location": "Locatie",
+    "courts": "Terreinen",
+    "status": "Status",
+    "actions": "Acties",
+    "empty": "Geen sites gevonden. Maak uw eerste site aan om te beginnen.",
+    "courtCount": "{{count}} terrein",
+    "courtCount_plural": "{{count}} terreinen"
+  },
+  "detail": {
+    "title": "Site Details",
+    "information": "Informatie",
+    "address": "Adres",
+    "timezone": "Tijdzone",
+    "created": "Aangemaakt",
+    "updated": "Laatst Bijgewerkt",
+    "editSite": "Site Bewerken",
+    "tabs": {
+      "courts": "Terreinen",
+      "schedules": "Roosters",
+      "closures": "Sluitingen"
+    },
+    "courts": {
+      "empty": "Nog geen terreinen geconfigureerd",
+      "created": "Aangemaakt {{date}}"
+    },
+    "schedules": {
+      "empty": "Nog geen roosters geconfigureerd",
+      "priority": "Prioriteit {{priority}}",
+      "time": "{{open}} - {{close}}",
+      "period": "{{from}} - {{to}}",
+      "ongoing": "Doorlopend",
+      "days": "Dagen:"
+    },
+    "closures": {
+      "empty": "Geen sluitingen gepland",
+      "modifiedHours": "Aangepaste uren: {{open}} - {{close}}"
+    }
+  },
+  "form": {
+    "createTitle": "Site Aanmaken",
+    "editTitle": "Site Bewerken",
+    "name": "Sitenaam",
+    "streetNumber": "Huisnummer",
+    "street": "Straat",
+    "postcode": "Postcode",
+    "city": "Stad",
+    "country": "Land",
+    "timezone": "Tijdzone",
+    "timezonePlaceholder": "Selecteer tijdzone"
+  },
+  "actions": {
+    "view": "Details Bekijken",
+    "edit": "Bewerken",
+    "activate": "Activeren",
+    "deactivate": "Deactiveren",
+    "delete": "Verwijderen"
+  },
+  "status": {
+    "active": "Actief",
+    "inactive": "Inactief"
+  },
+  "messages": {
+    "loadError": "Kan sites niet laden",
+    "loadDetailError": "Kan sitedetails niet laden",
+    "deleteConfirm": "Weet u zeker dat u {{name}} wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+    "deleteSuccess": "Site succesvol verwijderd",
+    "deleteError": "Verwijderen mislukt",
+    "activateConfirm": "Weet u zeker dat u {{name}} wilt {{action}}?",
+    "activateSuccess": "Site succesvol ge{{action}}d",
+    "activateError": "{{action}} mislukt",
+    "editComingSoon": "{{name}} bewerken - Dialoog komt binnenkort",
+    "createComingSoon": "Site aanmaken - Dialoog komt binnenkort"
+  }
+}

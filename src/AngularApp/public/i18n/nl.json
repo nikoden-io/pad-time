@@ -1,0 +1,83 @@
+{
+  "common": {
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "create": "Aanmaken",
+    "close": "Sluiten",
+    "loading": "Laden...",
+    "confirm": "Bevestigen",
+    "yes": "Ja",
+    "no": "Nee",
+    "actions": "Acties",
+    "search": "Zoeken",
+    "filter": "Filteren",
+    "export": "Exporteren",
+    "import": "Importeren",
+    "refresh": "Vernieuwen",
+    "back": "Terug",
+    "next": "Volgende",
+    "previous": "Vorige",
+    "submit": "Indienen",
+    "reset": "Resetten",
+    "success": "Succes",
+    "error": "Fout",
+    "info": "Info",
+    "comingSoon": "Binnenkort Beschikbaar",
+    "confirmation": "Bevestiging"
+  },
+  "nav": {
+    "home": "Home",
+    "admin": "Admin",
+    "booking": "Reservering",
+    "profile": "Profiel",
+    "settings": "Instellingen",
+    "logout": "Uitloggen"
+  },
+  "validation": {
+    "required": "Dit veld is verplicht",
+    "email": "Ongeldig e-mailadres",
+    "minLength": "Minimaal {{min}} tekens",
+    "maxLength": "Maximaal {{max}} tekens",
+    "pattern": "Ongeldig formaat",
+    "min": "Minimale waarde: {{min}}",
+    "max": "Maximale waarde: {{max}}"
+  },
+  "errors": {
+    "generic": "Er is een fout opgetreden",
+    "network": "Netwerkfout. Controleer uw verbinding.",
+    "unauthorized": "Ongeautoriseerde toegang",
+    "forbidden": "Toegang verboden",
+    "notFound": "Resource niet gevonden",
+    "serverError": "Serverfout. Probeer het later opnieuw."
+  },
+  "confirmation": {
+    "deleteTitle": "Verwijder Bevestiging",
+    "deleteMessage": "Deze actie kan niet ongedaan worden gemaakt.",
+    "unsavedChanges": "U heeft niet-opgeslagen wijzigingen. Weet u zeker dat u wilt vertrekken?"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Beheer uw padelsites, terreinen, roosters en meer",
+      "sites": {
+        "title": "Sites",
+        "description": "Beheer sites, terreinen, roosters en sluitingen",
+        "action": "Sites Beheren"
+      },
+      "matches": {
+        "title": "Wedstrijden",
+        "description": "Bekijk en beheer wedstrijdreserveringen"
+      },
+      "analytics": {
+        "title": "Statistieken",
+        "description": "Inkomsten, bezetting en statistieken"
+      },
+      "members": {
+        "title": "Leden",
+        "description": "Beheer ledenaccounts en categorieën"
+      }
+    }
+  }
+}

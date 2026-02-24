@@ -21,6 +21,8 @@ Thumbs.db
 **/project.lock.json
 **/project.fragment.lock.json
 **/Properties/launchSettings.json
+**/.claude
+.claude
 
 # ef core (optionnel si tu génères des migrations : NE PAS ignorer Migrations/)
 # **/Migrations/

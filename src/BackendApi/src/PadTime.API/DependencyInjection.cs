@@ -1,8 +1,13 @@
-using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using FluentValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PadTime.API.Authorization;
+using PadTime.API.Authorization.Handlers;
+using PadTime.API.Authorization.Requirements;
 using PadTime.API.Services;
 using PadTime.Application.Common.Interfaces;
 
@@ -14,10 +19,14 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddControllers();
-        services.AddEndpointsApiExplorer();
+        services.AddControllers(options =>
+        {
+            options.ModelValidatorProviders.Clear();
+        });
 
-        // Swagger
+        services.AddValidatorsFromAssemblyContaining<Program>();
+
+        services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo
@@ -52,41 +61,99 @@ public static class DependencyInjection
             });
         });
 
-        // Authentication
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = configuration["Authentication:Authority"];
-                options.Audience = configuration["Authentication:Audience"];
-                options.RequireHttpsMetadata = !configuration.GetValue<bool>("Authentication:AllowHttp");
+        var authEnabled = configuration.GetValue<bool>("Authentication:Enabled", true);
 
-                options.TokenValidationParameters = new TokenValidationParameters
+        if (authEnabled)
+        {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ClockSkew = TimeSpan.FromMinutes(1)
-                };
-            });
+                    var authority = configuration["Authentication:Authority"] ?? "https://localhost:5001";
+                    var requireHttpsMetadata = configuration.GetValue<bool>("Authentication:RequireHttpsMetadata", true);
 
-        // Authorization policies
+                    options.Authority = authority;
+                    options.Audience = configuration["Authentication:Audience"];
+                    options.RequireHttpsMetadata = requireHttpsMetadata;
+
+                    if (!requireHttpsMetadata)
+                    {
+                        options.BackchannelHttpHandler = new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                        };
+                    }
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ClockSkew = TimeSpan.FromMinutes(1),
+                        ValidIssuers = new[]
+                        {
+                            authority,
+                            "https://localhost:5001",
+                            "https://identity-server:443"
+                        }
+                    };
+                });
+
+            services.AddScoped<IAuthorizationHandler, SiteAccessHandler>();
+            services.AddScoped<IAuthorizationHandler, SiteManagementHandler>();
+        }
+        else
+        {
+            services.AddAuthentication("Test")
+                .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+        }
+
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(Policies.RequireUser, policy =>
-                policy.RequireAuthenticatedUser());
+            if (authEnabled)
+            {
+                options.AddPolicy(Policies.RequireUser, policy =>
+                    policy.RequireAuthenticatedUser());
 
-            options.AddPolicy(Policies.RequireAdmin, policy =>
-                policy.RequireRole("admin_site", "admin_global"));
+                options.AddPolicy(Policies.RequireAdmin, policy =>
+                    policy.RequireRole("admin_site", "admin_global"));
 
-            options.AddPolicy(Policies.RequireGlobalAdmin, policy =>
-                policy.RequireRole("admin_global"));
+                options.AddPolicy(Policies.RequireGlobalAdmin, policy =>
+                    policy.RequireRole("admin_global"));
 
-            options.AddPolicy(Policies.RequireSiteAdmin, policy =>
-                policy.RequireRole("admin_site", "admin_global"));
+                options.AddPolicy(Policies.RequireSiteAdmin, policy =>
+                    policy.RequireRole("admin_site", "admin_global"));
+
+                options.AddPolicy(Policies.RequireSiteAccess, policy =>
+                    policy.Requirements.Add(new SiteAccessRequirement()));
+
+                options.AddPolicy(Policies.RequireSiteManagement, policy =>
+                    policy.Requirements.Add(new SiteManagementRequirement()));
+            }
+            else
+            {
+                options.AddPolicy(Policies.RequireUser, policy =>
+                    policy.RequireAssertion(_ => true));
+                options.AddPolicy(Policies.RequireAdmin, policy =>
+                    policy.RequireAssertion(_ => true));
+                options.AddPolicy(Policies.RequireGlobalAdmin, policy =>
+                    policy.RequireAssertion(_ => true));
+                options.AddPolicy(Policies.RequireSiteAdmin, policy =>
+                    policy.RequireAssertion(_ => true));
+                options.AddPolicy(Policies.RequireSiteAccess, policy =>
+                    policy.RequireAssertion(_ => true));
+                options.AddPolicy(Policies.RequireSiteManagement, policy =>
+                    policy.RequireAssertion(_ => true));
+
+                options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAssertion(_ => true)
+                    .Build();
+            }
         });
 
-        // CORS
         services.AddCors(options =>
         {
             options.AddPolicy("AllowFrontend", policy =>
@@ -100,9 +167,9 @@ public static class DependencyInjection
             });
         });
 
-        // Current user service
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUserService>();
+        services.AddScoped<IAuditLogger, AuditLogger>();
 
         return services;
     }

@@ -1,0 +1,22 @@
+﻿<div class="language-switcher">
+  <p-select
+    (onChange)="onLanguageChange($event.value)"
+    [(ngModel)]="selectedLanguage"
+    [class]="'language-select'"
+    [options]="languages"
+    [panelStyleClass]="'language-panel'"
+    optionLabel="label"
+  >
+    <ng-template #selectedItem let-selectedOption>
+      <div class="language-item selected">
+        <span class="flag">{{ selectedOption.flag }}</span>
+      </div>
+    </ng-template>
+
+    <ng-template #item let-language>
+      <div class="language-item">
+        <span class="flag">{{ language.flag }}</span>
+      </div>
+    </ng-template>
+  </p-select>
+</div>

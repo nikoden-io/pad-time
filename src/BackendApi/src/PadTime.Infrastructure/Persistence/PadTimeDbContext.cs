@@ -5,6 +5,7 @@ using PadTime.Domain.Billing;
 using PadTime.Domain.Booking;
 using PadTime.Domain.Common;
 using PadTime.Domain.Members;
+using PadTime.Domain.Site;
 
 namespace PadTime.Infrastructure.Persistence;
 
@@ -19,10 +20,6 @@ public sealed class PadTimeDbContext : DbContext, IUnitOfWork
     }
 
     // Booking
-    public DbSet<Site> Sites => Set<Site>();
-    public DbSet<Court> Courts => Set<Court>();
-    public DbSet<SiteYearSchedule> SiteYearSchedules => Set<SiteYearSchedule>();
-    public DbSet<Closure> Closures => Set<Closure>();
     public DbSet<Match> Matches => Set<Match>();
     public DbSet<Participant> Participants => Set<Participant>();
 
@@ -32,6 +29,12 @@ public sealed class PadTimeDbContext : DbContext, IUnitOfWork
     // Billing
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<OrganizerDebt> OrganizerDebts => Set<OrganizerDebt>();
+
+    // Site
+    public DbSet<Site> Sites => Set<Site>();
+    public DbSet<Court> Courts => Set<Court>();
+    public DbSet<SiteSchedule> SiteSchedules => Set<SiteSchedule>();
+    public DbSet<SiteClosure> SiteClosures => Set<SiteClosure>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,7 +68,7 @@ public sealed class PadTimeDbContext : DbContext, IUnitOfWork
 
         foreach (var domainEvent in domainEvents)
         {
-            await _mediator.Publish(domainEvent, cancellationToken);
+            await _mediator.Publish(new DomainEventNotification(domainEvent), cancellationToken);
         }
     }
 }

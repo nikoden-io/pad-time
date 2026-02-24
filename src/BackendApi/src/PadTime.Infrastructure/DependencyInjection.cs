@@ -31,12 +31,12 @@ public static class DependencyInjection
 
         // Repositories
         services.AddScoped<ISiteRepository, SiteRepository>();
+        services.AddScoped<ISiteStatisticsRepository, SiteStatisticsRepository>();
         services.AddScoped<ICourtRepository, CourtRepository>();
         services.AddScoped<IMatchRepository, MatchRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
         services.AddScoped<IOrganizerDebtRepository, OrganizerDebtRepository>();
-        services.AddScoped<IClosureRepository, ClosureRepository>();
 
         // Services
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();

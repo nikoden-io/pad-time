@@ -1,5 +1,5 @@
-import { Routes } from '@angular/router';
-import { authGuard } from '@core/guards';
+import {Routes} from '@angular/router';
+import {authGuard} from '@core/guards';
 
 export const bookingRoutes: Routes = [
   {
@@ -13,11 +13,5 @@ export const bookingRoutes: Routes = [
     canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/sites-list.component').then((m) => m.SitesListComponent),
-  },
-  {
-    path: ':siteId',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./pages/site-availability.component').then((m) => m.SiteAvailabilityComponent),
-  },
+  }
 ];

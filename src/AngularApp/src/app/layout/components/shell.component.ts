@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './navbar.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { LayoutService } from '@core/services/layout-service';
 
 @Component({
   selector: 'app-shell',
@@ -8,9 +9,9 @@ import { NavbarComponent } from './navbar.component';
   imports: [RouterOutlet, NavbarComponent],
   template: `
     <div class="app-shell">
-      <app-navbar />
+      <app-navbar/>
       <main class="main-content">
-        <router-outlet />
+        <router-outlet/>
       </main>
     </div>
   `,
@@ -23,11 +24,14 @@ import { NavbarComponent } from './navbar.component';
 
     .main-content {
       flex: 1;
-      padding: 1.5rem;
-      max-width: 1200px;
+      padding: var(--pt-gutter);
+      max-width: var(--pt-content-max);
       margin: 0 auto;
       width: 100%;
     }
   `],
 })
-export class ShellComponent {}
+export class ShellComponent {
+  // Inject to ensure LayoutService is initialized (theme applied on startup)
+  private readonly layout = inject(LayoutService);
+}

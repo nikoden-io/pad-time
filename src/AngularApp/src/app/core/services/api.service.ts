@@ -1,7 +1,7 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import {Injectable, inject} from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {environment} from '@env/environment';
 import {
   CurrentUser,
   Site,
@@ -10,6 +10,8 @@ import {
   Match,
   CreateMatchRequest,
   CreateMatchResponse,
+  CreateReservationRequest,
+  CreateReservationResponse,
   JoinMatchRequest,
   JoinMatchResponse,
   MatchListParams,
@@ -48,7 +50,7 @@ export class ApiService {
       params = params.set('courtId', courtId);
     }
 
-    return this.http.get<AvailabilityResponse>(`${this.baseUrl}/availability`, { params });
+    return this.http.get<AvailabilityResponse>(`${this.baseUrl}/availability`, {params});
   }
 
   // Matches
@@ -61,7 +63,7 @@ export class ApiService {
     if (params.page) httpParams = httpParams.set('page', params.page.toString());
     if (params.pageSize) httpParams = httpParams.set('pageSize', params.pageSize.toString());
 
-    return this.http.get<PaginatedResponse<Match>>(`${this.baseUrl}/matches`, { params: httpParams });
+    return this.http.get<PaginatedResponse<Match>>(`${this.baseUrl}/matches`, {params: httpParams});
   }
 
   getMatch(matchId: string): Observable<Match> {
@@ -78,6 +80,11 @@ export class ApiService {
 
   cancelMatch(matchId: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/matches/${matchId}/cancel`, {});
+  }
+
+  // Reservations
+  createReservation(request: CreateReservationRequest): Observable<CreateReservationResponse> {
+    return this.http.post<CreateReservationResponse>(`${this.baseUrl}/reservations`, request);
   }
 
   // Payments

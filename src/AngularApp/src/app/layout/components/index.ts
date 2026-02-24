@@ -1,2 +1,2 @@
-export { ShellComponent } from './shell.component';
-export { NavbarComponent } from './navbar.component';
+export {ShellComponent} from './shell.component';
+export {NavbarComponent} from './navbar/navbar.component';

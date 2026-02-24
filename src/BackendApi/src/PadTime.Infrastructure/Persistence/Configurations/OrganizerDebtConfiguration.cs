@@ -32,9 +32,10 @@ public sealed class OrganizerDebtConfiguration : IEntityTypeConfiguration<Organi
             .HasColumnName("updated_at_utc")
             .IsRequired();
 
-        builder.Property(d => d.Version)
+        builder.Property(m => m.Version)
             .HasColumnName("version")
-            .IsRowVersion();
+            .IsConcurrencyToken()
+            .ValueGeneratedNever();
 
         // One debt record per member
         builder.HasIndex(d => d.MemberId)

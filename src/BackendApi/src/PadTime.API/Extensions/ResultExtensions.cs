@@ -53,13 +53,22 @@ public static class ResultExtensions
         return errorCode switch
         {
             // 404 Not Found
-            var code when code.EndsWith("_not_found", StringComparison.OrdinalIgnoreCase) => StatusCodes.Status404NotFound,
+            var code when code.Contains("not_found", StringComparison.OrdinalIgnoreCase) ||
+                          code.Contains("not.found", StringComparison.OrdinalIgnoreCase)
+                => StatusCodes.Status404NotFound,
 
             // 409 Conflict
             "booking.slot_conflict" => StatusCodes.Status409Conflict,
             "booking.already_participant" => StatusCodes.Status409Conflict,
             "billing.idempotency_conflict" => StatusCodes.Status409Conflict,
             "booking.match_full" => StatusCodes.Status409Conflict,
+            "site.schedule_conflict" => StatusCodes.Status409Conflict,
+            "site.closure_conflicts_with_bookings" => StatusCodes.Status409Conflict,
+            "site.cannot_delete_with_active_bookings" => StatusCodes.Status409Conflict,
+            "site.already_deactivated" => StatusCodes.Status409Conflict,
+            "site.already_active" => StatusCodes.Status409Conflict,
+            "court.duplicate_label" => StatusCodes.Status409Conflict,
+            "court.cannot_delete_with_active_bookings" => StatusCodes.Status409Conflict,
 
             // 403 Forbidden
             "booking.reservation_window_denied" => StatusCodes.Status403Forbidden,

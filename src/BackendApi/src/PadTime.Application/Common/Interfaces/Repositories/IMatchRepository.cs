@@ -12,6 +12,11 @@ public interface IMatchRepository
     /// </summary>
     Task<bool> ExistsForSlotAsync(Guid courtId, DateTime startAtUtc, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Checks if a court has any active or future bookings.
+    /// </summary>
+    Task<bool> HasActiveBookingsForCourtAsync(Guid courtId, CancellationToken cancellationToken = default);
+
     Task<List<Match>> GetPublicMatchesAsync(
         Guid? siteId,
         DateTime fromUtc,

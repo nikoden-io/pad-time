@@ -64,3 +64,15 @@ export interface MatchListParams {
   page?: number;
   pageSize?: number;
 }
+
+export interface CreateReservationRequest {
+  siteId: string;
+  courtId: string;
+  startAt: string;
+  type: MatchType;
+  privateParticipantsMatricules?: string[];
+}
+
+export interface CreateReservationResponse {
+  reservationId: string;
+}

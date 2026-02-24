@@ -1,0 +1,18 @@
+﻿.site-search {
+  width: 100%;
+
+  :host ::ng-deep .p-autocomplete {
+    width: 100%;
+  }
+
+  :host ::ng-deep .p-autocomplete-input {
+    width: 100%;
+    min-height: 44px; // touch target
+    border-radius: 12px;
+  }
+
+  :host ::ng-deep .p-autocomplete-panel {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}

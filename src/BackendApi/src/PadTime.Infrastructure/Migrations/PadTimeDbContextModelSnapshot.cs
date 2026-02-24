@@ -45,10 +45,9 @@ namespace PadTime.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
 
-                    b.Property<uint>("Version")
+                    b.Property<long>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
+                        .HasColumnType("bigint")
                         .HasColumnName("version");
 
                     b.HasKey("Id");
@@ -107,10 +106,9 @@ namespace PadTime.Infrastructure.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("state");
 
-                    b.Property<uint>("Version")
+                    b.Property<long>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
+                        .HasColumnType("bigint")
                         .HasColumnName("version");
 
                     b.HasKey("Id");
@@ -123,66 +121,6 @@ namespace PadTime.Infrastructure.Migrations
                     b.HasIndex("MemberId");
 
                     b.ToTable("payments", "public");
-                });
-
-            modelBuilder.Entity("PadTime.Domain.Booking.Closure", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date")
-                        .HasColumnName("date");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("reason");
-
-                    b.Property<Guid?>("SiteId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("site_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SiteId", "Date")
-                        .IsUnique();
-
-                    b.ToTable("closures", "public");
-                });
-
-            modelBuilder.Entity("PadTime.Domain.Booking.Court", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at_utc");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_active");
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("label");
-
-                    b.Property<Guid>("SiteId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("site_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SiteId", "Label")
-                        .IsUnique();
-
-                    b.ToTable("courts", "public");
                 });
 
             modelBuilder.Entity("PadTime.Domain.Booking.Match", b =>
@@ -231,10 +169,9 @@ namespace PadTime.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
 
-                    b.Property<uint>("Version")
+                    b.Property<long>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
+                        .HasColumnType("bigint")
                         .HasColumnName("version");
 
                     b.HasKey("Id");
@@ -298,74 +235,6 @@ namespace PadTime.Infrastructure.Migrations
                     b.ToTable("participants", "public");
                 });
 
-            modelBuilder.Entity("PadTime.Domain.Booking.Site", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at_utc");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_active");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("Timezone")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("timezone");
-
-                    b.Property<long>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasDefaultValue(1L)
-                        .HasColumnName("version");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("sites", "public");
-                });
-
-            modelBuilder.Entity("PadTime.Domain.Booking.SiteYearSchedule", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<TimeOnly>("ClosingTime")
-                        .HasColumnType("time without time zone")
-                        .HasColumnName("closing_time");
-
-                    b.Property<TimeOnly>("OpeningTime")
-                        .HasColumnType("time without time zone")
-                        .HasColumnName("opening_time");
-
-                    b.Property<Guid>("SiteId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("site_id");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("integer")
-                        .HasColumnName("year");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SiteId", "Year")
-                        .IsUnique();
-
-                    b.ToTable("site_year_schedules", "public");
-                });
-
             modelBuilder.Entity("PadTime.Domain.Members.Member", b =>
                 {
                     b.Property<Guid>("Id")
@@ -394,10 +263,9 @@ namespace PadTime.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
 
-                    b.Property<uint>("Version")
+                    b.Property<long>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
+                        .HasColumnType("bigint")
                         .HasColumnName("version");
 
                     b.HasKey("Id");
@@ -408,21 +276,323 @@ namespace PadTime.Infrastructure.Migrations
                     b.ToTable("members", "public");
                 });
 
-            modelBuilder.Entity("PadTime.Domain.Booking.Closure", b =>
+            modelBuilder.Entity("PadTime.Domain.Site.Court", b =>
                 {
-                    b.HasOne("PadTime.Domain.Booking.Site", null)
-                        .WithMany("Closures")
-                        .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("label");
+
+                    b.Property<Guid>("SiteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("site_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc")
+                        .HasDatabaseName("IX_courts_created_at_utc");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_courts_is_active");
+
+                    b.HasIndex("SiteId")
+                        .HasDatabaseName("IX_courts_site_id");
+
+                    b.HasIndex("SiteId", "IsActive")
+                        .HasDatabaseName("IX_courts_site_active");
+
+                    b.HasIndex("SiteId", "Label")
+                        .IsUnique()
+                        .HasDatabaseName("IX_courts_site_id_label_unique");
+
+                    b.HasIndex("SiteId", "Label", "IsActive")
+                        .HasDatabaseName("IX_courts_site_label_active");
+
+                    b.ToTable("courts", "public");
                 });
 
-            modelBuilder.Entity("PadTime.Domain.Booking.Court", b =>
+            modelBuilder.Entity("PadTime.Domain.Site.Site", b =>
                 {
-                    b.HasOne("PadTime.Domain.Booking.Site", null)
-                        .WithMany("Courts")
-                        .HasForeignKey("SiteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("city");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("country");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Postcode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("postcode");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("street");
+
+                    b.Property<string>("StreetNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("street_number");
+
+                    b.Property<string>("Timezone")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("timezone");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("version");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("City")
+                        .HasDatabaseName("IX_sites_city_search");
+
+                    b.HasIndex("Country")
+                        .HasDatabaseName("IX_sites_country_search");
+
+                    b.HasIndex("CreatedAtUtc")
+                        .HasDatabaseName("IX_sites_created_at_utc");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_sites_is_active_filter");
+
+                    b.HasIndex("Name")
+                        .HasDatabaseName("IX_sites_name_search");
+
+                    b.HasIndex("UpdatedAtUtc")
+                        .HasDatabaseName("IX_sites_updated_at_utc");
+
+                    b.HasIndex("CreatedAtUtc", "Id")
+                        .HasDatabaseName("IX_sites_created_id_pagination");
+
+                    b.HasIndex("Name", "City")
+                        .IsUnique()
+                        .HasDatabaseName("IX_sites_name_city_unique");
+
+                    b.HasIndex("IsActive", "City", "Country")
+                        .HasDatabaseName("IX_sites_active_location");
+
+                    b.ToTable("sites", "public");
+                });
+
+            modelBuilder.Entity("PadTime.Domain.Site.SiteClosure", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.PrimitiveCollection<Guid[]>("AffectedCourtIds")
+                        .HasColumnType("uuid[]")
+                        .HasColumnName("affected_court_ids");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("description");
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<TimeOnly?>("ModifiedClosingTime")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("modified_closing_time");
+
+                    b.Property<TimeOnly?>("ModifiedOpeningTime")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("modified_opening_time");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("reason");
+
+                    b.Property<Guid>("SiteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("site_id");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("type");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AffectedCourtIds")
+                        .HasDatabaseName("IX_site_closures_affected_courts");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("AffectedCourtIds"), "gin");
+
+                    b.HasIndex("CreatedAtUtc")
+                        .HasDatabaseName("IX_site_closures_created_at_utc");
+
+                    b.HasIndex("EndDate")
+                        .HasDatabaseName("IX_site_closures_end_date");
+
+                    b.HasIndex("Reason")
+                        .HasDatabaseName("IX_site_closures_reason");
+
+                    b.HasIndex("SiteId")
+                        .HasDatabaseName("IX_site_closures_site_id");
+
+                    b.HasIndex("StartDate")
+                        .HasDatabaseName("IX_site_closures_start_date");
+
+                    b.HasIndex("Type")
+                        .HasDatabaseName("IX_site_closures_type");
+
+                    b.HasIndex("UpdatedAtUtc")
+                        .HasDatabaseName("IX_site_closures_updated_at_utc");
+
+                    b.HasIndex("SiteId", "StartDate", "EndDate")
+                        .HasDatabaseName("IX_site_closures_site_period");
+
+                    b.HasIndex("SiteId", "Type", "StartDate", "EndDate")
+                        .HasDatabaseName("IX_site_closures_site_type_period");
+
+                    b.ToTable("site_closures", "public");
+                });
+
+            modelBuilder.Entity("PadTime.Domain.Site.SiteSchedule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.PrimitiveCollection<int[]>("ApplicableDays")
+                        .HasColumnType("integer[]")
+                        .HasColumnName("applicable_days");
+
+                    b.Property<TimeOnly>("ClosingTime")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("closing_time");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<TimeOnly>("OpeningTime")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("opening_time");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer")
+                        .HasColumnName("priority");
+
+                    b.Property<Guid>("SiteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("site_id");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<DateOnly>("ValidFrom")
+                        .HasColumnType("date")
+                        .HasColumnName("valid_from");
+
+                    b.Property<DateOnly?>("ValidUntil")
+                        .HasColumnType("date")
+                        .HasColumnName("valid_until");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc")
+                        .HasDatabaseName("IX_site_schedules_created_at_utc");
+
+                    b.HasIndex("IsActive")
+                        .HasDatabaseName("IX_site_schedules_is_active");
+
+                    b.HasIndex("SiteId")
+                        .HasDatabaseName("IX_site_schedules_site_id");
+
+                    b.HasIndex("UpdatedAtUtc")
+                        .HasDatabaseName("IX_site_schedules_updated_at_utc");
+
+                    b.HasIndex("ValidFrom", "ValidUntil")
+                        .HasDatabaseName("IX_site_schedules_validity_period");
+
+                    b.HasIndex("SiteId", "Priority", "IsActive")
+                        .HasDatabaseName("IX_site_schedules_site_priority_active");
+
+                    b.HasIndex("SiteId", "ValidFrom", "Priority")
+                        .HasDatabaseName("IX_site_schedules_site_valid_priority");
+
+                    b.HasIndex("SiteId", "ValidFrom", "ValidUntil", "IsActive")
+                        .HasDatabaseName("IX_site_schedules_overlap_detection");
+
+                    b.ToTable("site_schedules", "public");
                 });
 
             modelBuilder.Entity("PadTime.Domain.Booking.Participant", b =>
@@ -430,15 +600,6 @@ namespace PadTime.Infrastructure.Migrations
                     b.HasOne("PadTime.Domain.Booking.Match", null)
                         .WithMany("Participants")
                         .HasForeignKey("MatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PadTime.Domain.Booking.SiteYearSchedule", b =>
-                {
-                    b.HasOne("PadTime.Domain.Booking.Site", null)
-                        .WithMany("Schedules")
-                        .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -471,12 +632,39 @@ namespace PadTime.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PadTime.Domain.Site.Court", b =>
+                {
+                    b.HasOne("PadTime.Domain.Site.Site", null)
+                        .WithMany("Courts")
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PadTime.Domain.Site.SiteClosure", b =>
+                {
+                    b.HasOne("PadTime.Domain.Site.Site", null)
+                        .WithMany("Closures")
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PadTime.Domain.Site.SiteSchedule", b =>
+                {
+                    b.HasOne("PadTime.Domain.Site.Site", null)
+                        .WithMany("Schedules")
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PadTime.Domain.Booking.Match", b =>
                 {
                     b.Navigation("Participants");
                 });
 
-            modelBuilder.Entity("PadTime.Domain.Booking.Site", b =>
+            modelBuilder.Entity("PadTime.Domain.Site.Site", b =>
                 {
                     b.Navigation("Closures");
 

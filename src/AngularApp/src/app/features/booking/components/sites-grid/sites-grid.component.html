@@ -1,0 +1,55 @@
+﻿<div class="sites-grid-container">
+  <!-- Grid des sites -->
+  <div class="sites-grid" role="list">
+    @for (site of sites; track trackBySiteId($index, site)) {
+      <a
+        (click)="onSelect(site, $event)"
+        [attr.href]="linkBase ? null : '#'"
+        [class.selected]="selectedSiteId === site.siteId"
+        [routerLink]="linkBase ? [linkBase, site.siteId] : null"
+        [style.--animation-order]="$index"
+        class="site-card"
+        role="listitem"
+      >
+        <div class="card-badge">
+          <span class="badge-dot"></span>
+          <span class="badge-text">Available</span>
+        </div>
+
+        <div class="card-icon">
+          <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="2"/>
+          </svg>
+        </div>
+
+        <div class="card-content">
+          <h3 class="site-name">{{ site.name }}</h3>
+        </div>
+
+        <div class="selection-indicator">
+          <svg fill="none" viewBox="0 0 24 24">
+            <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="3"/>
+          </svg>
+        </div>
+
+        <div class="card-shine"></div>
+      </a>
+    } @empty {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 8v4m0 4h.01" stroke="currentColor" stroke-linecap="round" stroke-width="2"/>
+          </svg>
+        </div>
+        <p class="empty-text">{{ emptyText }}</p>
+      </div>
+    }
+  </div>
+</div>
