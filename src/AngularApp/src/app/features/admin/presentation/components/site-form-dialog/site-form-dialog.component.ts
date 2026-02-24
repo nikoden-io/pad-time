@@ -1,53 +1,47 @@
-import {Component, computed, effect, inject, input, output, signal} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {
+  ChangeDetectionStrategy, Component, computed,
+  effect, inject, input, output, signal,
+} from '@angular/core';
+import {ReactiveFormsModule, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Dialog} from 'primeng/dialog';
 import {InputText} from 'primeng/inputtext';
 import {Select} from 'primeng/select';
-import {ButtonModule} from 'primeng/button';
-import {TranslocoDirective} from '@jsverse/transloco';
-import {provideTranslocoScope} from '@jsverse/transloco';
+import {TranslocoDirective, provideTranslocoScope} from '@jsverse/transloco';
 import {CreateSiteRequest, Site} from '@core/models';
 
 const TIMEZONES = [
-  'Europe/Brussels',
-  'Europe/Paris',
-  'Europe/Amsterdam',
-  'Europe/Berlin',
-  'Europe/London',
-  'America/New_York',
-  'America/Los_Angeles',
+  'Europe/Brussels', 'Europe/Paris', 'Europe/Amsterdam',
+  'Europe/Berlin', 'Europe/London',
+  'America/New_York', 'America/Los_Angeles',
   'Asia/Tokyo',
 ];
 
 @Component({
   selector: 'app-site-form-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    Dialog,
-    InputText,
-    Select,
-    ButtonModule,
-    TranslocoDirective,
-  ],
+  imports: [ReactiveFormsModule, Dialog, InputText, Select, TranslocoDirective],
   providers: [provideTranslocoScope('sites')],
   templateUrl: './site-form-dialog.component.html',
   styleUrl: './site-form-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteFormDialogComponent {
   readonly visible = input.required<boolean>();
   readonly site = input<Site | null>(null);
+
   readonly visibleChange = output<boolean>();
   readonly saved = output<CreateSiteRequest>();
+
   readonly saving = signal(false);
   readonly isEditMode = computed(() => this.site() !== null);
   readonly dialogTitle = computed(() =>
     this.isEditMode() ? 'form.editTitle' : 'form.createTitle'
   );
+
   readonly timezones = TIMEZONES;
+
   private readonly fb = inject(FormBuilder);
+
   readonly form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     streetNumber: ['', Validators.required],
@@ -60,45 +54,26 @@ export class SiteFormDialogComponent {
 
   constructor() {
     effect(() => {
-      const currentSite = this.site();
-      if (currentSite) {
+      const s = this.site();
+      if (s) {
         this.form.patchValue({
-          name: currentSite.name,
-          streetNumber: currentSite.streetNumber,
-          street: currentSite.street,
-          postcode: currentSite.postcode,
-          city: currentSite.city,
-          country: currentSite.country,
-          timezone: currentSite.timezone,
+          name: s.name, streetNumber: s.streetNumber, street: s.street,
+          postcode: s.postcode, city: s.city, country: s.country, timezone: s.timezone,
         });
       } else {
-        this.form.reset({
-          timezone: 'Europe/Brussels',
-        });
+        this.form.reset({timezone: 'Europe/Brussels'});
       }
     });
   }
 
-  onVisibleChange(visible: boolean): void {
-    this.visibleChange.emit(visible);
-    if (!visible) {
-      this.form.reset({timezone: 'Europe/Brussels'});
-    }
+  onVisibleChange(v: boolean): void {
+    this.visibleChange.emit(v);
+    if (!v) this.form.reset({timezone: 'Europe/Brussels'});
   }
 
   onSubmit(): void {
     if (this.form.invalid) return;
-
-    const request: CreateSiteRequest = {
-      name: this.form.value.name,
-      streetNumber: this.form.value.streetNumber,
-      street: this.form.value.street,
-      postcode: this.form.value.postcode,
-      city: this.form.value.city,
-      country: this.form.value.country,
-      timezone: this.form.value.timezone,
-    };
-
-    this.saved.emit(request);
+    const {name, streetNumber, street, postcode, city, country, timezone} = this.form.value;
+    this.saved.emit({name, streetNumber, street, postcode, city, country, timezone});
   }
 }

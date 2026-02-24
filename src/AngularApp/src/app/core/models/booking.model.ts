@@ -9,12 +9,6 @@ export interface TimeSlot {
   available: boolean;
 }
 
-export interface AvailabilityResponse {
-  siteId: string;
-  date: string;
-  slots: TimeSlot[];
-}
-
 export interface Participant {
   memberId: string;
   matricule: string;
@@ -22,15 +16,29 @@ export interface Participant {
   paymentStatus: PaymentStatus;
 }
 
+export type AvailabilityResponse = {
+  siteId: string;
+  date: string; // yyyy-mm-dd
+  slots: AvailabilitySlot[];
+};
+
+export type AvailabilitySlot = {
+  courtId: string;
+  courtLabel: string;
+  startAt: string; // utc iso (z)
+  endAt: string;   // utc iso (z)
+  available: boolean;
+};
+
 export interface Match {
   matchId: string;
   siteId: string;
   courtId: string;
-  startAt: string;
-  endAt: string;
+  startAtUtc: string;
+  endAtUtc: string;
   type: MatchType;
   status: MatchStatus;
-  organizerMemberId: string;
+  organizerId: string;
   participants: Participant[];
   priceTotalCents: number;
 }

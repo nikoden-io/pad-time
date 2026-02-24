@@ -1,43 +1,56 @@
-﻿import {Component, inject, signal, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
+﻿import {
+  ChangeDetectionStrategy, Component, inject,
+  OnInit, signal, HostListener, ElementRef,
+} from '@angular/core';
 import {TranslocoService} from '@jsverse/transloco';
-import {Select} from 'primeng/select';
-import {FormsModule} from '@angular/forms';
 
 interface Language {
   code: string;
-  label: string;
   flag: string;
 }
 
 @Component({
   selector: 'app-language-switcher',
   standalone: true,
-  imports: [CommonModule, Select, FormsModule],
-  templateUrl: './language-switcher.component.html',
-  styleUrl: './language-switcher.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: 'language-switcher.component.html',
+  styleUrl: 'language-switcher.component.scss',
 })
 export class LanguageSwitcherComponent implements OnInit {
   readonly languages: Language[] = [
-    {code: 'en', label: 'English', flag: '🇬🇧'},
-    {code: 'fr', label: 'Français', flag: '🇫🇷'},
-    {code: 'nl', label: 'Nederlands', flag: '🇳🇱'},
-    {code: 'de', label: 'Deutsch', flag: '🇩🇪'},
+    {code: 'en', flag: '🇬🇧'},
+    {code: 'fr', flag: '🇫🇷'},
+    {code: 'nl', flag: '🇳🇱'},
+    {code: 'de', flag: '🇩🇪'},
   ];
-  selectedLanguage = signal<Language>(this.languages[0]);
+
+  readonly current = signal<Language>(this.languages[1]);
+  readonly isOpen = signal(false);
+
   private readonly transloco = inject(TranslocoService);
+  private readonly el = inject(ElementRef);
 
   ngOnInit(): void {
-    const activeLang = this.transloco.getActiveLang();
-    const language = this.languages.find(lang => lang.code === activeLang);
-    if (language) {
-      this.selectedLanguage.set(language);
-    }
+    const code = this.transloco.getActiveLang();
+    const found = this.languages.find(l => l.code === code);
+    if (found) this.current.set(found);
   }
 
-  onLanguageChange(language: Language): void {
-    this.selectedLanguage.set(language);
-    this.transloco.setActiveLang(language.code);
-    localStorage.setItem('preferredLanguage', language.code);
+  toggleOpen(): void {
+    this.isOpen.update(v => !v);
+  }
+
+  select(lang: Language): void {
+    this.current.set(lang);
+    this.isOpen.set(false);
+    this.transloco.setActiveLang(lang.code);
+    localStorage.setItem('preferredLanguage', lang.code);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(e: MouseEvent): void {
+    if (!this.el.nativeElement.contains(e.target)) {
+      this.isOpen.set(false);
+    }
   }
 }

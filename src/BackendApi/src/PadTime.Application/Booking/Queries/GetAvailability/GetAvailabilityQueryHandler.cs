@@ -22,7 +22,6 @@ public sealed class GetAvailabilityQueryHandler : IRequestHandler<GetAvailabilit
 
     public async Task<AvailabilityResult> Handle(GetAvailabilityQuery request, CancellationToken cancellationToken)
     {
-        // Get site with schedules and closures
         var site = await _siteRepository.GetByIdWithSchedulesAndClosuresAsync(
             request.SiteId,
             cancellationToken);
@@ -32,14 +31,13 @@ public sealed class GetAvailabilityQueryHandler : IRequestHandler<GetAvailabilit
             return new AvailabilityResult(request.SiteId, request.Date, []);
         }
 
-        // Check if site is closed
         if (site.IsClosedOn(request.Date))
         {
             return new AvailabilityResult(request.SiteId, request.Date, []);
         }
 
-        // Get courts
         List<Court> courts;
+
         if (request.CourtId.HasValue)
         {
             var court = await _courtRepository.GetByIdAsync(request.CourtId.Value, cancellationToken);
@@ -52,24 +50,25 @@ public sealed class GetAvailabilityQueryHandler : IRequestHandler<GetAvailabilit
 
         courts = [.. courts.Where(c => c.IsActive)];
 
-        // Get timezone for conversion
         var timezone = site.GetTimeZone();
 
-        // Generate slots and check availability
         var slots = new List<SlotAvailability>();
 
         foreach (var court in courts)
         {
             if (court is null) continue;
 
-            // Skip if court is closed
             if (site.IsCourtClosedOn(court.Id, request.Date))
                 continue;
 
             foreach (var timeSlot in site.GetAvailableSlots(request.Date, court.Id))
             {
                 var startUtc = timeSlot.ToUtcStart(timezone);
-                var endUtc = timeSlot.ToUtcEnd(timezone);
+
+                var endUtc = startUtc.AddMinutes(SiteSchedule.SlotDurationMinutes);
+
+                if (endUtc <= startUtc)
+                    continue;
 
                 var isBooked = await _matchRepository.ExistsForSlotAsync(court.Id, startUtc, cancellationToken);
 

@@ -2,7 +2,6 @@ import {
   ApplicationConfig,
   provideZoneChangeDetection,
   isDevMode,
-  APP_INITIALIZER,
   provideAppInitializer, inject
 } from '@angular/core';
 import {provideRouter, withComponentInputBinding} from '@angular/router';

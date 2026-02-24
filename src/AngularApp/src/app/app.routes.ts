@@ -1,6 +1,6 @@
-import { Routes } from '@angular/router';
-import { ShellComponent } from './layout/components';
-import { authGuard } from './core/guards';
+import {Routes} from '@angular/router';
+import {ShellComponent} from './layout/components';
+import {authGuard} from './core/guards';
 
 export const routes: Routes = [
   // Auth routes (outside shell)
@@ -37,7 +37,7 @@ export const routes: Routes = [
         path: 'matches',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('./features/booking/pages/my-matches.component').then(
+          import('@features/matches/pages/my-matches.component').then(
             (m) => m.MyMatchesComponent
           ),
       },

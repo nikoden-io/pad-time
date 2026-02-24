@@ -56,6 +56,9 @@ public sealed class SiteAvailabilityService
             .Select(c => c.GetModifiedHours(date))
             .FirstOrDefault(h => h.HasValue);
 
+        if (reducedHours.HasValue && reducedHours.Value.closing <= reducedHours.Value.opening)
+            return null;
+
         if (reducedHours.HasValue)
             return reducedHours.Value;
 
@@ -96,20 +99,31 @@ public sealed class SiteAvailabilityService
         TimeOnly openingTime,
         TimeOnly closingTime)
     {
-        var slotStart = openingTime;
-        var totalSlotDuration = TimeSpan.FromMinutes(
-            SiteSchedule.SlotDurationMinutes + SiteSchedule.BreakDurationMinutes);
+        var slotDuration = TimeSpan.FromMinutes(SiteSchedule.SlotDurationMinutes);
+        if (slotDuration <= TimeSpan.Zero)
+            yield break;
+
+        var step = TimeSpan.FromMinutes(SiteSchedule.SlotDurationMinutes + SiteSchedule.BreakDurationMinutes);
+        if (step <= TimeSpan.Zero)
+            yield break;
+
+        var start = date.ToDateTime(openingTime);
+        var closing = date.ToDateTime(closingTime);
+
+        if (closing <= start)
+            closing = closing.AddDays(1);
 
         while (true)
         {
-            var slotEnd = slotStart.Add(TimeSpan.FromMinutes(SiteSchedule.SlotDurationMinutes));
+            var end = start.Add(slotDuration);
+            if (end > closing)
+                yield break;
 
-            if (slotEnd > closingTime)
-                break;
+            yield return TimeSlot.FromDateTimes(start, end);
 
-            yield return new TimeSlot(date, slotStart, slotEnd);
-
-            slotStart = slotStart.Add(totalSlotDuration);
+            start = start.Add(step);
+            if (start >= closing)
+                yield break;
         }
     }
 
