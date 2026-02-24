@@ -1,0 +1,29 @@
+﻿<section class="step-block">
+  <h2 class="step-label"><span class="step-num">1</span> Site &amp; terrain</h2>
+
+  <div class="site-list">
+    @for (site of sites; track site.siteId) {
+      <button (click)="selectSite(site.siteId)" [class.selected]="site.siteId === selectedSiteId"
+              class="site-card" type="button">
+        <div class="site-info">
+          <span class="site-name">{{ site.name }}</span>
+          <span class="site-meta">{{ site.city }} · {{ site.courtCount }}
+            terrain{{ site.courtCount > 1 ? 's' : '' }}</span>
+        </div>
+        <span class="site-badge">{{ site.courtCount }}</span>
+      </button>
+    }
+  </div>
+
+  @if (selectedSite) {
+    <div class="court-row">
+      @for (court of selectedSite.courts; track court.courtId) {
+        <button (click)="selectCourt(court.courtId)" [class.selected]="court.courtId === selectedCourtId"
+                class="court-pill" type="button">
+          {{ court.label }}
+        </button>
+      }
+    </div>
+    <p class="court-hint">Court optionnel — tous affichés par défaut</p>
+  }
+</section>

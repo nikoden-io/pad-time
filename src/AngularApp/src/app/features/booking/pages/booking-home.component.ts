@@ -1,37 +1,21 @@
 import {Component} from '@angular/core';
-import {SitesBrowserComponent} from '@features/booking/components/sites-browser/sites-browser.component';
+import {BookPageComponent} from '@features/booking/components/book-page/book-page.component';
+import {PageShellComponent} from '@shared/components/page-shell/page-shell.component';
 
 @Component({
   selector: 'app-booking-home',
   standalone: true,
-  imports: [SitesBrowserComponent],
+  imports: [BookPageComponent, PageShellComponent],
   template: `
-    <div class="booking-home">
-      <h1>Book a Court</h1>
-      <p class="subtitle">Select a site to view available slots</p>
-
-      <app-sites-browser></app-sites-browser>
-    </div>
-  `,
-  styles: [
-    `
-      .booking-home {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 16px;
-      }
-
-      h1 {
-        color: #1a1a2e;
-        margin-bottom: 0.5rem;
-      }
-
-      .subtitle {
-        color: #6b7280;
-        margin-bottom: 1rem;
-      }
-    `,
-  ],
+    <app-page-shell
+      eyebrow="Réservation"
+      title="Réservez votre"
+      titleEm="prochain match"
+      subtitle="Choisissez un site, un créneau et confirmez."
+      dividerLabel="disponibilités en temps réel">
+      <app-book-page/>
+    </app-page-shell>
+  `
 })
 export class BookingHomeComponent {
 }

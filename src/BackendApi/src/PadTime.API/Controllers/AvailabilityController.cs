@@ -8,7 +8,7 @@ namespace PadTime.API.Controllers;
 
 [ApiController]
 [Route("api/v1/availability")]
-//[Authorize(Policy = Policies.RequireUser)]
+[Authorize(Policy = Policies.RequireUser)]
 public sealed class AvailabilityController : ControllerBase
 {
     private readonly IMediator _mediator;

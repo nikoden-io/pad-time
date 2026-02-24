@@ -1,4 +1,5 @@
 @use '../node_modules/primeicons/primeicons.css';
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,600&family=DM+Mono:wght@400;500&display=swap');
 
 /* ============================================================
    Pad'Time — Global Styles
@@ -48,10 +49,10 @@ $bp-2xl: 1536px;
   /* Brand */
   --pt-primary: #4ade80;
   --pt-primary-hover: #22c55e;
-  --pt-primary-text: #1a1a2e;
+  --pt-primary-text: #0f1117;
 
   /* Surfaces */
-  --pt-bg: #f5f5f5;
+  --pt-bg: #f5f7fa;
   --pt-surface: #ffffff;
   --pt-surface-alt: #f8fafc;
   --pt-border: #e2e8f0;
@@ -91,6 +92,9 @@ $bp-2xl: 1536px;
   --pt-content-max: 1200px;
   --pt-gutter: 1rem;
 
+  /* RGB pour alpha tricks (PageShell glows) */
+  --pt-bg-rgb: 245, 247, 250;
+
   @include md {
     --pt-gutter: 1.5rem;
   }
@@ -100,31 +104,39 @@ $bp-2xl: 1536px;
 }
 
 /* ----- Design Tokens (Dark — via PrimeNG .p-dark) --------------- */
+/* Aligné avec la palette du design system (proto/composants) */
 .p-dark {
-  --pt-bg: #0f172a;
-  --pt-surface: #1e293b;
-  --pt-surface-alt: #1a2332;
-  --pt-border: #334155;
-  --pt-border-hover: #475569;
+  /* Surfaces — cohérentes avec PageShell */
+  --pt-bg: #0f1117;
+  --pt-surface: #181c27;
+  --pt-surface-alt: #1e2335;
+  --pt-border: rgba(255, 255, 255, 0.07);
+  --pt-border-hover: rgba(255, 255, 255, 0.12);
 
-  --pt-text: #f1f5f9;
-  --pt-text-secondary: #94a3b8;
-  --pt-text-muted: #64748b;
+  /* Text */
+  --pt-text: #f0f2f7;
+  --pt-text-secondary: #9ca3af;
+  --pt-text-muted: #6b7280;
 
-  --pt-success-bg: rgba(34, 197, 94, 0.15);
-  --pt-warning-bg: rgba(245, 158, 11, 0.15);
-  --pt-danger-bg: rgba(239, 68, 68, 0.15);
-  --pt-info-bg: rgba(59, 130, 246, 0.15);
+  /* Feedback (alpha en dark) */
+  --pt-success-bg: rgba(74, 222, 128, 0.1);
+  --pt-warning-bg: rgba(245, 158, 11, 0.1);
+  --pt-danger-bg: rgba(239, 68, 68, 0.1);
+  --pt-info-bg: rgba(96, 165, 250, 0.1);
 
-  --pt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --pt-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  --pt-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+  /* Shadows */
+  --pt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --pt-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --pt-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
+
+  /* RGB pour glows */
+  --pt-bg-rgb: 15, 17, 23;
+
+  color-scheme: dark;
 }
 
 /* ----- Reset ---------------------------------------------------- */
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -132,7 +144,7 @@ $bp-2xl: 1536px;
 
 html, body {
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   color: var(--pt-text);
@@ -150,14 +162,127 @@ button {
   font-family: inherit;
 }
 
-/* ----- View Transition (dark mode animation) -------------------- */
+/* ----- View Transition (dark mode) ------------------------------ */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 
-/* ----- Container ------------------------------------------------ */
+/* ============================================================
+   PAGE SHELL — intégration sans effet de cadre
+   Le bg du body doit être identique au bg du shell pour que
+   les glows/grilles se fondent naturellement dans la page.
+   ============================================================ */
+
+/* Le router-outlet wrapper (app-root) doit être transparent */
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: transparent;
+}
+
+/* PageShell prend tout l'espace vertical restant */
+app-page-shell {
+  display: block;
+  flex: 1;
+}
+
+/* Fondu bas du PageShell — disparition progressive du décor */
+.page-shell-inner {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgb(var(--pt-bg-rgb))
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* ============================================================
+   PRIMENG GLOBAL OVERRIDES
+   ============================================================ */
+
+/* — Dialog backdrop — couvre toute la fenêtre */
+.p-dialog-mask {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1000 !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+/* — Dialog box — aligné avec notre design */
+.p-dialog {
+  border-radius: var(--pt-radius-lg) !important;
+  border: 1px solid var(--pt-border-hover) !important;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5) !important;
+
+  /* Supprime tout background parasite */
+  background: var(--pt-surface) !important;
+}
+
+.p-dialog-header {
+  background: var(--pt-surface) !important;
+  border-bottom: 1px solid var(--pt-border) !important;
+  padding: 0.875rem 1.25rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+}
+
+.p-dialog-content {
+  background: var(--pt-surface) !important;
+  padding: 1.25rem !important;
+  max-height: 75dvh !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pt-border-hover) transparent;
+}
+
+.p-dialog-footer {
+  background: var(--pt-surface) !important;
+  border-top: 1px solid var(--pt-border) !important;
+  padding: 0.875rem 1.25rem !important;
+}
+
+/* Mobile — marges latérales visibles */
+@media (max-width: $bp-sm) {
+  .p-dialog {
+    margin: 0 0.75rem !important;
+    max-width: calc(100vw - 1.5rem) !important;
+    border-radius: 12px !important;
+  }
+}
+
+/* — Toast — aligné */
+.p-toast {
+  .p-toast-message {
+    border-radius: var(--pt-radius) !important;
+    border: 1px solid var(--pt-border) !important;
+  }
+}
+
+/* — ConfirmDialog — même traitement que dialog */
+.p-confirmdialog {
+  border-radius: var(--pt-radius-lg) !important;
+}
+
+/* ============================================================
+   LAYOUT UTILITIES
+   ============================================================ */
+
 .container {
   width: 100%;
   max-width: var(--pt-content-max);
@@ -184,8 +309,6 @@ button {
     &--md-2 {
       grid-template-columns: repeat(2, 1fr);
     }
-  }
-  @include md {
     &--md-3 {
       grid-template-columns: repeat(3, 1fr);
     }
@@ -194,8 +317,6 @@ button {
     &--lg-3 {
       grid-template-columns: repeat(3, 1fr);
     }
-  }
-  @include lg {
     &--lg-4 {
       grid-template-columns: repeat(4, 1fr);
     }
@@ -207,7 +328,7 @@ button {
   }
 }
 
-/* ----- Stack (vertical flex) ------------------------------------ */
+/* ----- Stack / Cluster ------------------------------------------ */
 .stack {
   display: flex;
   flex-direction: column;
@@ -222,7 +343,6 @@ button {
   gap: 2rem;
 }
 
-/* ----- Cluster (horizontal flex wrap) --------------------------- */
 .cluster {
   display: flex;
   flex-wrap: wrap;
@@ -344,6 +464,10 @@ button {
   font-weight: 500;
 }
 
+.font-mono {
+  font-family: 'DM Mono', monospace;
+}
+
 .text-sm {
   font-size: 0.875rem;
 }
@@ -362,7 +486,7 @@ button {
   white-space: nowrap;
 }
 
-/* ----- Card (themed) -------------------------------------------- */
+/* ----- Card ----------------------------------------------------- */
 .card {
   background: var(--pt-surface);
   padding: 1.5rem;
@@ -370,18 +494,18 @@ button {
   box-shadow: var(--pt-shadow);
   border: 1px solid var(--pt-border);
   transition: background var(--pt-transition), border-color var(--pt-transition);
-}
 
-.card--interactive {
-  cursor: pointer;
+  &--interactive {
+    cursor: pointer;
 
-  &:hover {
-    border-color: var(--pt-border-hover);
-    box-shadow: var(--pt-shadow-lg);
+    &:hover {
+      border-color: var(--pt-border-hover);
+      box-shadow: var(--pt-shadow-lg);
+    }
   }
 }
 
-/* ----- Buttons (themed) ----------------------------------------- */
+/* ----- Buttons -------------------------------------------------- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -436,7 +560,7 @@ button {
   }
 }
 
-/* ----- Form inputs (themed) ------------------------------------- */
+/* ----- Form inputs ---------------------------------------------- */
 .form-group {
   margin-bottom: 1rem;
 }
@@ -474,7 +598,7 @@ button {
   margin-top: 0.25rem;
 }
 
-/* ----- Badges (themed) ------------------------------------------ */
+/* ----- Badges --------------------------------------------------- */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -509,7 +633,7 @@ button {
   color: var(--pt-text-secondary);
 }
 
-/* ----- Spinner (themed) ----------------------------------------- */
+/* ----- Spinner -------------------------------------------------- */
 .spinner {
   display: inline-block;
   width: 1.5rem;
@@ -542,7 +666,6 @@ button {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--pt-text);
-
   @include md {
     font-size: 1.5rem;
   }
@@ -554,14 +677,8 @@ button {
   margin-top: 0.25rem;
 }
 
-/* ----- Divider -------------------------------------------------- */
 .divider {
   border: none;
   border-top: 1px solid var(--pt-border);
   margin-block: 1rem;
-}
-
-/* ----- PrimeNG overrides (surface alignment) -------------------- */
-.p-dark {
-  color-scheme: dark;
 }

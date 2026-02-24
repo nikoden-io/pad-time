@@ -1,0 +1,222 @@
+﻿:host {
+  display: block;
+}
+
+.page-shell {
+  position: relative;
+  min-height: calc(100dvh - 56px);
+  overflow: hidden;
+}
+
+// ── Background ─────────────────────────────────────
+.shell-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-1 {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  top: -200px;
+  left: -150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.07) 0%, transparent 70%);
+}
+
+.glow-2 {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  bottom: -100px;
+  right: -100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.05) 0%, transparent 70%);
+}
+
+.grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 100%);
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.4;
+  animation: float 8s ease-in-out infinite;
+}
+
+.orb-1 {
+  width: 180px;
+  height: 180px;
+  top: 8%;
+  right: 15%;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.15), transparent);
+}
+
+.orb-2 {
+  width: 120px;
+  height: 120px;
+  top: 40%;
+  left: 5%;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.1), transparent);
+  animation-delay: -3s;
+}
+
+.orb-3 {
+  width: 80px;
+  height: 80px;
+  bottom: 20%;
+  right: 8%;
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.08), transparent);
+  animation-delay: -5s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+  }
+}
+
+// ── Hero ───────────────────────────────────────────
+.shell-hero {
+  position: relative;
+  z-index: 1;
+  padding: 2.5rem 1.5rem 0;
+  max-width: 860px;
+  margin: 0 auto;
+  animation: heroIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @media (min-width: 720px) {
+    padding: 3rem 1.5rem 0;
+  }
+}
+
+@keyframes heroIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--p-primary-color);
+  background: color-mix(in srgb, var(--p-primary-color) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--p-primary-color) 25%, transparent);
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+
+.hero-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--p-primary-color);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+.hero-title {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+  color: var(--p-text-color);
+
+  em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--p-primary-color) 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+.hero-sub {
+  font-size: 0.875rem;
+  color: var(--p-text-muted-color);
+  max-width: 420px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.hero-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.hero-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--p-content-border-color), transparent);
+
+  &--right {
+    background: linear-gradient(90deg, transparent, var(--p-content-border-color));
+  }
+}
+
+.hero-divider-label {
+  font-size: 0.7rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--p-text-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+// ── Content ────────────────────────────────────────
+.shell-content {
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem 1.5rem 4rem;
+  max-width: 860px;
+  margin: 0 auto;
+  animation: contentIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+@keyframes contentIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

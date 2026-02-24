@@ -1,0 +1,47 @@
+﻿<section class="step-block">
+  <h2 class="step-label"><span class="step-num">2</span> Créneau</h2>
+
+  <!-- Date nav -->
+  <div class="date-nav">
+    <button (click)="prevDay()" class="nav-btn" type="button">&#9664;</button>
+    <p-datepicker
+      (ngModelChange)="onDatePick($event)"
+      [(ngModel)]="selectedDate"
+      [appendTo]="'body'"
+      [showIcon]="false"
+      dateFormat="DD d MM yy"
+      styleClass="date-input"
+    />
+    <button (click)="nextDay()" class="nav-btn" type="button">&#9654;</button>
+  </div>
+
+  <!-- States -->
+  @if (loading()) {
+    <div class="state-msg"><i class="pi pi-spin pi-spinner"></i> Chargement…</div>
+  } @else if (error()) {
+    <div class="state-msg error">{{ error() }}</div>
+  } @else if (courtGroups().length === 0) {
+    <div class="state-msg">Aucun créneau disponible ce jour.</div>
+  } @else {
+    @for (group of courtGroups(); track group.courtId) {
+      <div class="court-group">
+        <p class="court-group-label">{{ group.courtLabel }}</p>
+        <div class="slot-grid">
+          @for (slot of group.slots; track slot.startAt) {
+            <button
+              (click)="selectSlot(slot)"
+              [class.selected]="isSelected(slot)"
+              [class.unavailable]="!slot.available"
+              [disabled]="!slot.available"
+              class="slot-chip"
+              type="button"
+            >
+              <span class="slot-time">{{ format(slot.startAt) }}</span>
+              <span class="slot-dur">1h30</span>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+</section>

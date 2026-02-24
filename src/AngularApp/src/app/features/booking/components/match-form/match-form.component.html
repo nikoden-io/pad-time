@@ -1,0 +1,37 @@
+﻿<section class="step-block">
+  <h2 class="step-label"><span class="step-num">3</span> Confirmation</h2>
+
+  <div class="recap-card">
+    <div class="recap-row">
+      <span class="recap-label">Site</span>
+      <span class="recap-value">{{ site?.name ?? '—' }}</span>
+    </div>
+    <div class="recap-row">
+      <span class="recap-label">Terrain</span>
+      <span class="recap-value">{{ slot.courtLabel }}</span>
+    </div>
+    <div class="recap-row">
+      <span class="recap-label">Créneau</span>
+      <span class="recap-value">{{ formatTime(slot.startAt) }} → {{ formatTime(slot.endAt) }}</span>
+    </div>
+    <div class="recap-row">
+      <span class="recap-label">Type</span>
+      <span class="recap-value">Public</span>
+    </div>
+    <div class="recap-row price-row">
+      <span class="recap-label">Prix total</span>
+      <span class="recap-price">60,00 €</span>
+    </div>
+  </div>
+
+  <button (click)="confirm.emit()" [disabled]="submitting" class="btn-confirm" type="button">
+    @if (submitting) {
+      <i class="pi pi-spin pi-spinner"></i> Création…
+    } @else {
+      Confirmer la réservation
+    }
+  </button>
+  <button (click)="cancel.emit()" [disabled]="submitting" class="btn-cancel" type="button">
+    Annuler
+  </button>
+</section>

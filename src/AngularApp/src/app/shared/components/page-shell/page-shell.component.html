@@ -1,0 +1,44 @@
+﻿<div class="page-shell">
+  
+  <div aria-hidden="true" class="shell-bg">
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+    <div class="grid-lines"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <header class="shell-hero">
+    @if (eyebrow) {
+      <div class="hero-eyebrow">
+        <span class="hero-dot"></span>
+        {{ eyebrow }}
+      </div>
+    }
+
+    <h1 class="hero-title">
+      {{ title }}<br>
+      @if (titleEm) {
+        <em>{{ titleEm }}</em>
+      }
+    </h1>
+
+    @if (subtitle) {
+      <p class="hero-sub">{{ subtitle }}</p>
+    }
+
+    @if (dividerLabel) {
+      <div class="hero-divider">
+        <div class="hero-divider-line"></div>
+        <span class="hero-divider-label">{{ dividerLabel }}</span>
+        <div class="hero-divider-line hero-divider-line--right"></div>
+      </div>
+    }
+  </header>
+
+  <div class="shell-content">
+    <ng-content/>
+  </div>
+
+</div>

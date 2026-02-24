@@ -1,0 +1,121 @@
+﻿:host {
+  display: block;
+}
+
+.step-block {
+  background: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.step-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+}
+
+.step-num {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--p-primary-color);
+  color: var(--p-primary-contrast-color);
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.recap-card {
+  background: var(--p-surface-ground);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.recap-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  padding: 0.25rem 0;
+
+  & + & {
+    border-top: 1px solid var(--p-content-border-color);
+    margin-top: 0.35rem;
+    padding-top: 0.5rem;
+  }
+}
+
+.recap-label {
+  color: var(--p-text-muted-color);
+}
+
+.recap-value {
+  font-weight: 500;
+}
+
+.price-row {
+  margin-top: 0.25rem;
+}
+
+.recap-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--p-primary-color);
+}
+
+.btn-confirm {
+  width: 100%;
+  padding: 0.875rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--p-primary-color);
+  color: var(--p-primary-contrast-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-cancel {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.4rem;
+  border-radius: 8px;
+  border: 1px solid var(--p-content-border-color);
+  background: transparent;
+  color: var(--p-text-muted-color);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover {
+    color: var(--p-text-color);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

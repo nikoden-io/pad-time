@@ -1,32 +1,21 @@
-import {Component, input, output} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {ChangeDetectionStrategy, Component, input, output, signal} from '@angular/core';
+import {DatePipe} from '@angular/common';
 import {Dialog} from 'primeng/dialog';
-import {ButtonModule} from 'primeng/button';
-import {Tag} from 'primeng/tag';
-import {Divider} from 'primeng/divider';
-import {Tabs, TabList, Tab, TabPanels, TabPanel} from 'primeng/tabs';
 import {TranslocoDirective, provideTranslocoScope} from '@jsverse/transloco';
 import {SiteDetail} from '@core/models';
+
+type Tab = 'courts' | 'schedules' | 'closures';
+
+const DAY_NAMES = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
 @Component({
   selector: 'app-site-detail-modal',
   standalone: true,
-  imports: [
-    CommonModule,
-    Dialog,
-    ButtonModule,
-    Tag,
-    Divider,
-    Tabs,
-    TabList,
-    Tab,
-    TabPanels,
-    TabPanel,
-    TranslocoDirective,
-  ],
+  imports: [DatePipe, Dialog, TranslocoDirective],
   providers: [provideTranslocoScope('sites')],
   templateUrl: './site-detail-modal.component.html',
   styleUrl: './site-detail-modal.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteDetailModalComponent {
   readonly visible = input.required<boolean>();
@@ -35,8 +24,9 @@ export class SiteDetailModalComponent {
   readonly visibleChange = output<boolean>();
   readonly edit = output<void>();
 
+  readonly activeTab = signal<Tab>('courts');
+
   getDayName(day: number): string {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    return days[day] || '';
+    return DAY_NAMES[day] ?? '';
   }
 }

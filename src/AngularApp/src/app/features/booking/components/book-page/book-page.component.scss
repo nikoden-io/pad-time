@@ -1,0 +1,56 @@
+﻿:host {
+  display: block;
+}
+
+.book-page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+
+  @media (min-width: 720px) {
+    max-width: 860px;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+}
+
+.book-header {
+  margin-bottom: 1.5rem;
+
+  h1 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin: 0 0 0.2rem;
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: var(--p-text-muted-color);
+    margin: 0;
+  }
+}
+
+.step-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--p-text-muted-color);
+  font-size: 0.85rem;
+  padding: 1rem 0;
+}
+
+.step-connector {
+  display: flex;
+  justify-content: center;
+  height: 18px;
+
+  &::before {
+    content: '';
+    width: 1px;
+    background: var(--p-content-border-color);
+    display: block;
+  }
+
+  @media (min-width: 720px) {
+    display: none;
+  }
+}

@@ -1,101 +1,149 @@
 <ng-container *transloco="let t; scope: 'sites'">
-  <div class="sites-list-container">
-    <div class="header">
-      <h1>{{ t('title') }}</h1>
-      <p-button
-        (onClick)="onCreateSite()"
-        [label]="t('newSite')"
-        icon="pi pi-plus"
-      />
+  <app-page-shell
+    [dividerLabel]="sitesLabel()"
+    eyebrow="Administration"
+    title="Gestion des"
+    titleEm="sites"
+  >
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <button (click)="goToDashboard()" class="breadcrumb-link" type="button">← Dashboard</button>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">{{ t('title') }}</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="list-header">
+      <div>
+        <div class="list-title">{{ t('title') }}</div>
+        <div class="list-meta">{{ sitesLabel() }}</div>
+      </div>
+      <button (click)="onCreateSite()" class="btn-create" type="button">
+        ＋ {{ t('newSite') }}
+      </button>
     </div>
 
-    <p-table
-      (onLazyLoad)="onPageChange($event)"
-      [lazy]="true"
-      [loading]="loading()"
-      [paginator]="true"
-      [rowsPerPageOptions]="[10, 20, 50]"
-      [rows]="pagination().pageSize"
-      [totalRecords]="pagination().totalCount"
-      [value]="sites()"
-      styleClass="p-datatable-sm"
-    >
-      <ng-template #header>
-        <tr>
-          <th>{{ t('list.name') }}</th>
-          <th>{{ t('list.location') }}</th>
-          <th>{{ t('list.courts') }}</th>
-          <th>{{ t('list.status') }}</th>
-          <th style="width: 200px">{{ t('list.actions') }}</th>
-        </tr>
-      </ng-template>
+    <!-- DESKTOP — table -->
+    <div class="table-view">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+          <tr>
+            <th>{{ t('list.name') }}</th>
+            <th>{{ t('list.location') }}</th>
+            <th>{{ t('list.courts') }}</th>
+            <th>{{ t('list.status') }}</th>
+            <th>{{ t('list.actions') }}</th>
+          </tr>
+          </thead>
+          <tbody>
+            @if (loading()) {
+              @for (_ of [1, 2, 3]; track $index) {
+                <tr>
+                  <td colspan="5">
+                    <div
+                      style="height:18px;background:var(--p-surface-ground);border-radius:4px;animation:shimmer 1.2s ease-in-out infinite alternate"></div>
+                  </td>
+                </tr>
+              }
+            } @else if (sites().length === 0) {
+              <tr class="empty-row">
+                <td colspan="5">{{ t('list.empty') }}</td>
+              </tr>
+            } @else {
+              @for (site of sites(); track site.siteId) {
+                <tr>
+                  <td>
+                    <div class="site-name-cell">
+                      <strong>{{ site.name }}</strong>
+                      <small>{{ site.timezone }}</small>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="site-loc">
+                      {{ site.streetNumber }} {{ site.street }}<br/>
+                      {{ site.postcode }} {{ site.city }}, {{ site.country }}
+                    </div>
+                  </td>
+                  <td><span class="court-chip">{{ site.courtCount ?? '—' }}</span></td>
+                  <td>
+                    <span [class.active]="site.isActive" [class.inactive]="!site.isActive" class="status-badge">
+                      <span class="dot"></span>
+                      {{ site.isActive ? t('status.active') : t('status.inactive') }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="row-actions">
+                      <button (click)="onViewSite(site.siteId)" class="act-btn" title="Voir" type="button">👁</button>
+                      <button (click)="onEditSite(site)" class="act-btn" title="Modifier" type="button">✏️</button>
+                      <button (click)="onToggleActive(site)" [title]="site.isActive ? 'Désactiver' : 'Activer'"
+                              class="act-btn" type="button">
+                        {{ site.isActive ? '⏸' : '▶️' }}
+                      </button>
+                      <button (click)="onDeleteSite(site)" class="act-btn danger" title="Supprimer" type="button">🗑
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+        <div class="table-footer">
+          <span>{{ pagination().totalCount }} résultat{{ pagination().totalCount > 1 ? 's' : '' }}</span>
+        </div>
+      </div>
+    </div>
 
-      <ng-template #body let-site>
-        <tr>
-          <td>
-            <div class="site-name">
-              <strong>{{ site.name }}</strong>
-              <small>{{ site.timezone }}</small>
+    <!-- MOBILE — cards -->
+    <div class="cards-view">
+      @if (loading()) {
+        @for (_ of [1, 2, 3]; track $index) {
+          <div class="shimmer-card">
+            <div class="shimmer-line" style="height:16px;width:60%"></div>
+            <div class="shimmer-line" style="height:12px;width:40%"></div>
+            <div class="shimmer-line" style="height:12px;width:80%"></div>
+          </div>
+        }
+      } @else if (sites().length === 0) {
+        <div style="text-align:center;padding:2.5rem 1rem;color:var(--p-text-muted-color);font-size:0.85rem">
+          {{ t('list.empty') }}
+        </div>
+      } @else {
+        @for (site of sites(); track site.siteId) {
+          <div class="site-card">
+            <div class="site-card-top">
+              <div>
+                <div class="site-card-name">{{ site.name }}</div>
+                <div class="site-card-tz">{{ site.timezone }}</div>
+                <div class="site-card-loc">
+                  {{ site.streetNumber }} {{ site.street }}, {{ site.postcode }} {{ site.city }}
+                </div>
+              </div>
+              <div class="site-card-meta">
+                <span [class.active]="site.isActive" [class.inactive]="!site.isActive" class="status-badge">
+                  <span class="dot"></span>
+                  {{ site.isActive ? t('status.active') : t('status.inactive') }}
+                </span>
+                <span class="site-card-courts">
+                  {{ site.courtCount ?? '—' }} terrain{{ (site.courtCount ?? 0) > 1 ? 's' : '' }}
+                </span>
+              </div>
             </div>
-          </td>
-          <td>
-            <div class="site-location">
-              {{ site.streetNumber }} {{ site.street }}<br/>
-              {{ site.postcode }} {{ site.city }}, {{ site.country }}
+            <div class="site-card-actions">
+              <button (click)="onViewSite(site.siteId)" class="act-btn" title="Voir" type="button">👁</button>
+              <button (click)="onEditSite(site)" class="act-btn" title="Modifier" type="button">✏️</button>
+              <button (click)="onToggleActive(site)" [title]="site.isActive ? 'Désactiver' : 'Activer'" class="act-btn"
+                      type="button">
+                {{ site.isActive ? '⏸' : '▶️' }}
+              </button>
+              <button (click)="onDeleteSite(site)" class="act-btn danger" title="Supprimer" type="button">🗑</button>
             </div>
-          </td>
-          <td>
-            <span class="court-count">{{ t('list.courtCount', {count: site.courtCount}) }}</span>
-          </td>
-          <td>
-            <p-tag
-              [severity]="site.isActive ? 'success' : 'danger'"
-              [value]="site.isActive ? t('status.active') : t('status.inactive')"
-            />
-          </td>
-          <td>
-            <div class="actions">
-              <p-button
-                (onClick)="onViewSite(site.siteId)"
-                [outlined]="true"
-                icon="pi pi-eye"
-                severity="info"
-                size="small"
-              />
-              <p-button
-                (onClick)="onEditSite(site)"
-                [outlined]="true"
-                icon="pi pi-pencil"
-                severity="secondary"
-                size="small"
-              />
-              <p-button
-                (onClick)="onToggleActive(site)"
-                [icon]="site.isActive ? 'pi pi-ban' : 'pi pi-check'"
-                [outlined]="true"
-                [severity]="site.isActive ? 'secondary' : 'success'"
-                size="small"
-              />
-              <p-button
-                (onClick)="onDeleteSite(site)"
-                [outlined]="true"
-                icon="pi pi-trash"
-                severity="danger"
-                size="small"
-              />
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-
-      <ng-template #emptymessage>
-        <tr>
-          <td class="empty-message" colspan="5">
-            {{ t('list.empty') }}
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+          </div>
+        }
+      }
+    </div>
 
     <app-site-detail-modal
       (edit)="onEditSite(selectedSiteForDetail()!)"
@@ -103,15 +151,25 @@
       [site]="selectedSiteForDetail()"
       [visible]="showDetailModal()"
     />
-
     <app-site-form-dialog
       (saved)="onSiteDialogSubmit($event)"
       (visibleChange)="showSiteDialog.set($event)"
       [site]="siteToEdit()"
       [visible]="showSiteDialog()"
     />
-
     <p-confirmDialog/>
     <p-toast/>
-  </div>
+
+  </app-page-shell>
 </ng-container>
+
+<style>
+  @keyframes shimmer {
+    from {
+      opacity: 0.4;
+    }
+    to {
+      opacity: 0.8;
+    }
+  }
+</style>

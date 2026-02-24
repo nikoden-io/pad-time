@@ -1,22 +1,28 @@
-﻿<div class="language-switcher">
-  <p-select
-    (onChange)="onLanguageChange($event.value)"
-    [(ngModel)]="selectedLanguage"
-    [class]="'language-select'"
-    [options]="languages"
-    [panelStyleClass]="'language-panel'"
-    optionLabel="label"
+﻿<div class="ls-wrap">
+  <button
+    (click)="toggleOpen()"
+    [attr.aria-expanded]="isOpen()"
+    aria-label="Changer de langue"
+    class="ls-trigger"
+    type="button"
   >
-    <ng-template #selectedItem let-selectedOption>
-      <div class="language-item selected">
-        <span class="flag">{{ selectedOption.flag }}</span>
-      </div>
-    </ng-template>
+    {{ current().flag }}
+  </button>
 
-    <ng-template #item let-language>
-      <div class="language-item">
-        <span class="flag">{{ language.flag }}</span>
-      </div>
-    </ng-template>
-  </p-select>
+  @if (isOpen()) {
+    <div class="ls-dropdown" role="listbox">
+      @for (lang of languages; track lang.code) {
+        <button
+          (click)="select(lang)"
+          [attr.aria-selected]="lang.code === current().code"
+          [class.selected]="lang.code === current().code"
+          class="ls-option"
+          role="option"
+          type="button"
+        >
+          {{ lang.flag }}
+        </button>
+      }
+    </div>
+  }
 </div>

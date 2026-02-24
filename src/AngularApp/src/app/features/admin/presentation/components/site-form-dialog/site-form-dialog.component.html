@@ -2,13 +2,17 @@
   <p-dialog
     (visibleChange)="onVisibleChange($event)"
     [breakpoints]="{ '640px': '100vw' }"
+    [closable]="true"
     [draggable]="false"
     [header]="t(dialogTitle())"
     [modal]="true"
-    [style]="{ width: '95vw', maxWidth: '600px' }"
+    [style]="{ width: '95vw', maxWidth: '560px' }"
     [visible]="visible()"
   >
     <form [formGroup]="form" class="form-grid">
+
+      <div class="form-section-label">Informations générales</div>
+
       <div class="form-group">
         <label class="form-label">{{ t('form.name') }} *</label>
         <input
@@ -21,27 +25,29 @@
           <small class="form-error">{{ t('global.validation.required') }}</small>
         }
         @if (form.get('name')?.hasError('minlength') && form.get('name')?.touched) {
-          <small class="form-error">{{ t('global.validation.minLength', { min: 3 }) }}</small>
+          <small class="form-error">{{ t('global.validation.minLength', {min: 3}) }}</small>
         }
       </div>
 
+      <div class="form-section-label">Adresse</div>
+
       <div class="form-row">
-        <div class="form-group" style="flex: 0 0 30%">
+        <div class="form-group" style="flex: 0 0 35%">
           <label class="form-label">{{ t('form.streetNumber') }} *</label>
           <input class="w-full" formControlName="streetNumber" pInputText/>
         </div>
-        <div class="form-group" style="flex: 1">
+        <div class="form-group">
           <label class="form-label">{{ t('form.street') }} *</label>
           <input class="w-full" formControlName="street" pInputText/>
         </div>
       </div>
 
       <div class="form-row">
-        <div class="form-group" style="flex: 0 0 30%">
+        <div class="form-group" style="flex: 0 0 35%">
           <label class="form-label">{{ t('form.postcode') }} *</label>
           <input class="w-full" formControlName="postcode" pInputText/>
         </div>
-        <div class="form-group" style="flex: 1">
+        <div class="form-group">
           <label class="form-label">{{ t('form.city') }} *</label>
           <input class="w-full" formControlName="city" pInputText/>
         </div>
@@ -52,30 +58,35 @@
         <input class="w-full" formControlName="country" pInputText/>
       </div>
 
+      <div class="form-section-label">Configuration</div>
+
       <div class="form-group">
         <label class="form-label">{{ t('form.timezone') }} *</label>
         <p-select
           [options]="timezones"
-          formControlName="timezone"
           [placeholder]="t('form.timezonePlaceholder')"
+          formControlName="timezone"
           styleClass="w-full"
         />
       </div>
+
     </form>
 
     <ng-template #footer>
       <div class="dialog-footer">
-        <p-button
-          (onClick)="onVisibleChange(false)"
-          [label]="t('global.common.cancel')"
-          severity="secondary"
-        />
-        <p-button
-          (onClick)="onSubmit()"
+        <button (click)="onVisibleChange(false)" class="btn-cancel" type="button">
+          {{ t('global.common.cancel') }}
+        </button>
+        <button
+          (click)="onSubmit()"
           [disabled]="form.invalid || saving()"
-          [label]="t('global.common.save')"
-          [loading]="saving()"
-        />
+          class="btn-save"
+          type="button"
+        >
+          @if (saving()) {
+            ⏳
+          } {{ t('global.common.save') }}
+        </button>
       </div>
     </ng-template>
   </p-dialog>
