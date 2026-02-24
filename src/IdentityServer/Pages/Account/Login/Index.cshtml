@@ -1,89 +1,72 @@
 @page
 @model IdentityServer.Pages.Account.Login.Index
 
-<div class="login-page">
-    <div class="lead">
-        <h1>Login</h1>
-        <p>Choose how to login</p>
+<div class="id-card">
+
+  <div class="id-card-title">Connexion</div>
+  <div class="id-card-sub">Bienvenue, connectez-vous pour continuer.</div>
+
+  <partial name="_ValidationSummary"/>
+
+  @if (!Model.View.EnableLocalLogin && !Model.View.VisibleExternalProviders.Any())
+  {
+    <div class="alert-warning">
+      <strong>Connexion impossible.</strong> Aucune méthode d'authentification configurée.
     </div>
+  }
 
-    <partial name="_ValidationSummary" />
+  @if (Model.View.EnableLocalLogin)
+  {
+    <form asp-page="/Account/Login/Index">
+      <input type="hidden" asp-for="Input.ReturnUrl"/>
 
-    <div class="row">
+      <div class="form-group">
+        <label asp-for="Input.Username">Nom d'utilisateur</label>
+        <input class="form-control" placeholder="ex: G0001"
+               asp-for="Input.Username" autofocus autocomplete="username"/>
+        <span asp-validation-for="Input.Username" class="text-danger"></span>
+      </div>
 
-        @if (Model.View.EnableLocalLogin)
-        {
-            <div class="col-sm-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Local Account</h2>
-                    </div>
+      <div class="form-group">
+        <label asp-for="Input.Password">Mot de passe</label>
+        <input type="password" class="form-control" placeholder="••••••••"
+               asp-for="Input.Password" autocomplete="current-password"/>
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+      </div>
 
-                    <div class="card-body">
-                        <form asp-page="/Account/Login/Index">
-                            <input type="hidden" asp-for="Input.ReturnUrl" />
+      @if (Model.View.AllowRememberLogin)
+      {
+        <div class="form-check">
+          <input class="form-check-input" asp-for="Input.RememberLogin"/>
+          <label class="form-check-label" asp-for="Input.RememberLogin">
+            Se souvenir de moi (30 jours)
+          </label>
+        </div>
+      }
 
-                            <div class="form-group">
-                                <label asp-for="Input.Username"></label>
-                                <input class="form-control" placeholder="Username" asp-for="Input.Username" autofocus>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Input.Password"></label>
-                                <input type="password" class="form-control" placeholder="Password" asp-for="Input.Password" autocomplete="off">
-                            </div>
-                            
-                            @if (Model.View.AllowRememberLogin)
-                            {
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <input class="form-check-input" asp-for="Input.RememberLogin">
-                                        <label class="form-check-label" asp-for="Input.RememberLogin">
-                                            Remember My Login
-                                        </label>
-                                    </div>
-                                </div>
-                            }
-                            
-                            <button class="btn btn-primary" name="Input.Button" value="login">Login</button>
-                            <button class="btn btn-secondary" name="Input.Button" value="cancel">Cancel</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        }
+      <button class="btn-primary" name="Input.Button" value="login" type="submit">
+        Se connecter
+      </button>
+      <button class="btn-secondary" name="Input.Button" value="cancel" type="submit">
+        Annuler
+      </button>
 
-        @if (Model.View.VisibleExternalProviders.Any())
-        {
-            <div class="col-sm-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>External Account</h2>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-inline">
-                            @foreach (var provider in Model.View.VisibleExternalProviders)
-                            {
-                                <li class="list-inline-item">
-                                    <a class="btn btn-secondary"
-                                       asp-page="/ExternalLogin/Challenge"
-                                       asp-route-scheme="@provider.AuthenticationScheme"
-                                       asp-route-returnUrl="@Model.Input.ReturnUrl">
-                                        @provider.DisplayName
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        }
+    </form>
+  }
 
-        @if (!Model.View.EnableLocalLogin && !Model.View.VisibleExternalProviders.Any())
-        {
-            <div class="alert alert-warning">
-                <strong>Invalid login request</strong>
-                There are no login schemes configured for this request.
-            </div>
-        }
-    </div>
+  @if (Model.View.VisibleExternalProviders.Any())
+  {
+    <div class="ext-separator">ou continuer avec</div>
+
+    @foreach (var provider in Model.View.VisibleExternalProviders)
+    {
+      <a class="btn-external"
+         asp-page="/ExternalLogin/Challenge"
+         asp-route-scheme="@provider.AuthenticationScheme"
+         asp-route-returnUrl="@Model.Input.ReturnUrl">
+        @provider.DisplayName
+      </a>
+    }
+  }
+
 </div>

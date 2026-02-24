@@ -1,29 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
 
-    <title>Duende IdentityServer</title>
-    
-    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
-    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
-    
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/lib/bootstrap4-glyphicons/css/bootstrap-glyphicons.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+  <title>Pad'Time — Identity</title>
+
+  <link rel="icon" type="image/x-icon" href="~/favicon.ico"/>
+  <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet"/>
+  <link rel="stylesheet" href="~/css/identity.css" asp-append-version="true"/>
 </head>
 <body>
-    <partial name="_Nav" />
-   
-    <div class="container body-container">
-        @RenderBody()
-    </div>
 
-    <script src="~/lib/jquery/dist/jquery.slim.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Décor -->
+<div class="id-bg">
+  <div class="id-bg-glow1"></div>
+  <div class="id-bg-glow2"></div>
+  <div class="id-bg-grid"></div>
+</div>
 
-    @RenderSection("scripts", required: false)
+<!-- Wrapper centré -->
+<div class="id-wrapper">
+
+  <!-- Brand -->
+  <div class="id-brand">
+    <div class="id-brand-icon">🎾</div>
+    <span class="id-brand-name">Pad'<em>Time</em></span>
+  </div>
+
+  <!-- Contenu de la page -->
+  @RenderBody()
+
+  <!-- Footer -->
+  <div class="id-footer">
+    Pad'Time &copy; @DateTime.Now.Year — Plateforme de réservation padel
+  </div>
+
+</div>
+
+@RenderSection("scripts", false)
+
 </body>
 </html>
