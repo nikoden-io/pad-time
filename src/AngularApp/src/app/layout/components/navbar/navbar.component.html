@@ -1,0 +1,116 @@
+<nav class="navbar">
+  <div class="navbar-bar">
+    <div class="navbar-left">
+      <a class="brand-link" routerLink="/">Pad'Time</a>
+
+      <button
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="isMenuOpen()"
+        aria-label="Open menu"
+        class="burger"
+        type="button"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- desktop primary nav -->
+    <div class="navbar-menu navbar-menu--desktop">
+      @if (auth.isAuthenticated()) {
+        <a [routerLinkActiveOptions]="{ exact: true }" class="nav-link"
+           routerLink="/booking" routerLinkActive="active">
+          Booking
+        </a>
+        <a class="nav-link" routerLink="/matches" routerLinkActive="active">My Matches</a>
+        <a [routerLinkActiveOptions]="{ exact: true }" class="nav-link nav-link--test"
+           routerLink="/booking/test-reservation" routerLinkActive="active">
+          Test Reservation
+        </a>
+        @if (auth.isAdmin()) {
+          <a class="nav-link nav-link--admin" routerLink="/admin" routerLinkActive="active">Admin</a>
+        }
+      }
+    </div>
+
+    <!-- desktop user area -->
+    <div class="navbar-end navbar-end--desktop">
+      <button (click)="layout.toggleTheme()" [attr.aria-label]="'Theme: ' + layout.themeLabel()" class="theme-toggle"
+              type="button">
+        <ng-icon [name]="themeIcon" size="18"/>
+      </button>
+
+      @if (auth.isLoading()) {
+        <span class="loading">Loading...</span>
+      } @else if (auth.isAuthenticated()) {
+        <button (click)="toggleUserMenu()" class="user-trigger" type="button">
+          <ng-icon name="heroUserCircle"/>
+          <span class="user-trigger__text">
+            {{ auth.currentUser()?.matricule }}
+          </span>
+        </button>
+
+        <div [class.is-open]="isUserMenuOpen()" class="user-dropdown">
+          <a class="dropdown-item" routerLink="/profile">Profile</a>
+          <button (click)="auth.logout()" class="dropdown-item dropdown-item--danger" type="button">
+            Logout
+          </button>
+        </div>
+      } @else {
+        <button (click)="auth.login()" class="btn btn-primary">Login</button>
+      }
+    </div>
+
+
+    <app-language-switcher/>
+  </div>
+
+  <!-- mobile overlay + drawer -->
+  <div (click)="closeMenu()" [class.is-open]="isMenuOpen()" aria-hidden="true" class="backdrop"></div>
+
+  <div [class.is-open]="isMenuOpen()" class="drawer">
+    <div class="drawer-header">
+      <span class="drawer-title">Menu</span>
+      <button (click)="closeMenu()" aria-label="Close menu" class="drawer-close" type="button">&#215;</button>
+    </div>
+
+    <div class="drawer-content">
+      <!-- Theme toggle in drawer -->
+      <div class="drawer-section">
+        <button (click)="layout.toggleTheme()" class="drawer-link" type="button">
+          <ng-icon [name]="themeIcon" size="18"/>
+          <span>Theme: {{ layout.themeLabel() }}</span>
+        </button>
+      </div>
+
+      @if (auth.isAuthenticated()) {
+        <div class="drawer-section">
+          <div class="drawer-user">
+            <ng-icon name="heroUserCircle"/>
+            <div class="drawer-user__meta">
+              <div class="drawer-user__id">{{ auth.currentUser()?.matricule }}</div>
+              <div class="drawer-user__role">{{ auth.currentUser()?.role }}</div>
+            </div>
+          </div>
+
+          <a (click)="closeMenu()" class="drawer-link" routerLink="/profile">Profile</a>
+          <button (click)="logoutFromDrawer()" class="drawer-link drawer-link--danger" type="button">
+            Logout
+          </button>
+        </div>
+
+        <div class="drawer-section">
+          <a (click)="closeMenu()" class="drawer-link" routerLink="/booking">Booking</a>
+          <a (click)="closeMenu()" class="drawer-link" routerLink="/matches">My Matches</a>
+          <a (click)="closeMenu()" class="drawer-link" routerLink="/booking/test-reservation">Test Reservation</a>
+          @if (auth.isAdmin()) {
+            <a (click)="closeMenu()" class="drawer-link drawer-link--admin" routerLink="/admin">Admin</a>
+          }
+        </div>
+      } @else {
+        <button (click)="loginFromDrawer()" class="btn btn-primary">Login</button>
+      }
+
+      <app-language-switcher/>
+    </div>
+  </div>
+</nav>

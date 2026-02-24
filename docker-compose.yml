@@ -18,7 +18,27 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      
+
+  # Backend API Database
+  api-db:
+    image: postgres:18-alpine
+    container_name: paddle-api-db
+    environment:
+      POSTGRES_USER: ${API_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${API_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${API_POSTGRES_DB}
+    ports:
+      - "5434:5432"
+    volumes:
+      - api-db-data:/var/lib/postgresql/data
+    networks:
+      - paddle-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${API_POSTGRES_USER} -d ${API_POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # Identity Server
   identity-server:
     build:
@@ -27,18 +47,53 @@ services:
     container_name: paddle-identity-server
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/identity-server.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Passw0rd!
       - ConnectionStrings__DefaultConnection=Host=${DB_HOST};Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
     ports:
-      - "5001:8080"
+      - "5001:443"
+      - "5101:80"
+    volumes:
+      - ./.docker/certs/identity-server.pfx:/https/identity-server.pfx:ro
     depends_on:
       identity-db:
         condition: service_healthy
     networks:
       - paddle-network
 
+  # Backend API
+  backend-api:
+    build:
+      context: ./src/BackendApi
+      dockerfile: Dockerfile
+    container_name: paddle-backend-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/backend-api.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Passw0rd!
+      - ConnectionStrings__DefaultConnection=Host=${API_DB_HOST};Port=${API_DB_PORT};Database=${API_DB_NAME};Username=${API_DB_USER};Password=${API_DB_PASSWORD}
+      - Authentication__Authority=https://identity-server:443
+      - Authentication__Audience=padtime-api
+      - Authentication__RequireHttpsMetadata=false
+    ports:
+      - "5002:443"
+      - "5102:80"
+    volumes:
+      - ./.docker/certs/backend-api.pfx:/https/backend-api.pfx:ro
+    depends_on:
+      api-db:
+        condition: service_healthy
+      identity-server:
+        condition: service_started
+    networks:
+      - paddle-network
+
 volumes:
   identity-db-data:
+    driver: local
+  api-db-data:
     driver: local
 
 networks:

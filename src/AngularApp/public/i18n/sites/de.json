@@ -1,0 +1,79 @@
+﻿{
+  "title": "Standortverwaltung",
+  "newSite": "Neuer Standort",
+  "list": {
+    "name": "Name",
+    "location": "Standort",
+    "courts": "Plätze",
+    "status": "Status",
+    "actions": "Aktionen",
+    "empty": "Keine Standorte gefunden. Erstellen Sie Ihren ersten Standort, um zu beginnen.",
+    "courtCount": "{{count}} Platz",
+    "courtCount_plural": "{{count}} Plätze"
+  },
+  "detail": {
+    "title": "Standortdetails",
+    "information": "Informationen",
+    "address": "Adresse",
+    "timezone": "Zeitzone",
+    "created": "Erstellt",
+    "updated": "Zuletzt Aktualisiert",
+    "editSite": "Standort Bearbeiten",
+    "tabs": {
+      "courts": "Plätze",
+      "schedules": "Zeitpläne",
+      "closures": "Schließungen"
+    },
+    "courts": {
+      "empty": "Noch keine Plätze konfiguriert",
+      "created": "Erstellt {{date}}"
+    },
+    "schedules": {
+      "empty": "Noch keine Zeitpläne konfiguriert",
+      "priority": "Priorität {{priority}}",
+      "time": "{{open}} - {{close}}",
+      "period": "{{from}} - {{to}}",
+      "ongoing": "Laufend",
+      "days": "Tage:"
+    },
+    "closures": {
+      "empty": "Keine Schließungen geplant",
+      "modifiedHours": "Geänderte Öffnungszeiten: {{open}} - {{close}}"
+    }
+  },
+  "form": {
+    "createTitle": "Standort Erstellen",
+    "editTitle": "Standort Bearbeiten",
+    "name": "Standortname",
+    "streetNumber": "Hausnummer",
+    "street": "Straße",
+    "postcode": "Postleitzahl",
+    "city": "Stadt",
+    "country": "Land",
+    "timezone": "Zeitzone",
+    "timezonePlaceholder": "Zeitzone auswählen"
+  },
+  "actions": {
+    "view": "Details Anzeigen",
+    "edit": "Bearbeiten",
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "delete": "Löschen"
+  },
+  "status": {
+    "active": "Aktiv",
+    "inactive": "Inaktiv"
+  },
+  "messages": {
+    "loadError": "Standorte konnten nicht geladen werden",
+    "loadDetailError": "Standortdetails konnten nicht geladen werden",
+    "deleteConfirm": "Möchten Sie {{name}} wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deleteSuccess": "Standort erfolgreich gelöscht",
+    "deleteError": "Löschen fehlgeschlagen",
+    "activateConfirm": "Möchten Sie {{name}} wirklich {{action}}?",
+    "activateSuccess": "Standort erfolgreich {{action}}",
+    "activateError": "{{action}} fehlgeschlagen",
+    "editComingSoon": "{{name}} bearbeiten - Dialog kommt bald",
+    "createComingSoon": "Standort erstellen - Dialog kommt bald"
+  }
+}

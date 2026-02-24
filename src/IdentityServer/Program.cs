@@ -3,6 +3,7 @@ using System.Text;
 using Duende.IdentityServer.Licensing;
 using IdentityServer;
 using Serilog;
+using IdentityServer.Data;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
@@ -19,15 +20,13 @@ try
         .ConfigureServices()
         .ConfigurePipeline();
 
-    // this seeding is only for the template to bootstrap the DB and users.
-    // in production you will likely want a different approach.
-    if (args.Contains("/seed"))
-    {
-        Log.Information("Seeding database...");
-        SeedData.EnsureSeedData(app);
-        Log.Information("Done seeding database. Exiting.");
-        return;
-    }
+    // Seed data on every startup in development
+    // if (app.Environment.IsDevelopment())
+    // {
+    //     Log.Information("Seeding database...");
+    //     SeedData.EnsureSeedData(app);
+    //     Log.Information("Done seeding database.");
+    // }
 
     if (app.Environment.IsDevelopment())
     {

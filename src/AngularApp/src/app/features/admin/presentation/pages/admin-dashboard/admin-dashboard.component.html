@@ -1,0 +1,66 @@
+<ng-container *transloco="let t">
+  <div class="admin-dashboard">
+    <div class="welcome-section">
+      <h1>{{ t('admin.dashboard.title') }}</h1>
+      <p class="subtitle">{{ t('admin.dashboard.subtitle') }}</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <div class="card-icon">
+          <i class="pi pi-building"></i>
+        </div>
+        <h2>{{ t('admin.dashboard.sites.title') }}</h2>
+        <p>{{ t('admin.dashboard.sites.description') }}</p>
+        <p-button
+          [routerLink]="['/admin/sites']"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          [label]="t('admin.dashboard.sites.action')"
+        />
+      </div>
+
+      <div class="dashboard-card disabled">
+        <div class="card-icon">
+          <i class="pi pi-calendar"></i>
+        </div>
+        <h2>{{ t('admin.dashboard.matches.title') }}</h2>
+        <p>{{ t('admin.dashboard.matches.description') }}</p>
+        <p-button
+          [disabled]="true"
+          icon="pi pi-lock"
+          [label]="t('common.comingSoon')"
+          severity="secondary"
+        />
+      </div>
+
+      <div class="dashboard-card disabled">
+        <div class="card-icon">
+          <i class="pi pi-chart-line"></i>
+        </div>
+        <h2>{{ t('admin.dashboard.analytics.title') }}</h2>
+        <p>{{ t('admin.dashboard.analytics.description') }}</p>
+        <p-button
+          [disabled]="true"
+          icon="pi pi-lock"
+          [label]="t('common.comingSoon')"
+          severity="secondary"
+        />
+      </div>
+
+      <div class="dashboard-card disabled">
+        <div class="card-icon">
+          <i class="pi pi-users"></i>
+        </div>
+        <h2>{{ t('admin.dashboard.members.title') }}</h2>
+        <p>{{ t('admin.dashboard.members.description') }}</p>
+        <p-button
+          [disabled]="true"
+          icon="pi pi-lock"
+          [label]="t('common.comingSoon')"
+          severity="secondary"
+        />
+      </div>
+    </div>
+  </div>
+</ng-container>

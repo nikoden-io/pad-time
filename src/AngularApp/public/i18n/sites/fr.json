@@ -1,0 +1,79 @@
+﻿{
+  "title": "Gestion des Sites",
+  "newSite": "Nouveau Site",
+  "list": {
+    "name": "Nom",
+    "location": "Localisation",
+    "courts": "Terrains",
+    "status": "Statut",
+    "actions": "Actions",
+    "empty": "Aucun site trouvé. Créez votre premier site pour commencer.",
+    "courtCount": "{{count}} terrain",
+    "courtCount_plural": "{{count}} terrains"
+  },
+  "detail": {
+    "title": "Détails du Site",
+    "information": "Informations",
+    "address": "Adresse",
+    "timezone": "Fuseau Horaire",
+    "created": "Créé le",
+    "updated": "Dernière Modification",
+    "editSite": "Modifier le Site",
+    "tabs": {
+      "courts": "Terrains",
+      "schedules": "Horaires",
+      "closures": "Fermetures"
+    },
+    "courts": {
+      "empty": "Aucun terrain configuré",
+      "created": "Créé le {{date}}"
+    },
+    "schedules": {
+      "empty": "Aucun horaire configuré",
+      "priority": "Priorité {{priority}}",
+      "time": "{{open}} - {{close}}",
+      "period": "{{from}} - {{to}}",
+      "ongoing": "En cours",
+      "days": "Jours :"
+    },
+    "closures": {
+      "empty": "Aucune fermeture planifiée",
+      "modifiedHours": "Horaires modifiés : {{open}} - {{close}}"
+    }
+  },
+  "form": {
+    "createTitle": "Créer un Site",
+    "editTitle": "Modifier le Site",
+    "name": "Nom du Site",
+    "streetNumber": "Numéro",
+    "street": "Rue",
+    "postcode": "Code Postal",
+    "city": "Ville",
+    "country": "Pays",
+    "timezone": "Fuseau Horaire",
+    "timezonePlaceholder": "Sélectionner le fuseau horaire"
+  },
+  "actions": {
+    "view": "Voir Détails",
+    "edit": "Modifier",
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "delete": "Supprimer"
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "messages": {
+    "loadError": "Échec du chargement des sites",
+    "loadDetailError": "Échec du chargement des détails",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer {{name}} ? Cette action est irréversible.",
+    "deleteSuccess": "Site supprimé avec succès",
+    "deleteError": "Échec de la suppression",
+    "activateConfirm": "Êtes-vous sûr de vouloir {{action}} {{name}} ?",
+    "activateSuccess": "Site {{action}} avec succès",
+    "activateError": "Échec de {{action}}",
+    "editComingSoon": "Modifier {{name}} - Dialogue à venir",
+    "createComingSoon": "Créer un site - Dialogue à venir"
+  }
+}

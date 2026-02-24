@@ -1,0 +1,83 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "create": "Erstellen",
+    "close": "Schließen",
+    "loading": "Laden...",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein",
+    "actions": "Aktionen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "refresh": "Aktualisieren",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Vorherige",
+    "submit": "Absenden",
+    "reset": "Zurücksetzen",
+    "success": "Erfolg",
+    "error": "Fehler",
+    "info": "Info",
+    "comingSoon": "Demnächst Verfügbar",
+    "confirmation": "Bestätigung"
+  },
+  "nav": {
+    "home": "Startseite",
+    "admin": "Admin",
+    "booking": "Buchung",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "email": "Ungültige E-Mail-Adresse",
+    "minLength": "Mindestens {{min}} Zeichen",
+    "maxLength": "Maximal {{max}} Zeichen",
+    "pattern": "Ungültiges Format",
+    "min": "Mindestwert: {{min}}",
+    "max": "Maximalwert: {{max}}"
+  },
+  "errors": {
+    "generic": "Ein Fehler ist aufgetreten",
+    "network": "Netzwerkfehler. Überprüfen Sie Ihre Verbindung.",
+    "unauthorized": "Nicht autorisierter Zugriff",
+    "forbidden": "Zugriff verboten",
+    "notFound": "Ressource nicht gefunden",
+    "serverError": "Serverfehler. Bitte versuchen Sie es später erneut."
+  },
+  "confirmation": {
+    "deleteTitle": "Löschbestätigung",
+    "deleteMessage": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "unsavedChanges": "Sie haben nicht gespeicherte Änderungen. Möchten Sie wirklich fortfahren?"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin-Dashboard",
+      "subtitle": "Verwalten Sie Ihre Padelstandorte, Plätze, Zeitpläne und mehr",
+      "sites": {
+        "title": "Standorte",
+        "description": "Standorte, Plätze, Zeitpläne und Schließungen verwalten",
+        "action": "Standorte Verwalten"
+      },
+      "matches": {
+        "title": "Spiele",
+        "description": "Spielreservierungen anzeigen und verwalten"
+      },
+      "analytics": {
+        "title": "Statistiken",
+        "description": "Einnahmen, Auslastung und Statistiken"
+      },
+      "members": {
+        "title": "Mitglieder",
+        "description": "Mitgliedskonten und Kategorien verwalten"
+      }
+    }
+  }
+}
