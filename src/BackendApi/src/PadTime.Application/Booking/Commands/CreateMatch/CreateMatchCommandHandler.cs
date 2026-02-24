@@ -8,6 +8,10 @@ using PadTime.Domain.Site;
 
 namespace PadTime.Application.Booking.Commands.CreateMatch;
 
+/// <summary>
+/// Handles the retrieval of matches where the current authenticated user is a participant.
+/// Applies authorization scope and maps domain entities to DTOs.
+/// </summary>
 public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchCommand, Result<Guid>>
 {
     private readonly IMatchRepository _matchRepository;
@@ -39,6 +43,15 @@ public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchComma
         _unitOfWork = unitOfWork;
     }
 
+    /// <summary>
+    /// Handles the query and returns the list of matches for the current user.
+    /// </summary>
+    /// <param name="request">Query parameters including optional date filter and pagination.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>
+    /// A result containing the list of matches if successful,
+    /// or an error if the current user cannot be resolved.
+    /// </returns>
     public async Task<Result<Guid>> Handle(CreateMatchCommand request, CancellationToken cancellationToken)
     {
         var utcNow = _dateTimeProvider.UtcNow;

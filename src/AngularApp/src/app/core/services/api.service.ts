@@ -1,13 +1,11 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '@env/environment';
+import {Injectable, inject} from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {environment} from '@env/environment';
 import {
   CurrentUser,
   Site,
   Court,
-  CreateCourtRequest,
-  CreateCourtResponse,
   AvailabilityResponse,
   Match,
   CreateMatchRequest,
@@ -42,10 +40,6 @@ export class ApiService {
     return this.http.get<Court[]>(`${this.baseUrl}/sites/${siteId}/courts`);
   }
 
-  createCourt(siteId: string, request: CreateCourtRequest): Observable<CreateCourtResponse> {
-    return this.http.post<CreateCourtResponse>(`${this.baseUrl}/sites/${siteId}/courts`, request);
-  }
-
   // Availability
   getAvailability(siteId: string, date: string, courtId?: string): Observable<AvailabilityResponse> {
     let params = new HttpParams()
@@ -56,7 +50,7 @@ export class ApiService {
       params = params.set('courtId', courtId);
     }
 
-    return this.http.get<AvailabilityResponse>(`${this.baseUrl}/availability`, { params });
+    return this.http.get<AvailabilityResponse>(`${this.baseUrl}/availability`, {params});
   }
 
   // Matches
@@ -69,7 +63,7 @@ export class ApiService {
     if (params.page) httpParams = httpParams.set('page', params.page.toString());
     if (params.pageSize) httpParams = httpParams.set('pageSize', params.pageSize.toString());
 
-    return this.http.get<PaginatedResponse<Match>>(`${this.baseUrl}/matches`, { params: httpParams });
+    return this.http.get<PaginatedResponse<Match>>(`${this.baseUrl}/matches`, {params: httpParams});
   }
 
   getMatch(matchId: string): Observable<Match> {

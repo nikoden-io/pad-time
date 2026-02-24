@@ -57,7 +57,8 @@ public sealed class MatchConfiguration : IEntityTypeConfiguration<Match>
 
         builder.Property(m => m.Version)
             .HasColumnName("version")
-            .IsRowVersion();
+            .IsConcurrencyToken()
+            .ValueGeneratedNever();
 
         builder.HasMany(m => m.Participants)
             .WithOne()

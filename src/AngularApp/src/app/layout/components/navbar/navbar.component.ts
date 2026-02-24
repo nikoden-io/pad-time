@@ -1,15 +1,16 @@
-import { Component, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthService } from '@core/auth/auth.service';
-import { LayoutService } from '@core/services/layout-service';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroUserCircle, heroSun, heroMoon, heroComputerDesktop } from '@ng-icons/heroicons/outline';
+import {Component, inject, signal} from '@angular/core';
+import {RouterLink, RouterLinkActive} from '@angular/router';
+import {AuthService} from '@core/auth/auth.service';
+import {LayoutService} from '@core/services/layout-service';
+import {NgIcon, provideIcons} from '@ng-icons/core';
+import {heroUserCircle, heroSun, heroMoon, heroComputerDesktop} from '@ng-icons/heroicons/outline';
+import {LanguageSwitcherComponent} from '@shared/components/language-switcher/language-switcher.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [NgIcon, RouterLink, RouterLinkActive],
-  viewProviders: [provideIcons({ heroUserCircle, heroSun, heroMoon, heroComputerDesktop })],
+  imports: [NgIcon, RouterLink, RouterLinkActive, LanguageSwitcherComponent],
+  viewProviders: [provideIcons({heroUserCircle, heroSun, heroMoon, heroComputerDesktop})],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
@@ -21,7 +22,7 @@ export class NavbarComponent {
 
   get themeIcon(): string {
     const pref = this.layout.themePreference();
-    const map = { light: 'heroSun', dark: 'heroMoon', system: 'heroComputerDesktop' } as const;
+    const map = {light: 'heroSun', dark: 'heroMoon', system: 'heroComputerDesktop'} as const;
     return map[pref];
   }
 

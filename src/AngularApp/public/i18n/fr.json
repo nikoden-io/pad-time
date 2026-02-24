@@ -1,0 +1,83 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "close": "Fermer",
+    "loading": "Chargement...",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "actions": "Actions",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "export": "Exporter",
+    "import": "Importer",
+    "refresh": "Actualiser",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "reset": "Réinitialiser",
+    "success": "Succès",
+    "error": "Erreur",
+    "info": "Info",
+    "comingSoon": "Bientôt Disponible",
+    "confirmation": "Confirmation"
+  },
+  "nav": {
+    "home": "Accueil",
+    "admin": "Admin",
+    "booking": "Réservation",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire",
+    "email": "Adresse e-mail invalide",
+    "minLength": "Minimum {{min}} caractères",
+    "maxLength": "Maximum {{max}} caractères",
+    "pattern": "Format invalide",
+    "min": "Valeur minimale : {{min}}",
+    "max": "Valeur maximale : {{max}}"
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite",
+    "network": "Erreur réseau. Vérifiez votre connexion.",
+    "unauthorized": "Accès non autorisé",
+    "forbidden": "Accès interdit",
+    "notFound": "Ressource introuvable",
+    "serverError": "Erreur serveur. Veuillez réessayer plus tard."
+  },
+  "confirmation": {
+    "deleteTitle": "Confirmation de Suppression",
+    "deleteMessage": "Cette action est irréversible.",
+    "unsavedChanges": "Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter ?"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Tableau de Bord Admin",
+      "subtitle": "Gérez vos sites de padel, terrains, horaires et plus encore",
+      "sites": {
+        "title": "Sites",
+        "description": "Gérer les sites, terrains, horaires et fermetures",
+        "action": "Gérer les Sites"
+      },
+      "matches": {
+        "title": "Matchs",
+        "description": "Voir et gérer les réservations de matchs"
+      },
+      "analytics": {
+        "title": "Statistiques",
+        "description": "Revenus, occupation et statistiques"
+      },
+      "members": {
+        "title": "Membres",
+        "description": "Gérer les comptes et catégories de membres"
+      }
+    }
+  }
+}

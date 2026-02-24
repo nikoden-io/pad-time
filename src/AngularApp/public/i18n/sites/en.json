@@ -1,0 +1,78 @@
+﻿{
+  "title": "Sites Management",
+  "newSite": "New Site",
+  "list": {
+    "name": "Name",
+    "location": "Location",
+    "courts": "Courts",
+    "status": "Status",
+    "actions": "Actions",
+    "empty": "No sites found. Create your first site to get started.",
+    "courtCount": "{{count}} courts"
+  },
+  "detail": {
+    "title": "Site Details",
+    "information": "Information",
+    "address": "Address",
+    "timezone": "Timezone",
+    "created": "Created",
+    "updated": "Last Updated",
+    "editSite": "Edit Site",
+    "tabs": {
+      "courts": "Courts",
+      "schedules": "Schedules",
+      "closures": "Closures"
+    },
+    "courts": {
+      "empty": "No courts configured yet",
+      "created": "Created {{date}}"
+    },
+    "schedules": {
+      "empty": "No schedules configured yet",
+      "priority": "Priority {{priority}}",
+      "time": "{{open}} - {{close}}",
+      "period": "{{from}} - {{to}}",
+      "ongoing": "Ongoing",
+      "days": "Days:"
+    },
+    "closures": {
+      "empty": "No closures scheduled",
+      "modifiedHours": "Modified hours: {{open}} - {{close}}"
+    }
+  },
+  "form": {
+    "createTitle": "Create Site",
+    "editTitle": "Edit Site",
+    "name": "Site Name",
+    "streetNumber": "Street Number",
+    "street": "Street",
+    "postcode": "Postcode",
+    "city": "City",
+    "country": "Country",
+    "timezone": "Timezone",
+    "timezonePlaceholder": "Select timezone"
+  },
+  "actions": {
+    "view": "View Details",
+    "edit": "Edit",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "delete": "Delete"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "messages": {
+    "loadError": "Failed to load sites",
+    "loadDetailError": "Failed to load site details",
+    "deleteConfirm": "Are you sure you want to delete {{name}}? This action cannot be undone.",
+    "deleteSuccess": "Site deleted successfully",
+    "deleteError": "Failed to delete site",
+    "activateConfirm": "Are you sure you want to {{action}} {{name}}?",
+    "activateSuccess": "Site {{action}}d successfully",
+    "activateError": "Failed to {{action}} site",
+    "editComingSoon": "Edit {{name}} - Dialog will be implemented next",
+    "createComingSoon": "Create site dialog will be implemented next"
+  }
+}

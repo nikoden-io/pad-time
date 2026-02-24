@@ -68,7 +68,7 @@ public sealed class PadTimeDbContext : DbContext, IUnitOfWork
 
         foreach (var domainEvent in domainEvents)
         {
-            await _mediator.Publish(domainEvent, cancellationToken);
+            await _mediator.Publish(new DomainEventNotification(domainEvent), cancellationToken);
         }
     }
 }

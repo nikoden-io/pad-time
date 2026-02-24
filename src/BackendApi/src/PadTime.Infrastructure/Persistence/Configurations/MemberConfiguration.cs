@@ -50,7 +50,8 @@ public sealed class MemberConfiguration : IEntityTypeConfiguration<Member>
 
         builder.Property(m => m.Version)
             .HasColumnName("version")
-            .IsRowVersion();
+            .IsConcurrencyToken()
+            .ValueGeneratedNever();
 
         builder.Ignore(m => m.Category);
 

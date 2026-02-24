@@ -1,0 +1,117 @@
+<ng-container *transloco="let t; scope: 'sites'">
+  <div class="sites-list-container">
+    <div class="header">
+      <h1>{{ t('title') }}</h1>
+      <p-button
+        (onClick)="onCreateSite()"
+        [label]="t('newSite')"
+        icon="pi pi-plus"
+      />
+    </div>
+
+    <p-table
+      (onLazyLoad)="onPageChange($event)"
+      [lazy]="true"
+      [loading]="loading()"
+      [paginator]="true"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [rows]="pagination().pageSize"
+      [totalRecords]="pagination().totalCount"
+      [value]="sites()"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template #header>
+        <tr>
+          <th>{{ t('list.name') }}</th>
+          <th>{{ t('list.location') }}</th>
+          <th>{{ t('list.courts') }}</th>
+          <th>{{ t('list.status') }}</th>
+          <th style="width: 200px">{{ t('list.actions') }}</th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-site>
+        <tr>
+          <td>
+            <div class="site-name">
+              <strong>{{ site.name }}</strong>
+              <small>{{ site.timezone }}</small>
+            </div>
+          </td>
+          <td>
+            <div class="site-location">
+              {{ site.streetNumber }} {{ site.street }}<br/>
+              {{ site.postcode }} {{ site.city }}, {{ site.country }}
+            </div>
+          </td>
+          <td>
+            <span class="court-count">{{ t('list.courtCount', {count: site.courtCount}) }}</span>
+          </td>
+          <td>
+            <p-tag
+              [severity]="site.isActive ? 'success' : 'danger'"
+              [value]="site.isActive ? t('status.active') : t('status.inactive')"
+            />
+          </td>
+          <td>
+            <div class="actions">
+              <p-button
+                (onClick)="onViewSite(site.siteId)"
+                [outlined]="true"
+                icon="pi pi-eye"
+                severity="info"
+                size="small"
+              />
+              <p-button
+                (onClick)="onEditSite(site)"
+                [outlined]="true"
+                icon="pi pi-pencil"
+                severity="secondary"
+                size="small"
+              />
+              <p-button
+                (onClick)="onToggleActive(site)"
+                [icon]="site.isActive ? 'pi pi-ban' : 'pi pi-check'"
+                [outlined]="true"
+                [severity]="site.isActive ? 'secondary' : 'success'"
+                size="small"
+              />
+              <p-button
+                (onClick)="onDeleteSite(site)"
+                [outlined]="true"
+                icon="pi pi-trash"
+                severity="danger"
+                size="small"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td class="empty-message" colspan="5">
+            {{ t('list.empty') }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <app-site-detail-modal
+      (edit)="onEditSite(selectedSiteForDetail()!)"
+      (visibleChange)="showDetailModal.set($event)"
+      [site]="selectedSiteForDetail()"
+      [visible]="showDetailModal()"
+    />
+
+    <app-site-form-dialog
+      (saved)="onSiteDialogSubmit($event)"
+      (visibleChange)="showSiteDialog.set($event)"
+      [site]="siteToEdit()"
+      [visible]="showSiteDialog()"
+    />
+
+    <p-confirmDialog/>
+    <p-toast/>
+  </div>
+</ng-container>

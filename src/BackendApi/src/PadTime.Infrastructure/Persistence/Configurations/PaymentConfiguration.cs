@@ -56,9 +56,10 @@ public sealed class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.Property(p => p.ProcessedAtUtc)
             .HasColumnName("processed_at_utc");
 
-        builder.Property(p => p.Version)
+        builder.Property(m => m.Version)
             .HasColumnName("version")
-            .IsRowVersion();
+            .IsConcurrencyToken()
+            .ValueGeneratedNever();
 
         // Critical: Idempotency constraint
         builder.HasIndex(p => p.IdempotencyKey)

@@ -1,4 +1,10 @@
-import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
+import {
+  ApplicationConfig,
+  provideZoneChangeDetection,
+  isDevMode,
+  APP_INITIALIZER,
+  provideAppInitializer, inject
+} from '@angular/core';
 import {provideRouter, withComponentInputBinding} from '@angular/router';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {provideAuth} from 'angular-auth-oidc-client';
@@ -8,6 +14,9 @@ import {authConfig} from '@core/auth/auth.config';
 import {authInterceptor, errorInterceptor} from '@core/interceptors';
 import {routes} from './app.routes';
 import {provideIcons} from '@ng-icons/core';
+import {TranslocoHttpLoader} from './transloco-loader';
+import {provideTransloco} from '@jsverse/transloco';
+import {LanguageInitService} from '@core/services/language-init.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,6 +31,19 @@ export const appConfig: ApplicationConfig = {
         preset: Aura,
         options: {darkModeSelector: '.p-dark'},
       }
+    }),
+    provideTransloco({
+      config: {
+        availableLangs: ['en', 'fr', 'nl', 'de'],
+        defaultLang: 'en',
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader
+    }),
+    provideAppInitializer(() => {
+      const languageInit = inject(LanguageInitService);
+      languageInit.initialize();
     })
   ],
 };

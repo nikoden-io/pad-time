@@ -6,6 +6,12 @@
   transition: background var(--pt-transition), border-color var(--pt-transition);
 }
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .navbar-bar {
   display: flex;
   align-items: center;

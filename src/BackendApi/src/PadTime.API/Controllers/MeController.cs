@@ -7,7 +7,7 @@ namespace PadTime.API.Controllers;
 
 [ApiController]
 [Route("api/v1/me")]
-//[Authorize(Policy = Policies.RequireUser)]
+[Authorize(Policy = Policies.RequireUser)]
 public sealed class MeController : ControllerBase
 {
     private readonly ICurrentUser _currentUser;
@@ -24,6 +24,8 @@ public sealed class MeController : ControllerBase
     [ProducesResponseType(typeof(MeResponse), StatusCodes.Status200OK)]
     public IActionResult GetMe()
     {
+
+
         var response = new MeResponse(
             Subject: _currentUser.Subject,
             Matricule: _currentUser.Matricule,

@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -64,6 +65,8 @@ public static class DependencyInjection
 
         if (authEnabled)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

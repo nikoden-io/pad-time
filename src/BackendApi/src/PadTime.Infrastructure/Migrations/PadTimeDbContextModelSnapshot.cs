@@ -45,10 +45,9 @@ namespace PadTime.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
 
-                    b.Property<uint>("Version")
+                    b.Property<long>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
+                        .HasColumnType("bigint")
                         .HasColumnName("version");
 
                     b.HasKey("Id");
@@ -107,10 +106,9 @@ namespace PadTime.Infrastructure.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("state");
 
-                    b.Property<uint>("Version")
+                    b.Property<long>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
+                        .HasColumnType("bigint")
                         .HasColumnName("version");
 
                     b.HasKey("Id");
@@ -171,10 +169,9 @@ namespace PadTime.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
 
-                    b.Property<uint>("Version")
+                    b.Property<long>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
+                        .HasColumnType("bigint")
                         .HasColumnName("version");
 
                     b.HasKey("Id");
@@ -266,10 +263,9 @@ namespace PadTime.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
 
-                    b.Property<uint>("Version")
+                    b.Property<long>("Version")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
+                        .HasColumnType("bigint")
                         .HasColumnName("version");
 
                     b.HasKey("Id");

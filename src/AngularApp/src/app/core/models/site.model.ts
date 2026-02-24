@@ -1,38 +1,8 @@
-// --- Existing (used by booking feature) ---
+// ========================================
+// CORE TYPES
+// ========================================
 
 export interface Site {
-  siteId: string;
-  name: string;
-  timezone: string;
-}
-
-export interface Court {
-  courtId: string;
-  label: string;
-  active: boolean;
-}
-
-export interface CreateCourtRequest {
-  label: string;
-}
-
-export interface CreateCourtResponse {
-  courtId: string;
-}
-
-// --- Admin: Paged response ---
-
-export interface PagedResult<T> {
-  data: T[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-}
-
-// --- Admin: Site DTOs ---
-
-export interface SiteListDto {
   siteId: string;
   name: string;
   streetNumber: string;
@@ -44,9 +14,16 @@ export interface SiteListDto {
   isActive: boolean;
   createdAtUtc: string;
   courtCount: number;
+  courts: CourtSummary[];
 }
 
-export interface SiteDetailDto {
+export interface CourtSummary {
+  courtId: string;
+  label: string;
+  isActive: boolean;
+}
+
+export interface SiteDetail {
   siteId: string;
   name: string;
   streetNumber: string;
@@ -58,83 +35,33 @@ export interface SiteDetailDto {
   isActive: boolean;
   createdAtUtc: string;
   updatedAtUtc: string | null;
-  courts: CourtDetailDto[];
-  schedules: SiteScheduleDto[];
-  closures: SiteClosureDto[];
+  courts: Court[];
+  schedules: Schedule[];
+  closures: Closure[];
 }
 
-export interface CreateSiteRequest {
-  name: string;
-  streetNumber: string;
-  street: string;
-  postcode: string;
-  city: string;
-  country: string;
-  timezone: string;
-}
-
-export type UpdateSiteRequest = CreateSiteRequest;
-
-export interface CreateSiteResponse {
-  siteId: string;
-}
-
-// --- Admin: Court DTOs ---
-
-export interface CourtDetailDto {
+export interface Court {
   courtId: string;
   label: string;
   isActive: boolean;
   createdAtUtc: string;
 }
 
-export interface UpdateCourtRequest {
-  label: string;
-}
-
-// --- Admin: Schedule DTOs ---
-
-export interface SiteScheduleDto {
+export interface Schedule {
   scheduleId: string;
   name: string;
   validFrom: string;
   validUntil: string | null;
   openingTime: string;
   closingTime: string;
-  applicableDays: number[] | null;
+  applicableDays: number[];
   priority: number;
   isActive: boolean;
   createdAtUtc: string;
   updatedAtUtc: string | null;
 }
 
-export interface SiteScheduleDetailDto {
-  siteId: string;
-  siteName: string;
-  timezone: string;
-  schedules: SiteScheduleDto[];
-  closures: SiteClosureDto[];
-}
-
-export interface CreateScheduleRequest {
-  name: string;
-  validFrom: string;
-  validUntil: string | null;
-  openingTime: string;
-  closingTime: string;
-  applicableDays: number[] | null;
-  priority: number;
-}
-
-export type UpdateScheduleRequest = CreateScheduleRequest;
-
-export interface CreateScheduleResponse {
-  scheduleId: string;
-}
-
-// --- Admin: Closure DTOs ---
-
-export interface SiteClosureDto {
+export interface Closure {
   closureId: string;
   type: string;
   reason: string;
@@ -148,6 +75,58 @@ export interface SiteClosureDto {
   updatedAtUtc: string | null;
 }
 
+// ========================================
+// PAGINATION
+// ========================================
+
+export interface PagedResult<T> {
+  items: T[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
+// ========================================
+// REQUEST DTOs
+// ========================================
+
+export interface CreateSiteRequest {
+  name: string;
+  streetNumber: string;
+  street: string;
+  postcode: string;
+  city: string;
+  country: string;
+  timezone: string;
+}
+
+export interface UpdateSiteRequest {
+  name: string;
+  streetNumber: string;
+  street: string;
+  postcode: string;
+  city: string;
+  country: string;
+  timezone: string;
+}
+
+export interface CreateCourtRequest {
+  label: string;
+}
+
+export interface CreateScheduleRequest {
+  name: string;
+  validFrom: string;
+  validUntil: string | null;
+  openingTime: string;
+  closingTime: string;
+  applicableDays: number[] | null;
+  priority: number;
+}
+
 export interface CreateClosureRequest {
   type: number;
   reason: number;
@@ -159,17 +138,7 @@ export interface CreateClosureRequest {
   affectedCourtIds: string[] | null;
 }
 
-export interface CreateClosureResponse {
-  closureId: string;
-}
-
-// --- Admin: Query params ---
-
-export interface SitesQueryParams {
-  page?: number;
-  pageSize?: number;
-  searchTerm?: string;
-  isActive?: boolean | null;
-  city?: string;
-  country?: string;
-}
+export type CourtDetailDto = Court;
+export type CreateCourtResponse = { courtId: string };
+export type CreateScheduleResponse = { scheduleId: string };
+export type CreateClosureResponse = { closureId: string };

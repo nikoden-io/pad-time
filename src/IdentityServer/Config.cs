@@ -72,6 +72,33 @@ public static class Config
 
     public static IEnumerable<Client> Clients =>
     [
+        // Postman client
+        new()
+        {
+            ClientId = "postman",
+            ClientName = "Postman Dev Client",
+            RequireClientSecret = false,
+            AllowedGrantTypes = GrantTypes.Code,
+            RequirePkce = true,
+
+            RedirectUris = { "https://oauth.pstmn.io/v1/callback" },
+            PostLogoutRedirectUris = { "https://oauth.pstmn.io/v1/callback" },
+
+            AllowedScopes =
+            {
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                "padtime_profile",
+                "padel_api",
+                "padel_admin",
+                "padel_analytics"
+            },
+
+            AllowOfflineAccess = true,
+            AccessTokenLifetime = 3600,
+            AlwaysIncludeUserClaimsInIdToken = true
+        },
+
         // m2m client credentials flow client
         new()
         {
