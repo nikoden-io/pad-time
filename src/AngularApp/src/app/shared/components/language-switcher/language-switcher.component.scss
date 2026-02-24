@@ -1,80 +1,59 @@
-﻿.language-switcher {
-  display: flex;
-  align-items: center;
-
-  ::ng-deep {
-    .language-select {
-      min-width: 50px;
-      background: #1E293B !important;
-      border-color: #334155 !important;
-
-      .p-select-label {
-        padding: 0.5rem 0.75rem;
-        background: transparent;
-      }
-
-      .p-select-dropdown {
-        background: transparent;
-      }
-
-      &:not(.p-disabled):hover {
-        border-color: #475569 !important;
-      }
-
-      &.p-focus {
-        border-color: var(--p-primary-color) !important;
-        box-shadow: 0 0 0 0.2rem rgba(74, 222, 128, 0.2);
-      }
-    }
-
-    .language-panel {
-      min-width: 60px;
-      margin-top: 0.5rem;
-      background: #1E293B !important;
-      border-color: #334155 !important;
-
-      .p-select-option {
-        transition: all 0.2s ease;
-
-        &:hover {
-          background: #334155 !important;
-        }
-
-        &.p-focus {
-          background: #475569 !important;
-        }
-      }
-    }
-  }
+﻿.ls-wrap {
+  position: relative;
 }
 
-.language-item {
+.ls-trigger {
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem 0;
+  border-radius: 8px;
+  border: 1px solid var(--pt-border);
+  background: transparent;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
 
-  .flag {
-    font-size: 1.5rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  &:hover {
+    border-color: var(--pt-border-hover);
+    background: rgba(255, 255, 255, 0.04);
   }
 }
 
-@media (max-width: 768px) {
-  .language-switcher {
-    ::ng-deep {
-      .language-select {
-        min-width: 45px;
-      }
-    }
+.ls-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--pt-surface);
+  border: 1px solid var(--pt-border-hover);
+  border-radius: 10px;
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 300;
+  min-width: 44px;
+}
+
+.ls-option {
+  padding: 0.35rem 0.4rem;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  text-align: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover {
+    background: var(--pt-surface-alt);
   }
 
-  .language-item {
-    .flag {
-      font-size: 1.25rem;
-    }
+  &.selected {
+    background: rgba(74, 222, 128, 0.1);
+    outline: 1px solid rgba(74, 222, 128, 0.3);
   }
 }

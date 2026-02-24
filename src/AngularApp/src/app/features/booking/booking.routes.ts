@@ -9,9 +9,9 @@ export const bookingRoutes: Routes = [
       import('./pages/booking-home.component').then((m) => m.BookingHomeComponent),
   },
   {
-    path: 'sites',
+    path: 'matches',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./pages/sites-list.component').then((m) => m.SitesListComponent),
+      import('../matches/pages/my-matches.component').then((m) => m.MyMatchesComponent),
   }
 ];

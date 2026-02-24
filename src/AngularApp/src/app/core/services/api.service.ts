@@ -6,7 +6,6 @@ import {
   CurrentUser,
   Site,
   Court,
-  AvailabilityResponse,
   Match,
   CreateMatchRequest,
   CreateMatchResponse,
@@ -16,7 +15,7 @@ import {
   JoinMatchResponse,
   MatchListParams,
   PaginatedResponse,
-  Payment,
+  Payment, AvailabilityResponse,
 } from '../models';
 
 @Injectable({
@@ -41,16 +40,24 @@ export class ApiService {
   }
 
   // Availability
-  getAvailability(siteId: string, date: string, courtId?: string): Observable<AvailabilityResponse> {
-    let params = new HttpParams()
-      .set('siteId', siteId)
-      .set('date', date);
+  getAvailability(args: {
+    siteId: string;
+    date: string;
+    courtId?: string;
+  }): Observable<AvailabilityResponse> {
 
-    if (courtId) {
-      params = params.set('courtId', courtId);
+    let params = new HttpParams()
+      .set('siteId', args.siteId)
+      .set('date', args.date);
+
+    if (args.courtId !== undefined) {
+      params = params.set('courtId', args.courtId);
     }
 
-    return this.http.get<AvailabilityResponse>(`${this.baseUrl}/availability`, {params});
+    return this.http.get<AvailabilityResponse>(
+      `${this.baseUrl}/availability`,
+      {params}
+    );
   }
 
   // Matches

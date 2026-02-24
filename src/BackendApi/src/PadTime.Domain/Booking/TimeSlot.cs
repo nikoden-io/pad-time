@@ -21,6 +21,17 @@ public sealed class TimeSlot : ValueObject
         EndTime = endTime;
     }
 
+    public static TimeSlot FromDateTimes(DateTime start, DateTime end)
+    {
+        if (end <= start)
+            throw new ArgumentException("End time must be after start time.");
+
+        return new TimeSlot(
+            DateOnly.FromDateTime(start),
+            TimeOnly.FromDateTime(start),
+            TimeOnly.FromDateTime(end));
+    }
+
     /// <summary>
     /// Converts the slot start to a UTC DateTime using the specified timezone.
     /// </summary>

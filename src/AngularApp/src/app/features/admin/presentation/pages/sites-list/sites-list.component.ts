@@ -1,13 +1,10 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {ChangeDetectionStrategy, Component, computed, inject, OnInit, signal} from '@angular/core';
 import {Router} from '@angular/router';
-import {TableModule} from 'primeng/table';
-import {ButtonModule} from 'primeng/button';
-import {Tag} from 'primeng/tag';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {Toast} from 'primeng/toast';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {TranslocoDirective, TranslocoService, provideTranslocoScope} from '@jsverse/transloco';
+import {Observable} from 'rxjs';
 import {CreateSiteRequest, Site, SiteDetail} from '@core/models';
 import {SitesRepository} from '@features/admin/data/stites.repository';
 import {SitesStore} from '@features/admin/domain/store/sites.store';
@@ -17,56 +14,53 @@ import {
 import {
   SiteFormDialogComponent
 } from '@features/admin/presentation/components/site-form-dialog/site-form-dialog.component';
-import {Observable} from 'rxjs';
+import {PageShellComponent} from '@shared/components/page-shell/page-shell.component';
 
 @Component({
   selector: 'app-sites-list',
   standalone: true,
   imports: [
-    CommonModule,
-    TableModule,
-    ButtonModule,
-    Tag,
-    ConfirmDialog,
-    Toast,
-    SiteDetailModalComponent,
-    SiteFormDialogComponent,
-    TranslocoDirective,
+    ConfirmDialog, Toast,
+    SiteDetailModalComponent, SiteFormDialogComponent,
+    TranslocoDirective, PageShellComponent,
   ],
   providers: [ConfirmationService, MessageService, provideTranslocoScope('sites')],
   templateUrl: './sites-list.component.html',
   styleUrl: './sites-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SitesListComponent implements OnInit {
-  showDetailModal = signal(false);
-  showSiteDialog = signal(false);
-  siteToEdit = signal<Site | null>(null);
-  selectedSiteForDetail = signal<SiteDetail | null>(null);
+  readonly showDetailModal = signal(false);
+  readonly showSiteDialog = signal(false);
+  readonly siteToEdit = signal<Site | null>(null);
+  readonly selectedSiteForDetail = signal<SiteDetail | null>(null);
+  readonly sitesLabel = computed(() => {
+    const total = this.pagination().totalCount;
+    const active = this.sites().filter(s => s.isActive).length;
+    return `${total} site${total > 1 ? 's' : ''} · ${active} actif${active > 1 ? 's' : ''}`;
+  });
   private readonly repository = inject(SitesRepository);
   private readonly store = inject(SitesStore);
-  sites = this.store.sites;
-  loading = this.store.isLoadingSites;
-  pagination = this.store.pagination;
-  private readonly translocoService = inject(TranslocoService);
+  readonly sites = this.store.sites;
+  readonly loading = this.store.isLoadingSites;
+  readonly pagination = this.store.pagination;
+  private readonly transloco = inject(TranslocoService);
   private readonly router = inject(Router);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly confirmation = inject(ConfirmationService);
+  private readonly toast = inject(MessageService);
 
   ngOnInit(): void {
     this.loadSites();
   }
 
-  loadSites(page: number = 1, pageSize: number = 10): void {
-    this.repository.getSites(page, pageSize).subscribe({
-      error: () => {
-        this.showToast('error', 'errors.generic', 'sites.messages.loadError');
-      },
-    });
+  goToDashboard(): void {
+    this.router.navigate(['/admin']);
   }
 
-  onPageChange(event: any): void {
-    const page = (event.first / event.rows) + 1;
-    this.loadSites(page, event.rows);
+  loadSites(page = 1, pageSize = 10): void {
+    this.repository.getSites(page, pageSize).subscribe({
+      error: () => this.showToast('error', 'errors.generic', 'sites.messages.loadError'),
+    });
   }
 
   onCreateSite(): void {
@@ -80,9 +74,7 @@ export class SitesListComponent implements OnInit {
         this.selectedSiteForDetail.set(this.store.selectedSite());
         this.showDetailModal.set(true);
       },
-      error: () => {
-        this.showToast('error', 'errors.generic', 'sites.messages.loadDetailError');
-      },
+      error: () => this.showToast('error', 'errors.generic', 'sites.messages.loadDetailError'),
     });
   }
 
@@ -93,51 +85,43 @@ export class SitesListComponent implements OnInit {
 
   onSiteDialogSubmit(request: CreateSiteRequest): void {
     const site = this.siteToEdit();
-
     const isUpdate = site !== null;
     const successKey = isUpdate ? 'sites.messages.updateSuccess' : 'sites.messages.createSuccess';
     const errorKey = isUpdate ? 'sites.messages.updateError' : 'sites.messages.createError';
 
-    const operation$ = (site
+    const op$ = (site
       ? this.repository.updateSite(site.siteId, request)
       : this.repository.createSite(request)) as Observable<any>;
 
-    operation$.subscribe({
+    op$.subscribe({
       next: () => {
         this.showToast('success', 'common.success', successKey);
         this.showSiteDialog.set(false);
         this.loadSites();
       },
-      error: () => {
-        this.showToast('error', 'errors.generic', errorKey);
-      },
+      error: () => this.showToast('error', 'errors.generic', errorKey),
     });
   }
 
   onToggleActive(site: Site): void {
     const action = site.isActive ? 'deactivate' : 'activate';
-
-    this.confirmationService.confirm({
-      message: this.translocoService.translate('sites.messages.activateConfirm', {action, name: site.name}),
-      header: this.translocoService.translate('common.confirm'),
+    this.confirmation.confirm({
+      message: this.transloco.translate('sites.messages.activateConfirm', {action, name: site.name}),
+      header: this.transloco.translate('common.confirm'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.repository.toggleSiteActive(site.siteId, !site.isActive).subscribe({
-          next: () => {
-            this.showToast('success', 'common.success', 'sites.messages.activateSuccess');
-          },
-          error: () => {
-            this.showToast('error', 'errors.generic', 'sites.messages.activateError');
-          },
+          next: () => this.showToast('success', 'common.success', 'sites.messages.activateSuccess'),
+          error: () => this.showToast('error', 'errors.generic', 'sites.messages.activateError'),
         });
       },
     });
   }
 
   onDeleteSite(site: Site): void {
-    this.confirmationService.confirm({
-      message: this.translocoService.translate('sites.messages.deleteConfirm', {name: site.name}),
-      header: this.translocoService.translate('confirmation.deleteTitle'),
+    this.confirmation.confirm({
+      message: this.transloco.translate('sites.messages.deleteConfirm', {name: site.name}),
+      header: this.transloco.translate('confirmation.deleteTitle'),
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
@@ -146,19 +130,17 @@ export class SitesListComponent implements OnInit {
             this.showToast('success', 'common.success', 'sites.messages.deleteSuccess');
             this.loadSites();
           },
-          error: () => {
-            this.showToast('error', 'errors.generic', 'sites.messages.deleteError');
-          },
+          error: () => this.showToast('error', 'errors.generic', 'sites.messages.deleteError'),
         });
       },
     });
   }
 
   private showToast(severity: 'success' | 'error', summaryKey: string, detailKey: string): void {
-    this.messageService.add({
+    this.toast.add({
       severity,
-      summary: this.translocoService.translate(summaryKey),
-      detail: this.translocoService.translate(detailKey),
+      summary: this.transloco.translate(summaryKey),
+      detail: this.transloco.translate(detailKey),
     });
   }
 }

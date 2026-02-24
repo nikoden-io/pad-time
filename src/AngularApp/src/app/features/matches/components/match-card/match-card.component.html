@@ -1,0 +1,62 @@
+﻿<div (click)="toggle()" [class.expanded]="expanded()" [class.past]="isPast" class="match-card">
+
+  <div class="card-header">
+    <div class="date-block">
+      <span class="date-day">{{ formatDay(match.startAtUtc) }}</span>
+      <span class="date-month">{{ formatMonth(match.startAtUtc) }}</span>
+    </div>
+
+    <div class="card-info">
+      <div class="card-title">{{ siteName }}</div>
+      <div class="card-sub">
+        <span class="card-time">{{ format(match.startAtUtc) }} → {{ format(match.endAtUtc) }}</span>
+        <span [ngClass]="match.status" class="status-badge">{{ match.status }}</span>
+      </div>
+    </div>
+
+    <div class="participants">
+      @for (filled of dots(); track $index) {
+        <div [class.filled]="filled" class="dot"></div>
+      }
+      <span class="p-count">{{ filledCount }}/4</span>
+    </div>
+
+    <span class="chevron">▼</span>
+  </div>
+
+  @if (expanded()) {
+    <div (click)="$event.stopPropagation()" class="card-body">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <div class="detail-label">Type</div>
+          <div class="detail-value">{{ match.type }}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Prix total</div>
+          <div class="detail-value">{{ (match.priceTotalCents / 100) | number:'1.2-2' }} €</div>
+        </div>
+      </div>
+
+      <div class="participants-list">
+        <div class="participants-label">Participants</div>
+        @for (p of match.participants; track p.memberId) {
+          <div class="participant-row">
+            <div class="participant-avatar">{{ p.matricule[0] }}</div>
+            <span class="participant-name">{{ p.matricule }}</span>
+            <span class="participant-role">{{ p.role }}</span>
+            <span [ngClass]="p.paymentStatus" class="pay-badge">{{ p.paymentStatus }}</span>
+          </div>
+        }
+      </div>
+
+      @if (canCancel) {
+        <div class="card-actions">
+          <button (click)="cancel($event)" [disabled]="cancelling()" class="btn-action danger" type="button">
+            {{ cancelling() ? 'Annulation…' : 'Annuler' }}
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+</div>

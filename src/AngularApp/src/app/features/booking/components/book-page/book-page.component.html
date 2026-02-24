@@ -1,0 +1,48 @@
+﻿<div class="book-page">
+  <p-toast position="top-right"/>
+
+  <header class="book-header">
+    <h1>Réserver un match</h1>
+    <p>Choisissez un site, un créneau et confirmez.</p>
+  </header>
+
+  <!-- Step 1 — toujours visible -->
+  @if (sitesLoading()) {
+    <div class="step-loading"><i class="pi pi-spin pi-spinner"></i> Chargement…</div>
+  } @else {
+    <app-site-court-selector
+      (courtSelected)="onCourtSelected($event)"
+      (siteSelected)="onSiteSelected($event)"
+      [selectedCourtId]="selectedCourtId()"
+      [selectedSiteId]="selectedSiteId()"
+      [sites]="sites()"
+    />
+  }
+
+  <!-- Step 2 — apparaît quand site choisi -->
+  @if (canShowSlots()) {
+    <div class="step-connector"></div>
+    <app-slot-picker
+      (dateChanged)="onDateChanged($event)"
+      (slotSelected)="onSlotSelected($event)"
+      [courtId]="selectedCourtId()"
+      [selectedDate]="selectedDate()"
+      [selectedSlot]="selectedSlot()"
+      [siteId]="selectedSiteId()!"
+    />
+  }
+
+  <!-- Step 3 — apparaît quand slot choisi -->
+  @if (canShowForm()) {
+    <div class="step-connector"></div>
+    <div id="match-form">
+      <app-match-form
+        (cancel)="onCancel()"
+        (confirm)="onConfirm()"
+        [site]="selectedSite()"
+        [slot]="selectedSlot()!"
+        [submitting]="submitting()"
+      />
+    </div>
+  }
+</div>

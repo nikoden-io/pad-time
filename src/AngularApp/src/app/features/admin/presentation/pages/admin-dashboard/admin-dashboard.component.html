@@ -1,66 +1,63 @@
 <ng-container *transloco="let t">
-  <div class="admin-dashboard">
-    <div class="welcome-section">
-      <h1>{{ t('admin.dashboard.title') }}</h1>
-      <p class="subtitle">{{ t('admin.dashboard.subtitle') }}</p>
+  <app-page-shell
+    [subtitle]="t('admin.dashboard.subtitle')"
+    eyebrow="Administration"
+    title="Tableau de"
+    titleEm="bord"
+  >
+
+    <!-- KPI row -->
+    <div class="kpi-row">
+      @for (kpi of kpis(); track kpi.label) {
+        <div class="kpi-card">
+          <span class="kpi-label">{{ kpi.label }}</span>
+          <span class="kpi-value">{{ kpi.value }}</span>
+          @if (kpi.delta) {
+            <span [class.down]="kpi.deltaDown" class="kpi-delta">{{ kpi.delta }}</span>
+          }
+        </div>
+      }
     </div>
 
-    <div class="dashboard-grid">
-      <div class="dashboard-card">
-        <div class="card-icon">
-          <i class="pi pi-building"></i>
-        </div>
-        <h2>{{ t('admin.dashboard.sites.title') }}</h2>
-        <p>{{ t('admin.dashboard.sites.description') }}</p>
-        <p-button
-          [routerLink]="['/admin/sites']"
-          icon="pi pi-arrow-right"
-          iconPos="right"
-          [label]="t('admin.dashboard.sites.action')"
-        />
+    <!-- Cards -->
+    <div class="dash-grid">
+
+      <div [routerLink]="['/admin/sites']"
+           class="dash-card"
+           style="--card-accent:#4ade80;--icon-bg:rgba(74,222,128,0.1);--icon-border:rgba(74,222,128,0.2)">
+        <div class="dash-card-icon">🏟️</div>
+        <div class="dash-card-title">{{ t('admin.dashboard.sites.title') }}</div>
+        <div class="dash-card-desc">{{ t('admin.dashboard.sites.description') }}</div>
+        <span class="dash-card-action">
+          {{ t('admin.dashboard.sites.action') }} <span class="arrow">→</span>
+        </span>
       </div>
 
-      <div class="dashboard-card disabled">
-        <div class="card-icon">
-          <i class="pi pi-calendar"></i>
-        </div>
-        <h2>{{ t('admin.dashboard.matches.title') }}</h2>
-        <p>{{ t('admin.dashboard.matches.description') }}</p>
-        <p-button
-          [disabled]="true"
-          icon="pi pi-lock"
-          [label]="t('common.comingSoon')"
-          severity="secondary"
-        />
+      <div class="dash-card disabled"
+           style="--card-accent:#60a5fa;--icon-bg:rgba(96,165,250,0.08);--icon-border:rgba(96,165,250,0.15)">
+        <div class="dash-card-icon">📅</div>
+        <div class="dash-card-title">{{ t('admin.dashboard.matches.title') }}</div>
+        <div class="dash-card-desc">{{ t('admin.dashboard.matches.description') }}</div>
+        <span class="dash-card-action locked">🔒 {{ t('common.comingSoon') }}</span>
       </div>
 
-      <div class="dashboard-card disabled">
-        <div class="card-icon">
-          <i class="pi pi-chart-line"></i>
-        </div>
-        <h2>{{ t('admin.dashboard.analytics.title') }}</h2>
-        <p>{{ t('admin.dashboard.analytics.description') }}</p>
-        <p-button
-          [disabled]="true"
-          icon="pi pi-lock"
-          [label]="t('common.comingSoon')"
-          severity="secondary"
-        />
+      <div class="dash-card disabled"
+           style="--card-accent:#a78bfa;--icon-bg:rgba(167,139,250,0.08);--icon-border:rgba(167,139,250,0.15)">
+        <div class="dash-card-icon">📊</div>
+        <div class="dash-card-title">{{ t('admin.dashboard.analytics.title') }}</div>
+        <div class="dash-card-desc">{{ t('admin.dashboard.analytics.description') }}</div>
+        <span class="dash-card-action locked">🔒 {{ t('common.comingSoon') }}</span>
       </div>
 
-      <div class="dashboard-card disabled">
-        <div class="card-icon">
-          <i class="pi pi-users"></i>
-        </div>
-        <h2>{{ t('admin.dashboard.members.title') }}</h2>
-        <p>{{ t('admin.dashboard.members.description') }}</p>
-        <p-button
-          [disabled]="true"
-          icon="pi pi-lock"
-          [label]="t('common.comingSoon')"
-          severity="secondary"
-        />
+      <div class="dash-card disabled"
+           style="--card-accent:#f59e0b;--icon-bg:rgba(245,158,11,0.08);--icon-border:rgba(245,158,11,0.15)">
+        <div class="dash-card-icon">👥</div>
+        <div class="dash-card-title">{{ t('admin.dashboard.members.title') }}</div>
+        <div class="dash-card-desc">{{ t('admin.dashboard.members.description') }}</div>
+        <span class="dash-card-action locked">🔒 {{ t('common.comingSoon') }}</span>
       </div>
+
     </div>
-  </div>
+
+  </app-page-shell>
 </ng-container>

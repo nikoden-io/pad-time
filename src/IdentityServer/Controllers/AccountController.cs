@@ -17,12 +17,11 @@ public class AccountController(UserManager<ApplicationUser> userManager, Applica
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        // Check if email already exists
         var existingUser = await userManager.FindByEmailAsync(request.Email);
+
         if (existingUser != null)
             return Conflict(new { message = "Email already in use" });
 
-        // Generate next matricule (L0001, L0002, etc.)
         var nextMatricule = await GenerateNextMatricule();
 
         var user = new ApplicationUser
@@ -38,6 +37,7 @@ public class AccountController(UserManager<ApplicationUser> userManager, Applica
         };
 
         var result = await userManager.CreateAsync(user, request.Password);
+
         if (!result.Succeeded)
             return BadRequest(new { errors = result.Errors.Select(e => e.Description) });
 
@@ -53,10 +53,10 @@ public class AccountController(UserManager<ApplicationUser> userManager, Applica
             .FirstOrDefaultAsync();
 
         if (lastMatricule == null)
-            return "L0001";
+            return "L00001";
 
         var number = int.Parse(lastMatricule.Substring(1));
-        return $"L{number + 1:D4}";
+        return $"L{number + 1:D5}";
     }
 }
 
