@@ -4,15 +4,16 @@ using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Booking;
 using PadTime.Domain.Common;
 
-namespace PadTime.Application.Booking.Queries.GetUserMatches;
+namespace PadTime.Application.Booking.Queries.GetPublicMatches;
 
-public sealed class GetUserMatchesQueryHandler : IRequestHandler<GetUserMatchesQuery, Result<IReadOnlyList<UserMatchDto>>>
+public sealed class GetPublicMatchesQueryHandler
+    : IRequestHandler<GetPublicMatchesQuery, Result<IReadOnlyList<PublicMatchDto>>>
 {
     private readonly IMatchRepository _matchRepository;
     private readonly IMemberRepository _memberRepository;
     private readonly ICurrentUser _currentUser;
 
-    public GetUserMatchesQueryHandler(
+    public GetPublicMatchesQueryHandler(
         IMatchRepository matchRepository,
         IMemberRepository memberRepository,
         ICurrentUser currentUser)
@@ -22,49 +23,54 @@ public sealed class GetUserMatchesQueryHandler : IRequestHandler<GetUserMatchesQ
         _currentUser = currentUser;
     }
 
-    public async Task<Result<IReadOnlyList<UserMatchDto>>> Handle(GetUserMatchesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyList<PublicMatchDto>>> Handle(
+        GetPublicMatchesQuery request,
+        CancellationToken cancellationToken)
     {
-        var member = await _memberRepository.GetBySubjectAsync(_currentUser.Subject, cancellationToken);
-        if (member is null)
-            return DomainErrors.Member.NotFound;
+        var effectiveFrom = request.FromUtc ?? DateTime.UtcNow;
+        var effectiveTo = request.ToUtc ?? DateTime.UtcNow.AddDays(30);
 
-        var matches = await _matchRepository.GetByMemberIdAsync(
-            member.Id,
-            request.FromUtc,
+        var matches = await _matchRepository.GetPublicMatchesAsync(
+            request.SiteId,
+            effectiveFrom,
+            effectiveTo,
             request.Page,
             request.PageSize,
             cancellationToken);
 
-        var dtos = new List<UserMatchDto>(matches.Count);
+        var dtos = new List<PublicMatchDto>(matches.Count);
 
         foreach (var match in matches)
         {
-            var participantDtos = new List<UserParticipantDto>(match.Participants.Count);
+            var participantDtos = new List<ParticipantSummaryDto>(match.Participants.Count);
 
             foreach (var p in match.Participants)
             {
-                var participantMember = await _memberRepository.GetByIdAsync(p.MemberId, cancellationToken);
-
-                participantDtos.Add(new UserParticipantDto(
+                var member = await _memberRepository.GetByIdAsync(p.MemberId, cancellationToken);
+                participantDtos.Add(new ParticipantSummaryDto(
                     p.MemberId,
-                    participantMember?.Matricule.Value ?? "Unknown",
+                    member?.Matricule.Value ?? "Unknown",
                     p.Role.ToString().ToLowerInvariant(),
                     p.PaymentStatus.ToString().ToLowerInvariant()));
             }
 
-            dtos.Add(new UserMatchDto(
+            var paidCount = match.Participants
+                .Count(p => p.PaymentStatus == PaymentStatus.Paid);
+
+            dtos.Add(new PublicMatchDto(
                 match.Id,
                 match.SiteId,
                 match.CourtId,
                 match.StartAtUtc,
                 match.EndAtUtc,
-                match.Type.ToString().ToLowerInvariant(),
                 match.Status.ToString().ToLowerInvariant(),
                 match.OrganizerId,
                 Match.TotalPriceCents,
+                paidCount,
+                4 - paidCount,
                 participantDtos));
         }
 
-        return dtos;
+        return Result.Success<IReadOnlyList<PublicMatchDto>>(dtos);
     }
 }

@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PadTime.API.Authorization;
 using PadTime.API.Extensions;
+using PadTime.Application.Booking.Commands.AddParticipant;
 using PadTime.Application.Booking.Commands.CancelMatch;
 using PadTime.Application.Booking.Commands.CreateMatch;
 using PadTime.Application.Booking.Commands.JoinMatch;
 using PadTime.Application.Booking.Queries.GetMatch;
+using PadTime.Application.Booking.Queries.GetPublicMatches;
 using PadTime.Application.Booking.Queries.GetUserMatches;
 using PadTime.Domain.Booking;
 
@@ -114,7 +116,7 @@ public sealed class MatchesController : ControllerBase
     /// <response code="200">Matches successfully retrieved.</response>
     /// <response code="401">User is not authenticated.</response>
     /// <response code="403">User is not authorized.</response>
-    [HttpGet]
+    [HttpGet("user")]
     [ProducesResponseType(typeof(IReadOnlyList<UserMatchDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUserMatches(
         [FromQuery] DateTime? fromUtc,
@@ -127,6 +129,65 @@ public sealed class MatchesController : ControllerBase
 
         return result.ToActionResult();
     }
+
+    /// <summary>
+    /// Retrieves paginated public matches available for joining.
+    /// Returns matches with status <c>public</c> or <c>full</c>, ordered by start time.
+    /// Defaults to now → now+30 days if no date range is provided.
+    /// </summary>
+    /// <param name="siteId">Optional site filter.</param>
+    /// <param name="fromUtc">Start of search window (UTC). Defaults to now.</param>
+    /// <param name="toUtc">End of search window (UTC). Defaults to now + 30 days.</param>
+    /// <param name="page">Page number, starting at 1.</param>
+    /// <param name="pageSize">Number of results per page.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <response code="200">Matches successfully retrieved.</response>
+    /// <response code="401">User is not authenticated.</response>
+    [HttpGet("public")]
+    [ProducesResponseType(typeof(IReadOnlyList<PublicMatchDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetPublicMatches(
+        [FromQuery] Guid? siteId = null,
+        [FromQuery] DateTime? fromUtc = null,
+        [FromQuery] DateTime? toUtc = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetPublicMatchesQuery(siteId, fromUtc, toUtc, page, pageSize);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return result.ToActionResult();
+    }
+
+    // Dans MatchesController
+    /// <summary>
+    /// Adds a participant to a private match by matricule.
+    /// Only the organizer can perform this action.
+    /// </summary>
+    /// <response code="204">Participant successfully added.</response>
+    /// <response code="403">Not the organizer.</response>
+    /// <response code="404">Match or member not found.</response>
+    /// <response code="409">Match is full or participant already registered.</response>
+    [HttpPost("{matchId:guid}/participants")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> AddParticipant(
+        Guid matchId,
+        [FromBody] AddParticipantRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new AddParticipantCommand(matchId, request.Matricule);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.ToActionResult();
+
+        return NoContent();
+    }
+
+    public sealed record AddParticipantRequest(string Matricule);
 
     /// <summary>
     /// Joins a public match as a participant.

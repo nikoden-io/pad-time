@@ -17,4 +17,8 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Billing\Queries\" />
+    </ItemGroup>
+
 </Project>

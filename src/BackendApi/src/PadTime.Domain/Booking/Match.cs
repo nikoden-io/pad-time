@@ -70,7 +70,6 @@ public sealed class Match : AggregateRoot<Guid>
             CreatedAtUtc = utcNow
         };
 
-        // Add organizer as first participant
         var organizer = Participant.CreateOrganizer(match.Id, organizerId, utcNow);
         match._participants.Add(organizer);
 
@@ -85,7 +84,7 @@ public sealed class Match : AggregateRoot<Guid>
     public Result AddParticipant(Guid memberId, DateTime utcNow)
     {
         if (Status != MatchStatus.Private)
-            return DomainErrors.Booking.MatchNotPublic;
+            return DomainErrors.Booking.MatchNotPrivate;
 
         if (_participants.Count >= MaxParticipants)
             return DomainErrors.Booking.MatchFull;

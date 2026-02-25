@@ -35,7 +35,7 @@ namespace PadTime.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/v1/sites")]
-[Authorize(Policy = Policies.RequireAdmin)]
+[Authorize(Policy = Policies.RequireUser)]
 public sealed class SitesController(IMediator mediator, IAuditLogger auditLogger) : ControllerBase
 {
     /// <summary>
@@ -82,7 +82,7 @@ public sealed class SitesController(IMediator mediator, IAuditLogger auditLogger
     /// </summary>
     [HttpGet]
     [ValidateModel]
-    [Authorize(Policy = Policies.RequireAdmin)]
+    [Authorize(Policy = Policies.RequireUser)]
     [ProducesResponseType(typeof(PagedResult<SiteDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetSites(
