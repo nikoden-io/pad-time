@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './navbar/navbar.component';
-import { LayoutService } from '@core/services/layout-service';
+import {Component, inject} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {NavbarComponent} from './navbar/navbar.component';
+import {LayoutService} from '@core/services/layout-service';
 
 @Component({
   selector: 'app-shell',
@@ -24,7 +24,7 @@ import { LayoutService } from '@core/services/layout-service';
 
     .main-content {
       flex: 1;
-      padding: var(--pt-gutter);
+      padding: 0;
       max-width: var(--pt-content-max);
       margin: 0 auto;
       width: 100%;

@@ -73,6 +73,28 @@ export class ApiService {
     return this.http.get<PaginatedResponse<Match>>(`${this.baseUrl}/matches`, {params: httpParams});
   }
 
+  getPublicMatches(params?: {
+    siteId?: string;
+    fromUtc?: string;
+    toUtc?: string;
+    page?: number;
+    pageSize?: number;
+  }): Observable<Match[]> {
+    let httpParams = new HttpParams();
+
+    if (params?.siteId) httpParams = httpParams.set('siteId', params.siteId);
+    if (params?.fromUtc) httpParams = httpParams.set('fromUtc', params.fromUtc);
+    if (params?.toUtc) httpParams = httpParams.set('toUtc', params.toUtc);
+    if (params?.page) httpParams = httpParams.set('page', params.page.toString());
+    if (params?.pageSize) httpParams = httpParams.set('pageSize', params.pageSize.toString());
+
+    return this.http.get<Match[]>(`${this.baseUrl}/matches/public`, {params: httpParams});
+  }
+
+  getUserMatches(): Observable<PaginatedResponse<Match>> {
+    return this.http.get<PaginatedResponse<Match>>(`${this.baseUrl}/matches/user`);
+  }
+
   getMatch(matchId: string): Observable<Match> {
     return this.http.get<Match>(`${this.baseUrl}/matches/${matchId}`);
   }

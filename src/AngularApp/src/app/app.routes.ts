@@ -30,8 +30,14 @@ export const routes: Routes = [
       },
       {
         path: 'booking',
-        loadChildren: () =>
-          import('./features/booking/booking.routes').then((m) => m.bookingRoutes),
+        loadComponent: () =>
+          import('@features/booking/pages/booking-home.component').then((m) => m.BookingHomeComponent),
+      },
+      {
+        path: 'join',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('@features/join/pages/join-home.component').then((m) => m.JoinHomeComponent),
       },
       {
         path: 'matches',

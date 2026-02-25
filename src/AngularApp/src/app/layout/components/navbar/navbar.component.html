@@ -15,7 +15,10 @@
         <a [routerLinkActiveOptions]="{ exact: true }" class="nav-link" routerLink="/booking" routerLinkActive="active">
           Réserver
         </a>
-        <a class="nav-link" routerLink="/matches" routerLinkActive="active">Matches</a>
+        <a [routerLinkActiveOptions]="{ exact: true }" class="nav-link" routerLink="/join" routerLinkActive="active">
+          Rejoindre
+        </a>
+        <a class="nav-link" routerLink="/matches" routerLinkActive="active">Mes matches</a>
         @if (auth.isAdmin()) {
           <a class="nav-link nav-link--admin" routerLink="/admin" routerLinkActive="active">Admin</a>
         }
@@ -101,6 +104,9 @@
       <div class="drawer-section">
         <a (click)="closeMenu()" class="drawer-link" routerLink="/booking" routerLinkActive="active">
           Réserver
+        </a>
+        <a [routerLinkActiveOptions]="{ exact: true }" class="nav-link" routerLink="/join" routerLinkActive="active">
+          Rejoindre
         </a>
         <a (click)="closeMenu()" class="drawer-link" routerLink="/matches" routerLinkActive="active">
           Mes matchs

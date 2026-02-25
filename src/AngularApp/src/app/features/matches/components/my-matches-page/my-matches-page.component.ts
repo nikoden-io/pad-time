@@ -56,7 +56,7 @@ export class MyMatchesPageComponent {
     this.load();
 
     forkJoin({
-      matches: this.api.getMatches({scope: 'mine'}),
+      matches: this.api.getUserMatches(),
       sites: this.api.getSites(),
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({matches, sites}: any) => {
@@ -74,7 +74,7 @@ export class MyMatchesPageComponent {
   }
 
   private load() {
-    this.api.getMatches({scope: 'mine'})
+    this.api.getUserMatches()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res: any) => {

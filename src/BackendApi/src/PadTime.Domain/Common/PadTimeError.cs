@@ -34,6 +34,9 @@ public static class DomainErrors
         public static readonly PadTimeError MatchNotPublic =
             new("booking.match_not_public", "This match is not public.");
 
+        public static readonly PadTimeError MatchNotPrivate =
+            new("booking.match_not_public", "This match is not private.");
+
         public static readonly PadTimeError MatchFull =
             new("booking.match_full", "This match is already full.");
 
