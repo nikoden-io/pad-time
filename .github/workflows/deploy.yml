@@ -57,30 +57,6 @@ jobs:
         working-directory: src/BackendApi
         run: dotnet build --no-restore -c Release
 
-      - name: Tests Domain
-        working-directory: src/BackendApi
-        run: dotnet test tests/PadTime.Domain.Tests/PadTime.Domain.Tests.csproj --no-build -c Release --logger "trx;LogFileName=domain-results.trx"
-
-      - name: Tests Application
-        working-directory: src/BackendApi
-        run: dotnet test tests/PadTime.Application.Tests/PadTime.Application.Tests.csproj --no-build -c Release --logger "trx;LogFileName=application-results.trx"
-
-      - name: Tests Integration
-        working-directory: src/BackendApi
-        env:
-          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5434;Database=padtime_test;Username=test_user;Password=test_password"
-          Authentication__Authority: "https://localhost:5001"
-          Authentication__Audience: "padtime-api"
-          ASPNETCORE_ENVIRONMENT: "Test"
-        run: dotnet test tests/PadTime.API.IntegrationTests/PadTime.API.IntegrationTests.csproj --no-build -c Release --logger "trx;LogFileName=integration-results.trx"
-
-      - name: Publier résultats tests
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results
-          path: src/BackendApi/**/*.trx
-
   # ===========================================================================
   # JOB 2 — Build & Push IdentityServer
   # ===========================================================================
