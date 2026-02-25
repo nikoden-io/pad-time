@@ -90,6 +90,20 @@ services:
     networks:
       - paddle-network
 
+  # Frontend Angular (nginx)
+  web:
+    build:
+      context: ./src/AngularApp
+      dockerfile: Dockerfile
+    container_name: paddle-web
+    ports:
+      - "4200:80"             # http://localhost:4200 — même port que ng serve
+    depends_on:
+      - backend-api
+      - identity-server
+    networks:
+      - paddle-network
+
 volumes:
   identity-db-data:
     driver: local
