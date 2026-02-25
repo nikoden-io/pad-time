@@ -11,7 +11,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PadTime.Infrastructure.Persistence;
-using Serilog;
 using Testcontainers.PostgreSql;
 using Xunit;
 
@@ -37,22 +36,40 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
             if (descriptor != null)
                 services.Remove(descriptor);
 
-            // Add test database
+            // Add test database (Testcontainers)
             services.AddDbContext<PadTimeDbContext>(options =>
             {
                 options.UseNpgsql(_postgresContainer.GetConnectionString());
             });
         });
 
-        // ⭐ CRITIQUE: ConfigureTestServices s'exécute APRÈS AddApiServices
         builder.ConfigureTestServices(services =>
         {
-            // Force bypass authentication
+            // Bypass authentication in tests
             services.AddAuthentication("Test")
                 .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
         });
 
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment("Test");
+    }
+
+    // FIX : Serilog est initialisé dans Program.cs via UseSerilog() bootstrapping.
+    // Quand WebApplicationFactory reconstruit l'host, Serilog est déjà "frozen"
+    // et lève InvalidOperationException.
+    // Solution : on surcharge CreateHostBuilder pour retirer Serilog avant que
+    // WebApplicationFactory ne reconstruise l'app, et on le remplace par le
+    // logging standard .NET (suffisant pour les tests).
+    protected override IHostBuilder CreateHostBuilder()
+    {
+        var builder = base.CreateHostBuilder();
+
+        builder.ConfigureLogging((context, logging) =>
+        {
+            logging.ClearProviders();
+            logging.AddConsole();
+        });
+
+        return builder;
     }
 
     protected override IHost CreateHost(IHostBuilder builder)
