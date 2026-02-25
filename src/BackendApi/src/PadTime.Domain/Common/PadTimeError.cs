@@ -35,7 +35,7 @@ public static class DomainErrors
             new("booking.match_not_public", "This match is not public.");
 
         public static readonly PadTimeError MatchNotPrivate =
-            new("booking.match_not_public", "This match is not private.");
+            new("booking.match_not_private", "This match is not private.");
 
         public static readonly PadTimeError MatchFull =
             new("booking.match_full", "This match is already full.");
@@ -45,6 +45,9 @@ public static class DomainErrors
 
         public static readonly PadTimeError AlreadyParticipant =
             new("booking.already_participant", "You are already a participant in this match.");
+
+        public static readonly PadTimeError NotParticipant =
+            new("booking.not_participant", "You are not a participant in this match.");
 
         public static readonly PadTimeError NotOrganizer =
             new("booking.not_organizer", "Only the organizer can perform this action.");
