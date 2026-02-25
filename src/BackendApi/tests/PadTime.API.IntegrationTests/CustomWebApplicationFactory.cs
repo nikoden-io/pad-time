@@ -61,7 +61,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
     // logging standard .NET (suffisant pour les tests).
     protected override IHostBuilder CreateHostBuilder()
     {
-        var builder = base.CreateHostBuilder();
+        var builder = base.CreateHostBuilder()
+            ?? Host.CreateDefaultBuilder();
 
         builder.ConfigureLogging((context, logging) =>
         {
