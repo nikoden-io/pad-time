@@ -32,6 +32,7 @@ public sealed class EnsureMemberExistsBehavior<TRequest, TResponse> : IPipelineB
     {
         if (_currentUser.IsAuthenticated && !string.IsNullOrEmpty(_currentUser.Subject))
         {
+            Console.WriteLine("Matricule: " + _currentUser.Matricule);
             var member = await _memberRepository.GetBySubjectAsync(_currentUser.Subject, cancellationToken);
 
             if (member is null)

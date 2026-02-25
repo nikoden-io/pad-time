@@ -133,7 +133,6 @@ public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchComma
 
         var match = matchResult.Value;
 
-        // Add private participants if any
         if (request.Type == PadMatchType.Private && request.PrivateParticipantMatricules is not null)
         {
             foreach (var matricule in request.PrivateParticipantMatricules)
