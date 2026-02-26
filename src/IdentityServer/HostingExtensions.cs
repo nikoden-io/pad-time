@@ -90,7 +90,7 @@ internal static class HostingExtensions
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseSuccessEvents = true;
-
+                    var issuerUri = builder.Configuration["IdentityServer:IssuerUri"];
                     if (builder.Environment.IsDevelopment()) options.Diagnostics.ChunkSize = 1024 * 1024 * 10; // 10 MB
                 })
                 .AddInMemoryIdentityResources(Config.IdentityResources)
