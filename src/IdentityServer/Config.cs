@@ -158,13 +158,6 @@ public static class Config
                 "https://localhost:4200",
                 "https://web.mangomoss-72bb825b.northeurope.azurecontainerapps.io"
             },
-            
-            // Allowed CORS origins for token endpoint
-            AllowedCorsOrigins =
-            {
-                "http://localhost:4200",
-                "https://localhost:4200"
-            },
 
             AllowedScopes =
             {
