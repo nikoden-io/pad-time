@@ -57,6 +57,30 @@ jobs:
         working-directory: src/BackendApi
         run: dotnet build --no-restore -c Release
 
+      - name: Tests Domain
+        working-directory: src/BackendApi
+        run: dotnet test tests/PadTime.Domain.Tests/PadTime.Domain.Tests.csproj --no-build -c Release --logger "trx;LogFileName=domain-results.trx"
+
+      - name: Tests Application
+        working-directory: src/BackendApi
+        run: dotnet test tests/PadTime.Application.Tests/PadTime.Application.Tests.csproj --no-build -c Release --logger "trx;LogFileName=application-results.trx"
+
+      - name: Tests Integration
+        working-directory: src/BackendApi
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5434;Database=padtime_test;Username=test_user;Password=test_password"
+          Authentication__Authority: "https://localhost:5001"
+          Authentication__Audience: "padtime-api"
+          ASPNETCORE_ENVIRONMENT: "Test"
+        run: dotnet test tests/PadTime.API.IntegrationTests/PadTime.API.IntegrationTests.csproj --no-build -c Release --logger "trx;LogFileName=integration-results.trx"
+
+      - name: Publier résultats tests
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: src/BackendApi/**/*.trx
+
   # ===========================================================================
   # JOB 2 — Build & Push IdentityServer
   # ===========================================================================
@@ -202,27 +226,36 @@ jobs:
 
       - name: Deploy IdentityServer
         if: needs.build-identity-server.outputs.built == 'true'
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          resourceGroup: ${{ env.RESOURCE_GROUP }}
-          containerAppName: identity-server
-          imageToDeploy: ${{ env.ACR_SERVER }}/padtime/identity-server:latest
+        run: |
+          az containerapp update \
+            --name identity-server \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image ${{ env.ACR_SERVER }}/padtime/identity-server:latest \
+            --registry-server ${{ env.ACR_SERVER }} \
+            --registry-username ${{ secrets.AZURE_ACR_USERNAME }} \
+            --registry-password ${{ secrets.AZURE_ACR_PASSWORD }}
 
       - name: Deploy Backend API
         if: needs.build-backend-api.outputs.built == 'true'
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          resourceGroup: ${{ env.RESOURCE_GROUP }}
-          containerAppName: backend-api
-          imageToDeploy: ${{ env.ACR_SERVER }}/padtime/backend-api:latest
+        run: |
+          az containerapp update \
+            --name backend-api \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image ${{ env.ACR_SERVER }}/padtime/backend-api:latest \
+            --registry-server ${{ env.ACR_SERVER }} \
+            --registry-username ${{ secrets.AZURE_ACR_USERNAME }} \
+            --registry-password ${{ secrets.AZURE_ACR_PASSWORD }}
 
       - name: Deploy Web
         if: needs.build-web.outputs.built == 'true'
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          resourceGroup: ${{ env.RESOURCE_GROUP }}
-          containerAppName: web
-          imageToDeploy: ${{ env.ACR_SERVER }}/padtime/web:latest
+        run: |
+          az containerapp update \
+            --name web \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image ${{ env.ACR_SERVER }}/padtime/web:latest \
+            --registry-server ${{ env.ACR_SERVER }} \
+            --registry-username ${{ secrets.AZURE_ACR_USERNAME }} \
+            --registry-password ${{ secrets.AZURE_ACR_PASSWORD }}
 
       - name: Deployment Summary
         run: |
