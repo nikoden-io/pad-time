@@ -132,27 +132,33 @@ public static class Config
         {
             ClientId = "padtime-web",
             ClientName = "Pad'Time Web Application",
-
-            // No secret for public SPA client
+            
             RequireClientSecret = false,
 
             AllowedGrantTypes = GrantTypes.Code,
             RequirePkce = true,
 
-            // Where to redirect after login
             RedirectUris =
             {
                 "http://localhost:4200/callback",
-                "https://localhost:4200/callback"
+                "https://localhost:4200/callback",
+                "https://web.mangomoss-72bb825b.northeurope.azurecontainerapps.io/callback"
             },
 
-            // Where to redirect after logout
             PostLogoutRedirectUris =
             {
                 "http://localhost:4200",
-                "https://localhost:4200"
+                "https://localhost:4200",
+                "https://web.mangomoss-72bb825b.northeurope.azurecontainerapps.io"
             },
 
+            AllowedCorsOrigins =
+            {
+                "http://localhost:4200",
+                "https://localhost:4200",
+                "https://web.mangomoss-72bb825b.northeurope.azurecontainerapps.io"
+            },
+            
             // Allowed CORS origins for token endpoint
             AllowedCorsOrigins =
             {
