@@ -114,16 +114,6 @@ docker exec -it paddle-identity-server bash  # Shell into container
 - **Database**: PostgreSQL 18
 - **Frontend**: Angular v21, angular-auth-oidc-client
 
-## Roadmap
-
-- [x] Setup IdentityServer + PostgreSQL + Docker
-- [ ] Endpoint account creation
-- [ ] Backend API REST integrating businness logic
-- [ ] Angular client
-- [ ] Testing
-- [ ] CI/CD
-- [ ] VPS deploiement
-
 ## Troubleshooting
 
 **Database connexion error**: Verify that `identity-db` is healthy with `docker ps`
