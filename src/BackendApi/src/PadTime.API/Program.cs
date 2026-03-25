@@ -41,6 +41,7 @@ try
         var context = scope.ServiceProvider.GetRequiredService<PadTimeDbContext>();
         context.Database.Migrate();
         DbSeeder.SeedData(context);
+        DemoSeeder.SeedDemoData(context);
     }
 
 
