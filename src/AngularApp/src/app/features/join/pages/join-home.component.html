@@ -1,0 +1,124 @@
+<app-page-shell
+  eyebrow="Rejoindre"
+  title="Rejoindre votre"
+  titleEm="prochain match"
+  subtitle="Trouvez un match public et réservez votre place en un clic."
+  dividerLabel="matchs disponibles">
+
+  <div class="join-page">
+
+    <!-- Filters -->
+    <div class="filters">
+      <!-- Site selector -->
+      <div class="filter-group">
+        <label class="filter-label">Site</label>
+        <div class="site-chips">
+          <button
+            (click)="onSiteChange(null)"
+            [class.active]="selectedSiteId() === null"
+            class="chip"
+            type="button"
+          >Tous</button>
+          @for (site of sites(); track site.siteId) {
+            <button
+              (click)="onSiteChange(site.siteId)"
+              [class.active]="selectedSiteId() === site.siteId"
+              class="chip"
+              type="button"
+            >{{ site.name }}</button>
+          }
+        </div>
+      </div>
+
+      <!-- Date range -->
+      <div class="filter-group filter-dates">
+        <div class="date-field">
+          <label class="filter-label">Du</label>
+          <p-datepicker
+            (ngModelChange)="onFromDateChange($event)"
+            [ngModel]="fromDate()"
+            [appendTo]="'body'"
+            [showIcon]="false"
+            dateFormat="dd/mm/yy"
+            styleClass="date-input"
+          />
+        </div>
+        <div class="date-field">
+          <label class="filter-label">Au</label>
+          <p-datepicker
+            (ngModelChange)="onToDateChange($event)"
+            [ngModel]="toDate()"
+            [appendTo]="'body'"
+            [showIcon]="false"
+            dateFormat="dd/mm/yy"
+            styleClass="date-input"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- States -->
+    @if (loading()) {
+      <div class="state-msg">
+        <i class="pi pi-spin pi-spinner"></i> Chargement des matchs…
+      </div>
+    } @else if (error()) {
+      <div class="state-msg error">{{ error() }}</div>
+    } @else if (filteredMatches().length === 0) {
+      <div class="empty-state">
+        <i class="pi pi-calendar-times empty-icon"></i>
+        <p class="empty-title">Aucun match disponible</p>
+        <p class="empty-sub">Modifiez les filtres ou revenez plus tard.</p>
+      </div>
+    } @else {
+
+      <!-- Available matches -->
+      @if (availableMatches().length > 0) {
+        <div class="section-header">
+          <span class="section-label">Places disponibles</span>
+          <span class="section-count">{{ availableMatches().length }}</span>
+        </div>
+        <div class="match-list">
+          @for (match of availableMatches(); track match.matchId) {
+            <app-public-match-card
+              (joined)="onJoined(match.matchId)"
+              [match]="match"
+              [siteName]="siteNameFor(match.siteId)"
+            />
+          }
+        </div>
+      }
+
+      <!-- Full matches -->
+      @if (fullMatches().length > 0) {
+        <div class="section-header section-header--muted">
+          <span class="section-label">Complets</span>
+          <span class="section-count">{{ fullMatches().length }}</span>
+        </div>
+        <div class="match-list">
+          @for (match of fullMatches(); track match.matchId) {
+            <app-public-match-card
+              (joined)="onJoined(match.matchId)"
+              [match]="match"
+              [siteName]="siteNameFor(match.siteId)"
+            />
+          }
+        </div>
+      }
+
+      <!-- Load more -->
+      @if (hasMore()) {
+        <div class="load-more">
+          <button (click)="loadMore()" [disabled]="loadingMore()" class="btn-more" type="button">
+            @if (loadingMore()) {
+              <i class="pi pi-spin pi-spinner"></i> Chargement…
+            } @else {
+              Voir plus
+            }
+          </button>
+        </div>
+      }
+    }
+
+  </div>
+</app-page-shell>
