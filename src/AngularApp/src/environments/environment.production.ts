@@ -1,12 +1,12 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://padtime-api.nikoden.io/api/v1',
-  identityApiUrl: 'https://padtime-auth.nikoden.io/api',
+  apiUrl: 'https://backend-api.mangomoss-72bb825b.northeurope.azurecontainerapps.io/api/v1',
+  identityApiUrl: 'https://identity-server.mangomoss-72bb825b.northeurope.azurecontainerapps.io/api',
   oidc: {
-    authority: 'https://padtime-auth.nikoden.io',
+    authority: 'https://identity-server.mangomoss-72bb825b.northeurope.azurecontainerapps.io',
     clientId: 'padtime-web',
-    redirectUrl: 'https://padtime.nikoden.io/callback',
-    postLogoutRedirectUri: 'https://padtime.nikoden.io',
+    redirectUrl: 'https://web.mangomoss-72bb825b.northeurope.azurecontainerapps.io/callback',
+    postLogoutRedirectUri: 'https://web.mangomoss-72bb825b.northeurope.azurecontainerapps.io',
     scope: 'openid profile padtime_profile padel_api padel_admin padel_analytics offline_access',
     responseType: 'code',
   },
