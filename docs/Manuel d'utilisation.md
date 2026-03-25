@@ -1,6 +1,6 @@
 # Manuel d'utilisation — Pad'Time
 
-> Version 1.0 — Mars 2026
+> Version 1.1 — Mars 2026
 > Ce document décrit le fonctionnement de la plateforme Pad'Time, côté utilisateur et côté administrateur, en mettant en correspondance chaque fonctionnalité avec la spec métier (P1–P4) et son implémentation technique (backend + frontend).
 
 ---
@@ -21,6 +21,7 @@
 12. [Administration — Analytics revenus](#12-administration--analytics-revenus)
 13. [Référence API](#13-référence-api)
 14. [Codes d'erreur métier](#14-codes-derreur-métier)
+15. [Scénarios de test](#15-scénarios-de-test)
 
 ---
 
@@ -127,28 +128,40 @@ site_id      → présent si role=admin_site ou member_category=site
 ### Parcours utilisateur
 
 ```
-[Page Réservation]
-  → Choisir un site
-  → Choisir un terrain (optionnel)
-  → Choisir une date
-  → Voir les créneaux disponibles
-  → Sélectionner un créneau
-  → Configurer le match (type, participants)
-  → Confirmer
+[Page /booking]
+  Étape 1 → Choisir un site (chips cliquables)
+           → Choisir un terrain (optionnel, filtre la grille)
+  Étape 2 → Naviguer par date (← jour précédent | date picker | jour suivant →)
+           → Voir la grille de créneaux par terrain
+           → Sélectionner un créneau disponible
+  Étape 3 → Choisir le type : Public ou Privé
+           → Si Privé : ajouter des participants par matricule (0 à 3)
+           → Vérifier le récapitulatif
+           → Confirmer
 ```
 
 ### Frontend
 
-- **Route** : `/booking` (page principale après connexion)
+- **Route** : `/booking`
 - **Composant principal** : `BookPageComponent`
 - **Sous-composants** :
-  - `SiteCourtSelectorComponent` — sélection site/terrain
-  - `SlotPickerComponent` — affichage des créneaux via `GET /availability`
-  - `MatchFormComponent` — formulaire type + participants privés
+  - `SiteCourtSelectorComponent` — chips de site, liste de terrains
+  - `SlotPickerComponent` — navigation par date + grille de créneaux (1h30, pause 15 min)
+  - `MatchFormComponent` — sélecteur de type + gestion participants + récapitulatif
 
-### Disponibilités
+### Étape 1 — Sélection du site et du terrain
 
-Les créneaux sont calculés à partir des **horaires annuels** et des **fermetures** du site, en excluant les matchs déjà existants (anti double-booking).
+- Les sites sont chargés au démarrage (`GET /api/v1/sites`).
+- Choisir un terrain est **optionnel** : si aucun terrain n'est sélectionné, tous les terrains du site sont affichés dans la grille.
+
+### Étape 2 — Sélection du créneau
+
+Les créneaux sont calculés par le backend en tenant compte :
+- des horaires du site (priorité la plus haute en vigueur)
+- des fermetures actives
+- des matchs déjà existants sur ce terrain (anti double-booking)
+
+Les créneaux passés (avant l'heure actuelle) ne sont jamais affichés.
 
 **Appel API** :
 ```
@@ -167,36 +180,50 @@ GET /api/v1/availability?siteId={id}&date={YYYY-MM-DD}&courtId={id}
 }
 ```
 
-### Création du match
+### Étape 3 — Configuration et confirmation
 
-**Appel API** :
-```
-POST /api/v1/matches
-```
+#### Match public
 
-**Payload** :
+Sélectionner **Public** et confirmer. Le match est ouvert aux inscriptions immédiatement.
+
+#### Match privé
+
+1. Sélectionner **Privé**.
+2. Ajouter des participants par matricule (0 à 3 — l'organisateur occupe la 4e place) :
+   - Format attendu : `Gxxxx` (4 chiffres), `Sxxxxx` ou `Lxxxxx` (5 chiffres)
+   - La saisie est convertie en majuscules automatiquement
+   - Un doublon ou un format invalide affiche une erreur inline
+   - Chaque participant ajouté apparaît sous forme de **chip** avec un bouton ×
+3. Confirmer.
+
+> Les participants d'un match privé reçoivent un statut `unpaid` à la création. Ils doivent payer avant J-1 pour conserver leur place.
+
+### Création du match — Appel API
+
+**Appel** : `POST /api/v1/matches`
+
+**Payload match public** :
 ```json
 {
   "siteId": "uuid",
   "courtId": "uuid",
   "startAt": "2026-03-25T09:00:00Z",
-  "type": "public",
-  "privateParticipantsMatricules": []
+  "type": "public"
 }
 ```
 
-Pour un **match privé** avec participants initiaux :
+**Payload match privé avec participants** :
 ```json
 {
+  "siteId": "uuid",
+  "courtId": "uuid",
+  "startAt": "2026-03-25T09:00:00Z",
   "type": "private",
-  "privateParticipantsMatricules": ["G5678", "S0012"]
+  "privateParticipantsMatricules": ["G5678", "S00123"]
 }
 ```
 
-**Réponse** : `201 Created`
-```json
-{ "matchId": "uuid" }
-```
+**Réponse** : `201 Created` → `{ "matchId": "uuid" }`
 
 ### Règles métier appliquées automatiquement
 
@@ -216,31 +243,56 @@ Pour un **match privé** avec participants initiaux :
 ### Parcours utilisateur
 
 ```
-[Page Rejoindre]
-  → Voir la liste des matchs publics disponibles
-  → Sélectionner un match
-  → Rejoindre (paiement immédiat)
+[Page /join]
+  → Filtrer par site (chips) et par période (date de début / fin)
+  → Voir les matchs disponibles (places libres) et complets (grisés)
+  → Cliquer "Rejoindre" sur un match
+  → Paiement immédiat (mock)
+  → Confirmation visuelle inline ✓ Rejoint !
 ```
 
 ### Frontend
 
 - **Route** : `/join`
-- **Composant** : `JoinHomeComponent`
-- **Appel** : `GET /api/v1/matches/public` ou `GET /api/v1/matches?scope=public`
+- **Composant principal** : `JoinHomeComponent`
+- **Sous-composant** : `PublicMatchCardComponent`
 
-### Rejoindre un match
+#### Filtres
 
-**Appel API** :
+| Filtre | Comportement |
+|--------|-------------|
+| **Site** | Chips "Tous" + un chip par site. Recharge la liste à chaque changement. |
+| **Du / Au** | Plage de dates avec `p-datepicker`. Par défaut : aujourd'hui → +14 jours. |
+
+#### Liste des matchs
+
+Les matchs sont répartis en deux groupes :
+- **Places disponibles** — matchs avec statut `public`, bouton "Rejoindre" actif
+- **Complets** — matchs avec statut `full`, bouton désactivé, carte grisée
+
+Chaque carte affiche : date, nom du site, horaire (HH:mm → HH:mm), indicateur de places (4 dots), prix par place (15,00 €).
+
+**Pagination** : bouton "Voir plus" — charge la page suivante par lots de 10 sans recharger les résultats précédents.
+
+#### Action "Rejoindre"
+
+1. Clic sur **Rejoindre** → génère un `crypto.randomUUID()` comme `idempotencyKey`.
+2. Appel `POST /api/v1/matches/{matchId}/join`.
+3. En cas de succès : le bouton disparaît, remplacé par **✓ Rejoint !** (vert). Le compteur de places est mis à jour **localement** sans rechargement.
+4. En cas d'erreur : message inline sous les dots.
+
+### Appel API — Rejoindre
+
 ```
 POST /api/v1/matches/{matchId}/join
 ```
 
 **Payload** :
 ```json
-{ "idempotencyKey": "uuid-unique-par-tentative" }
+{ "idempotencyKey": "550e8400-e29b-41d4-a716-446655440000" }
 ```
 
-> L'`idempotencyKey` garantit qu'une double soumission (ex: double-clic) ne génère pas deux paiements. Si la clé existe déjà, la réponse retourne le paiement existant sans créer de doublon.
+> L'`idempotencyKey` est un UUID généré côté client à chaque tentative. Si l'utilisateur clique deux fois rapidement, la deuxième requête retourne le paiement existant sans créer de doublon.
 
 **Réponse** : `200 OK`
 ```json
@@ -249,11 +301,12 @@ POST /api/v1/matches/{matchId}/join
 
 ### Règles métier
 
-| Règle | Code erreur |
-|-------|------------|
-| Match non public (privé, verrouillé, etc.) | `403 booking.match_not_public` |
-| Match complet (4 participants) | `409 match.full` |
-| Conflit de clé d'idempotence | `409 payment.idempotency_conflict` |
+| Règle | Code erreur | Affichage UI |
+|-------|------------|-------------|
+| Match non public | `403 booking.match_not_public` | Message inline |
+| Match complet | `409 booking.match_full` | "Ce match est complet." |
+| Déjà participant | `409 booking.already_participant` | "Vous participez déjà à ce match." |
+| Conflit idempotence | `409 payment.idempotency_conflict` | Message inline |
 
 ---
 
@@ -678,6 +731,181 @@ Les erreurs sont retournées au format `application/problem+json` (RFC 7807).
 | `member.not_found` | 404 | Membre introuvable |
 | `site.not_found` | 404 | Site introuvable |
 | `court.not_found` | 404 | Terrain introuvable |
+
+---
+
+---
+
+## 15. Scénarios de test
+
+Cette section liste les scénarios à valider manuellement pour chaque fonctionnalité implémentée. Chaque scénario précise les prérequis, les étapes et le résultat attendu.
+
+---
+
+### T01 — Authentification
+
+**Prérequis** : IdentityServer et BackendApi démarrés.
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | Naviguer vers `/` sans être connecté | Redirection vers `/auth/login` |
+| 2 | Cliquer "Connexion" | Redirection vers IdentityServer |
+| 3 | S'authentifier avec un compte valide | Retour sur `/` avec navbar connectée |
+| 4 | Naviguer vers `/api/v1/me` (Swagger ou curl) | Réponse `200` avec `matricule`, `role`, `category` |
+
+---
+
+### T02 — Disponibilités
+
+**Prérequis** : Au moins un site actif avec au moins un horaire configuré.
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | Ouvrir `/booking` | Page chargée, liste des sites visible |
+| 2 | Sélectionner un site | Grille de créneaux apparaît (étape 2) |
+| 3 | Naviguer au jour suivant | Créneaux rechargés pour la nouvelle date |
+| 4 | Sélectionner un terrain spécifique | Grille filtrée sur ce terrain |
+| 5 | Sélectionner un créneau disponible | Formulaire de confirmation apparaît (étape 3) |
+| 6 | Vérifier un créneau déjà réservé | Créneau grisé, non cliquable |
+
+---
+
+### T03 — Créer un match public
+
+**Prérequis** : Connecté, aucune dette active, fenêtre de réservation respectée.
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | Sélectionner un créneau disponible | Formulaire étape 3 affiché |
+| 2 | Vérifier que "Public" est sélectionné par défaut | Bouton "Public" actif, section participants absente |
+| 3 | Vérifier le récapitulatif | Site, terrain, horaire, badge "Public", prix 60,00 € |
+| 4 | Cliquer "Confirmer" | Toast "Match public créé !", formulaire fermé |
+| 5 | Vérifier dans `/matches` | Match visible avec statut `public` |
+
+---
+
+### T04 — Créer un match privé avec participants
+
+**Prérequis** : Connecté. Avoir les matricules de 1 à 3 autres membres.
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | Sélectionner un créneau disponible | Formulaire étape 3 affiché |
+| 2 | Cliquer "Privé" | Section participants apparaît |
+| 3 | Saisir un matricule invalide (ex: `ABC123`) + Ajouter | Erreur inline "Format invalide" |
+| 4 | Saisir un matricule valide (ex: `G1234`) + Ajouter | Chip `G1234` apparaît, input vidé |
+| 5 | Ajouter le même matricule à nouveau | Erreur "Ce matricule est déjà ajouté" |
+| 6 | Ajouter 3 participants valides | Input masqué (max atteint), compteur `3/3` |
+| 7 | Cliquer × sur un chip | Participant retiré, input réapparu |
+| 8 | Vérifier le récapitulatif | Badge "Privé", participants listés |
+| 9 | Confirmer | Toast "Match privé créé !" |
+| 10 | Vérifier dans `/matches` | Match visible avec statut `private`, participants avec `unpaid` |
+
+---
+
+### T05 — Rejoindre un match public
+
+**Prérequis** : Au moins un match public existant avec des places libres.
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | Naviguer vers `/join` | Liste des matchs publics chargée |
+| 2 | Vérifier les filtres | Chip "Tous" actif, dates Du/Au pré-remplies |
+| 3 | Filtrer par un site | Liste rechargée, matchs filtrés |
+| 4 | Vérifier une carte | Date, site, horaire, dots, prix 15,00 €/place |
+| 5 | Cliquer "Rejoindre" sur un match disponible | Spinner, puis "✓ Rejoint !" affiché |
+| 6 | Vérifier le dot mis à jour | +1 dot rempli, places restantes décrémentées |
+| 7 | Vérifier dans `/matches` | Match visible dans "Mes matchs" |
+| 8 | Tenter de rejoindre le même match | Erreur "Vous participez déjà à ce match." |
+
+---
+
+### T06 — Match complet visible dans Rejoindre
+
+**Prérequis** : Un match public avec 4 participants payés (statut `full`).
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | Naviguer vers `/join` | Match `full` visible dans la section "Complets" |
+| 2 | Vérifier l'état de la carte | Grisée, 4 dots remplis, bouton "Complet" désactivé |
+
+---
+
+### T07 — Payer sa participation (match privé)
+
+**Prérequis** : Être participant `unpaid` d'un match privé.
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | `POST /api/v1/payments/matches/{matchId}/pay` avec un `idempotencyKey` | `200` → `{ "paymentId": "...", "status": "paid" }` |
+| 2 | Rejouer la même requête avec le même `idempotencyKey` | `200` → même `paymentId`, aucun nouveau paiement |
+| 3 | `GET /api/v1/payments/{paymentId}` | `200` → `amountCents: 1500`, `status: "paid"` |
+| 4 | `GET /api/v1/payments/{paymentId}` avec un autre compte | `404` |
+| 5 | Vérifier le match | Participant passe à `paid` |
+
+---
+
+### T08 — Règles de réservation par catégorie
+
+**Prérequis** : Comptes de test pour chaque catégorie (Global, Site, Libre).
+
+| Compte | Tentative | Résultat attendu |
+|--------|-----------|-----------------|
+| Global (Gxxxx) | Créer un match à J-22 | `403 booking.reservation_window_denied` |
+| Global (Gxxxx) | Créer un match à J-20 | `201 Created` |
+| Site (Sxxxxx) | Créer un match sur un autre site | `403 booking.site_scope_violation` |
+| Site (Sxxxxx) | Créer un match à J-15 | `403 booking.reservation_window_denied` |
+| Libre (Lxxxxx) | Créer un match à J-6 | `403 booking.reservation_window_denied` |
+| Libre (Lxxxxx) | Créer un match à J-4 | `201 Created` |
+
+---
+
+### T09 — Cycle de vie automatique (MatchLifecycleJob)
+
+> Ces tests nécessitent de manipuler les dates en base ou d'attendre le déclenchement réel.
+
+| Scénario | Condition | Résultat attendu |
+|----------|-----------|-----------------|
+| **J-1 → public** | Match privé planifié demain, participant `unpaid` | Participant exclu, match passe en `public` |
+| **Lock** | `startAt <= now` | Match passe en `locked` |
+| **Lock incomplet** | Match `locked` avec < 4 participants payés | `OrganizerDebt` créée ou augmentée |
+| **Complete** | `endAt <= now` | Match passe en `completed` |
+
+---
+
+### T10 — Blocage par dette
+
+**Prérequis** : Organiser avec `amountCents > 0` en base.
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | Tenter de créer un match | `403 billing.organizer_debt_block` |
+| 2 | Toast affiché sur `/booking` | Titre de l'erreur visible |
+
+---
+
+### T11 — API admin : vue opérationnelle
+
+**Prérequis** : Connecté en `admin_site` ou `admin_global`.
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | `GET /api/v1/admin/sites/{siteId}/overview` | `200` → `{ siteId, alerts[] }` |
+| 2 | Avec un `admin_site` sur un autre site | `404 site.not_found` |
+| 3 | Avec un compte `user` | `403` |
+
+---
+
+### T12 — API admin : analytics revenus
+
+**Prérequis** : Au moins un paiement `paid` en base.
+
+| Étape | Action | Résultat attendu |
+|-------|--------|-----------------|
+| 1 | `GET /admin/analytics/revenue?from=2026-01-01T00:00:00Z&to=2026-12-31T23:59:59Z` | `200` → items groupés par jour |
+| 2 | Avec `from >= to` | `400` |
+| 3 | `admin_site` sans `siteId` | Filtré automatiquement sur son site |
+| 4 | `admin_site` avec `siteId` d'un autre site | Toujours filtré sur son site (serveur) |
 
 ---
 
