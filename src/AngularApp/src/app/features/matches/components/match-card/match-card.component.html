@@ -1,3 +1,10 @@
+@if (showSuccess()) {
+  <app-payment-success-overlay
+    [amount]="paidAmount"
+    (dismissed)="onSuccessDismissed()"
+  />
+}
+
 <div (click)="toggle()" [class.expanded]="expanded()" [class.past]="isPast" class="match-card">
 
   <div class="card-header">
@@ -39,7 +46,7 @@
 
       <div class="participants-list">
         <div class="participants-label">Participants</div>
-        @for (p of match.participants; track p.memberId) {
+        @for (p of displayParticipants; track p.memberId) {
           <div class="participant-row">
             <div class="participant-avatar">{{ p.matricule[0] }}</div>
             <span class="participant-name">{{ p.matricule }}</span>
@@ -55,17 +62,13 @@
 
       <div class="card-actions">
         @if (canPay) {
-          @if (paySuccess()) {
-            <div class="pay-success">✓ Paiement enregistré</div>
-          } @else {
-            <button (click)="pay($event)" [disabled]="paying()" class="btn-action primary" type="button">
-              @if (paying()) {
-                <i class="pi pi-spin pi-spinner"></i> Paiement…
-              } @else {
-                Payer ma participation
-              }
-            </button>
-          }
+          <button (click)="pay($event)" [disabled]="paying()" class="btn-action primary" type="button">
+            @if (paying()) {
+              <i class="pi pi-spin pi-spinner"></i> Paiement…
+            } @else {
+              Payer ma participation
+            }
+          </button>
         }
         @if (canCancel) {
           <button (click)="cancel($event)" [disabled]="cancelling()" class="btn-action danger" type="button">

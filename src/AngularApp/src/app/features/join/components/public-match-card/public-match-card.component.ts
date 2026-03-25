@@ -7,11 +7,14 @@ import {CommonModule} from '@angular/common';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ApiService} from '@core/services';
 import {Match} from '@core/models';
+import {
+  PaymentSuccessOverlayComponent,
+} from '@shared/components/payment-success-overlay/payment-success-overlay.component';
 
 @Component({
   selector: 'app-public-match-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PaymentSuccessOverlayComponent],
   templateUrl: './public-match-card.component.html',
   styleUrls: ['./public-match-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -96,6 +99,12 @@ export class PublicMatchCardComponent {
           }
         },
       });
+  }
+
+  get paidAmountStr(): string {
+    return ((this.match.priceTotalCents / 4) / 100).toLocaleString('fr-BE', {
+      style: 'currency', currency: 'EUR', minimumFractionDigits: 2,
+    });
   }
 
   pay(): void {

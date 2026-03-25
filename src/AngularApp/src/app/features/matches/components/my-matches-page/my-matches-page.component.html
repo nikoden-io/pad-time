@@ -24,7 +24,7 @@
   } @else {
     <div class="match-list">
       @for (match of filtered(); track match.matchId) {
-        <app-match-card [match]="match" [sitesMap]="sitesMap()"/>
+        <app-match-card [match]="match" [sitesMap]="sitesMap()" (paymentDone)="onPaymentDone()"/>
       }
     </div>
   }

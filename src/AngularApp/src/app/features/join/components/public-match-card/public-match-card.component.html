@@ -1,3 +1,10 @@
+@if (paySuccess()) {
+  <app-payment-success-overlay
+    [amount]="paidAmountStr"
+    (dismissed)="paySuccess.set(false)"
+  />
+}
+
 <div [class.full]="isFull" [class.joined]="joinSuccess()" class="public-card">
 
   <div class="card-left">

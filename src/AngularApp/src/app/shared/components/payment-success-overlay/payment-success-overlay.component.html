@@ -1,0 +1,43 @@
+<div class="overlay" (click)="dismissed.emit()">
+
+  <!-- Confetti -->
+  <div class="confetti-stage" aria-hidden="true">
+    @for (p of pieces; track $index) {
+      <div
+        class="piece"
+        [class.is-circle]="p.shape === 'circle'"
+        [style.left]="p.left"
+        [style.background]="p.color"
+        [style.width]="p.width"
+        [style.height]="p.height"
+        [style.animation-delay]="p.delay"
+        [style.animation-duration]="p.duration"
+        [style.--rotate]="p.rotate"
+        [style.--drift]="p.drift"
+      ></div>
+    }
+  </div>
+
+  <!-- Card -->
+  <div class="card" (click)="$event.stopPropagation()">
+
+    <!-- Animated checkmark -->
+    <div class="check-wrap">
+      <svg class="check-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle class="check-circle" cx="26" cy="26" r="24" stroke-width="2"/>
+        <path class="check-path" d="M14 26.5 L22 34.5 L38 18" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <h2 class="title">Paiement réussi</h2>
+
+    @if (amount) {
+      <div class="amount">{{ amount }}</div>
+    }
+
+    <p class="subtitle">Votre place est confirmée&nbsp;🎉</p>
+
+    <button class="btn-ok" type="button" (click)="dismissed.emit()">Parfait !</button>
+
+  </div>
+</div>
