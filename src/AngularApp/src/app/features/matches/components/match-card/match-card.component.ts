@@ -1,4 +1,4 @@
-﻿import {
+import {
   ChangeDetectionStrategy, Component, DestroyRef,
   Input, inject, signal,
 } from '@angular/core';
@@ -18,8 +18,13 @@ import {Match} from '@core/models';
 export class MatchCardComponent {
   @Input() match!: Match;
   @Input() sitesMap: Record<string, string> = {};
+
   readonly expanded = signal(false);
   readonly cancelling = signal(false);
+  readonly paying = signal(false);
+  readonly paySuccess = signal(false);
+  readonly payError = signal<string | null>(null);
+
   private readonly api = inject(ApiService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -33,6 +38,12 @@ export class MatchCardComponent {
 
   get canCancel() {
     return !['locked', 'completed', 'cancelled'].includes(this.match.status) && !this.isPast;
+  }
+
+  get canPay() {
+    if (this.isPast || ['locked', 'completed', 'cancelled'].includes(this.match.status)) return false;
+    if (this.paySuccess()) return false;
+    return this.match.participants?.some(p => p.paymentStatus === 'unpaid') ?? false;
   }
 
   get filledCount() {
@@ -50,6 +61,29 @@ export class MatchCardComponent {
     this.api.cancelMatch(this.match.matchId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({error: () => this.cancelling.set(false)});
+  }
+
+  pay(e: Event) {
+    e.stopPropagation();
+    this.paying.set(true);
+    this.payError.set(null);
+    this.api.payMatch(this.match.matchId, crypto.randomUUID())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.paying.set(false);
+          this.paySuccess.set(true);
+        },
+        error: (err: any) => {
+          this.paying.set(false);
+          const code = err?.error?.type ?? '';
+          if (code === 'payment.idempotency_conflict') {
+            this.payError.set('Paiement déjà en cours, réessayez dans un instant.');
+          } else {
+            this.payError.set(err?.error?.title ?? 'Erreur lors du paiement.');
+          }
+        },
+      });
   }
 
   format(utc: string) {

@@ -1,4 +1,4 @@
-﻿<div (click)="toggle()" [class.expanded]="expanded()" [class.past]="isPast" class="match-card">
+<div (click)="toggle()" [class.expanded]="expanded()" [class.past]="isPast" class="match-card">
 
   <div class="card-header">
     <div class="date-block">
@@ -49,13 +49,30 @@
         }
       </div>
 
-      @if (canCancel) {
-        <div class="card-actions">
+      @if (payError()) {
+        <div class="pay-error">{{ payError() }}</div>
+      }
+
+      <div class="card-actions">
+        @if (canPay) {
+          @if (paySuccess()) {
+            <div class="pay-success">✓ Paiement enregistré</div>
+          } @else {
+            <button (click)="pay($event)" [disabled]="paying()" class="btn-action primary" type="button">
+              @if (paying()) {
+                <i class="pi pi-spin pi-spinner"></i> Paiement…
+              } @else {
+                Payer ma participation
+              }
+            </button>
+          }
+        }
+        @if (canCancel) {
           <button (click)="cancel($event)" [disabled]="cancelling()" class="btn-action danger" type="button">
             {{ cancelling() ? 'Annulation…' : 'Annuler' }}
           </button>
-        </div>
-      }
+        }
+      </div>
     </div>
   }
 

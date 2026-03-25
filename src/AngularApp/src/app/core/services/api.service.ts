@@ -123,6 +123,13 @@ export class ApiService {
     return this.http.get<Payment>(`${this.baseUrl}/payments/${paymentId}`);
   }
 
+  payMatch(matchId: string, idempotencyKey: string): Observable<{paymentId: string; status: string}> {
+    return this.http.post<{paymentId: string; status: string}>(
+      `${this.baseUrl}/payments/matches/${matchId}/pay`,
+      {idempotencyKey}
+    );
+  }
+
   // Admin
   getAdminOverview(siteId: string): Observable<SiteOverview> {
     return this.http.get<SiteOverview>(`${this.baseUrl}/admin/sites/${siteId}/overview`);

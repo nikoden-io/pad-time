@@ -29,15 +29,29 @@
     @if (joinError()) {
       <div class="join-error">{{ joinError() }}</div>
     }
+    @if (payError()) {
+      <div class="join-error">{{ payError() }}</div>
+    }
   </div>
 
   <div class="card-right">
     <div class="price-tag">{{ pricePerSeatEur }} €<span class="price-sub">/place</span></div>
 
-    @if (joinSuccess()) {
-      <div class="join-success">
-        <i class="pi pi-check-circle"></i> Rejoint !
-      </div>
+    @if (paySuccess()) {
+      <div class="pay-success">✓ Payé !</div>
+    } @else if (joinSuccess()) {
+      <button
+        (click)="pay()"
+        [disabled]="paying()"
+        class="btn-pay"
+        type="button"
+      >
+        @if (paying()) {
+          <i class="pi pi-spin pi-spinner"></i>
+        } @else {
+          Payer ({{ pricePerSeatEur }} €)
+        }
+      </button>
     } @else {
       <button
         (click)="join()"

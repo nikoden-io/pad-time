@@ -24,6 +24,9 @@ export class PublicMatchCardComponent {
   readonly joining = signal(false);
   readonly joinError = signal<string | null>(null);
   readonly joinSuccess = signal(false);
+  readonly paying = signal(false);
+  readonly paySuccess = signal(false);
+  readonly payError = signal<string | null>(null);
 
   private readonly api = inject(ApiService);
   private readonly destroyRef = inject(DestroyRef);
@@ -90,6 +93,29 @@ export class PublicMatchCardComponent {
             this.joinError.set('Vous participez déjà à ce match.');
           } else {
             this.joinError.set(e?.error?.title ?? 'Une erreur est survenue.');
+          }
+        },
+      });
+  }
+
+  pay(): void {
+    this.paying.set(true);
+    this.payError.set(null);
+
+    this.api.payMatch(this.match.matchId, crypto.randomUUID())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.paying.set(false);
+          this.paySuccess.set(true);
+        },
+        error: (e: any) => {
+          this.paying.set(false);
+          const code = e?.error?.type ?? '';
+          if (code === 'payment.idempotency_conflict') {
+            this.payError.set('Paiement déjà en cours, réessayez dans un instant.');
+          } else {
+            this.payError.set(e?.error?.title ?? 'Erreur lors du paiement.');
           }
         },
       });
