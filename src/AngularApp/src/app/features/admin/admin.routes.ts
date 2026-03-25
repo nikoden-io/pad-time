@@ -12,9 +12,26 @@ export const adminRoutes: Routes = [
   },
   {
     path: 'sites',
+    canActivate: [authGuard, adminGuard],
     loadComponent: () =>
       import('./presentation/pages/sites-list/sites-list.component').then(
         (m) => m.SitesListComponent
+      ),
+  },
+  {
+    path: 'overview',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./presentation/pages/admin-overview/admin-overview.component').then(
+        (m) => m.AdminOverviewComponent
+      ),
+  },
+  {
+    path: 'analytics',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./presentation/pages/admin-analytics/admin-analytics.component').then(
+        (m) => m.AdminAnalyticsComponent
       ),
   },
 ];

@@ -1,3 +1,4 @@
+export * from './admin.model';
 export * from './api.model';
 export * from './booking.model';
 export * from './payment.model';

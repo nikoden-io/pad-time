@@ -1,0 +1,81 @@
+<app-page-shell
+  subtitle="Alertes opérationnelles par site"
+  eyebrow="Administration"
+  title="Vue"
+  titleEm="opérationnelle"
+>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a [routerLink]="['/admin']" class="breadcrumb-link">Tableau de bord</a>
+    <span class="breadcrumb-sep">›</span>
+    <span>Vue opérationnelle</span>
+  </div>
+
+  <!-- Site selector -->
+  <div class="site-selector-block">
+    @if (sitesLoading()) {
+      <div class="loading-row"><i class="pi pi-spin pi-spinner"></i> Chargement des sites…</div>
+    } @else if (sites().length === 0) {
+      <p class="empty-hint">Aucun site disponible.</p>
+    } @else {
+      <label class="field-label" for="site-select">Sélectionner un site</label>
+      <select
+        (change)="onSiteChange($any($event.target).value)"
+        [value]="selectedSiteId() ?? ''"
+        class="site-select"
+        id="site-select"
+      >
+        <option value="" disabled>— Choisir un site —</option>
+        @for (site of sites(); track site.siteId) {
+          <option [value]="site.siteId">{{ site.name }}</option>
+        }
+      </select>
+    }
+  </div>
+
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="loading-row"><i class="pi pi-spin pi-spinner"></i> Chargement des alertes…</div>
+  }
+
+  <!-- Error state -->
+  @if (error()) {
+    <div class="error-banner">{{ error() }}</div>
+  }
+
+  <!-- Overview content -->
+  @if (overview(); as ov) {
+    @if (ov.alerts.length === 0) {
+      <div class="all-clear">
+        <span class="all-clear-icon">✅</span>
+        <p class="all-clear-text">Aucune alerte pour ce site.</p>
+      </div>
+    } @else {
+      <div class="alerts-summary">
+        <span class="alerts-badge">{{ ov.alerts.length }} alerte{{ ov.alerts.length > 1 ? 's' : '' }}</span>
+      </div>
+
+      @for (group of alertsByType(); track group.type) {
+        <div class="alert-group">
+          <div class="alert-group-header">
+            <span class="alert-group-icon">{{ group.icon }}</span>
+            <span class="alert-group-label">{{ group.label }}</span>
+            <span class="alert-group-count">{{ group.alerts.length }}</span>
+          </div>
+          <div class="alert-list">
+            @for (alert of group.alerts; track $index) {
+              <div class="alert-item" [style.--alert-color]="group.color">
+                <p class="alert-desc">{{ alert.description }}</p>
+                @if (formatPayload(alert.payload)) {
+                  <p class="alert-meta">{{ formatPayload(alert.payload) }}</p>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  }
+
+</app-page-shell>

@@ -16,6 +16,8 @@ import {
   MatchListParams,
   PaginatedResponse,
   Payment, AvailabilityResponse,
+  SiteOverview,
+  RevenueAnalytics,
 } from '../models';
 
 @Injectable({
@@ -119,5 +121,18 @@ export class ApiService {
   // Payments
   getPayment(paymentId: string): Observable<Payment> {
     return this.http.get<Payment>(`${this.baseUrl}/payments/${paymentId}`);
+  }
+
+  // Admin
+  getAdminOverview(siteId: string): Observable<SiteOverview> {
+    return this.http.get<SiteOverview>(`${this.baseUrl}/admin/sites/${siteId}/overview`);
+  }
+
+  getAdminRevenue(params: {siteId?: string; from: string; to: string}): Observable<RevenueAnalytics> {
+    let httpParams = new HttpParams()
+      .set('from', params.from)
+      .set('to', params.to);
+    if (params.siteId) httpParams = httpParams.set('siteId', params.siteId);
+    return this.http.get<RevenueAnalytics>(`${this.baseUrl}/admin/analytics/revenue`, {params: httpParams});
   }
 }

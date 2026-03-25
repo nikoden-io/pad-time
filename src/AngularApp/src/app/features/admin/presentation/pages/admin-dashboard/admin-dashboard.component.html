@@ -33,20 +33,26 @@
         </span>
       </div>
 
-      <div class="dash-card disabled"
-           style="--card-accent:#60a5fa;--icon-bg:rgba(96,165,250,0.08);--icon-border:rgba(96,165,250,0.15)">
-        <div class="dash-card-icon">📅</div>
-        <div class="dash-card-title">{{ t('admin.dashboard.matches.title') }}</div>
-        <div class="dash-card-desc">{{ t('admin.dashboard.matches.description') }}</div>
-        <span class="dash-card-action locked">🔒 {{ t('common.comingSoon') }}</span>
+      <div [routerLink]="['/admin/overview']"
+           class="dash-card"
+           style="--card-accent:#f97316;--icon-bg:rgba(249,115,22,0.08);--icon-border:rgba(249,115,22,0.15)">
+        <div class="dash-card-icon">🔔</div>
+        <div class="dash-card-title">Vue opérationnelle</div>
+        <div class="dash-card-desc">Alertes J-1, participants impayés et dettes actives par site.</div>
+        <span class="dash-card-action">
+          Voir les alertes <span class="arrow">→</span>
+        </span>
       </div>
 
-      <div class="dash-card disabled"
+      <div [routerLink]="['/admin/analytics']"
+           class="dash-card"
            style="--card-accent:#a78bfa;--icon-bg:rgba(167,139,250,0.08);--icon-border:rgba(167,139,250,0.15)">
         <div class="dash-card-icon">📊</div>
         <div class="dash-card-title">{{ t('admin.dashboard.analytics.title') }}</div>
-        <div class="dash-card-desc">{{ t('admin.dashboard.analytics.description') }}</div>
-        <span class="dash-card-action locked">🔒 {{ t('common.comingSoon') }}</span>
+        <div class="dash-card-desc">Revenus agrégés par jour et par site sur une période donnée.</div>
+        <span class="dash-card-action">
+          Voir les analytics <span class="arrow">→</span>
+        </span>
       </div>
 
       <div class="dash-card disabled"
