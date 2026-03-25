@@ -12,7 +12,7 @@ import {
   SiteCourtSelectorComponent
 } from '@features/booking/components/site-court-selector/site-court-selector.component';
 import {SlotPickerComponent} from '@features/booking/components/slot-picker/slot-picker.component';
-import {MatchFormComponent} from '@features/booking/components/match-form/match-form.component';
+import {MatchFormComponent, MatchFormOutput} from '@features/booking/components/match-form/match-form.component';
 
 @Component({
   selector: 'app-book-page',
@@ -72,24 +72,29 @@ export class BookPageComponent {
     this.selectedSlot.set(null);
   }
 
-  onConfirm() {
+  onConfirm(formData: MatchFormOutput) {
     const siteId = this.selectedSiteId();
     const slot = this.selectedSlot();
     if (!siteId || !slot) return;
 
-    const req: CreateMatchRequest = {siteId, courtId: slot.courtId, startAt: slot.startAt, type: 'public'};
-    this.submitting.set(true);
+    const req: CreateMatchRequest = {
+      siteId,
+      courtId: slot.courtId,
+      startAt: slot.startAt,
+      type: formData.type,
+      ...(formData.type === 'private' ? {privateParticipantsMatricules: formData.participants} : {}),
+    };
 
-    console.log('createMatch payload', req);
+    this.submitting.set(true);
 
     this.api.createMatch(req).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.submitting.set(false);
         this.selectedSlot.set(null);
-        this.toast.add({severity: 'success', summary: 'Match créé !', life: 4000});
+        const label = formData.type === 'private' ? 'Match privé créé !' : 'Match public créé !';
+        this.toast.add({severity: 'success', summary: label, life: 4000});
       },
       error: (e: any) => {
-        console.log('error detail', JSON.stringify(e?.error));
         this.submitting.set(false);
         this.toast.add({severity: 'error', summary: e?.error?.title ?? 'Erreur', life: 5000});
       },

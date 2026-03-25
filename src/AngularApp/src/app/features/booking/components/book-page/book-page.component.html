@@ -38,7 +38,7 @@
     <div id="match-form">
       <app-match-form
         (cancel)="onCancel()"
-        (confirm)="onConfirm()"
+        (confirm)="onConfirm($event)"
         [site]="selectedSite()"
         [slot]="selectedSlot()!"
         [submitting]="submitting()"
