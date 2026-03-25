@@ -9,6 +9,7 @@ using PadTime.Application.Booking.Commands.CreateMatch;
 using PadTime.Application.Booking.Commands.JoinMatch;
 using PadTime.Application.Booking.Queries.GetMatch;
 using PadTime.Application.Booking.Queries.GetPublicMatches;
+using PadTime.Application.Booking.Queries.GetSiteMatches;
 using PadTime.Application.Booking.Queries.GetUserMatches;
 using PadTime.Domain.Booking;
 
@@ -24,6 +25,64 @@ public sealed class MatchesController : ControllerBase
     public MatchesController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    /// <summary>
+    /// Retrieves matches based on scope.
+    /// - scope=public : public matches available to join
+    /// - scope=mine   : matches where the current user is a participant
+    /// - scope=site   : all matches for a site (admin only, requires siteId)
+    /// </summary>
+    /// <response code="200">Matches successfully retrieved.</response>
+    /// <response code="400">Invalid scope or missing required parameter.</response>
+    /// <response code="403">Scope requires admin role.</response>
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetMatches(
+        [FromQuery] string scope = "public",
+        [FromQuery] Guid? siteId = null,
+        [FromQuery] DateTime? from = null,
+        [FromQuery] DateTime? to = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        return scope.ToLowerInvariant() switch
+        {
+            "public" => await HandlePublicScope(siteId, from, to, page, pageSize, cancellationToken),
+            "mine"   => await HandleMineScope(from, page, pageSize, cancellationToken),
+            "site"   => await HandleSiteScope(siteId, from, to, page, pageSize, cancellationToken),
+            _        => BadRequest($"Invalid scope '{scope}'. Valid values: public, mine, site.")
+        };
+    }
+
+    private async Task<IActionResult> HandlePublicScope(
+        Guid? siteId, DateTime? from, DateTime? to, int page, int pageSize, CancellationToken ct)
+    {
+        var query = new GetPublicMatchesQuery(siteId, from, to, page, pageSize);
+        var result = await _mediator.Send(query, ct);
+        return result.ToActionResult();
+    }
+
+    private async Task<IActionResult> HandleMineScope(
+        DateTime? from, int page, int pageSize, CancellationToken ct)
+    {
+        var query = new GetUserMatchesQuery(from, page, pageSize);
+        var result = await _mediator.Send(query, ct);
+        return result.ToActionResult();
+    }
+
+    private async Task<IActionResult> HandleSiteScope(
+        Guid? siteId, DateTime? from, DateTime? to, int page, int pageSize, CancellationToken ct)
+    {
+        if (siteId is null)
+            return BadRequest("siteId is required for scope=site.");
+
+        var query = new GetSiteMatchesQuery(siteId.Value, from, to, page, pageSize);
+        var result = await _mediator.Send(query, ct);
+        return result.ToActionResult();
     }
 
     /// <summary>
