@@ -10,7 +10,9 @@ import {ApiService} from '@core/services';
 import {Match} from '@core/models';
 import {MatchCardComponent} from '@features/matches/components/match-card/match-card.component';
 
-export type MatchFilter = 'all' | 'upcoming' | 'past' | 'public' | 'private';
+export type MatchFilter = 'all' | 'public' | 'private';
+
+const INACTIVE_STATUSES = ['cancelled', 'completed'];
 
 @Component({
   selector: 'app-my-matches-page',
@@ -25,23 +27,35 @@ export class MyMatchesPageComponent {
   readonly matches = signal<Match[]>([]);
   readonly sitesMap = signal<Record<string, string>>({});
   readonly filter = signal<MatchFilter>('all');
+
   readonly filters: {label: string; value: MatchFilter}[] = [
     {label: 'Tous', value: 'all'},
-    {label: 'À venir', value: 'upcoming'},
-    {label: 'Passés', value: 'past'},
     {label: 'Public', value: 'public'},
     {label: 'Privé', value: 'private'},
   ];
-  readonly filtered = computed(() => {
+
+  /** Upcoming active matches — future date, not cancelled/completed — sorted ASC */
+  readonly upcomingActive = computed(() => {
     const now = new Date();
+    return this.typeFiltered().filter(m =>
+      new Date(m.startAtUtc) > now && !INACTIVE_STATUSES.includes(m.status)
+    ).sort((a, b) => +new Date(a.startAtUtc) - +new Date(b.startAtUtc));
+  });
+
+  /** Past + cancelled + completed — sorted DESC (most recent first) */
+  readonly others = computed(() => {
+    const now = new Date();
+    return this.typeFiltered().filter(m =>
+      new Date(m.startAtUtc) <= now || INACTIVE_STATUSES.includes(m.status)
+    ).sort((a, b) => +new Date(b.startAtUtc) - +new Date(a.startAtUtc));
+  });
+
+  private readonly typeFiltered = computed(() => {
+    const f = this.filter();
     return this.matches().filter(m => {
-      switch (this.filter()) {
-        case 'upcoming': return new Date(m.startAtUtc) > now;
-        case 'past':     return new Date(m.startAtUtc) <= now;
-        case 'public':   return m.type === 'public';
-        case 'private':  return m.type === 'private';
-        default:         return true;
-      }
+      if (f === 'public')  return m.type === 'public';
+      if (f === 'private') return m.type === 'private';
+      return true;
     });
   });
 
@@ -52,18 +66,14 @@ export class MyMatchesPageComponent {
     this.load();
   }
 
-  setFilter(f: MatchFilter) {
-    this.filter.set(f);
-  }
+  setFilter(f: MatchFilter) { this.filter.set(f); }
 
-  onPaymentDone() {
-    this.load();
-  }
+  onPaymentDone() { this.load(); }
 
   load() {
     forkJoin({
       matches: this.api.getUserMatches(),
-      sites: this.api.getSites(),
+      sites:   this.api.getSites(),
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({matches, sites}: any) => {
         this.matches.set(Array.isArray(matches) ? matches : matches?.items ?? []);

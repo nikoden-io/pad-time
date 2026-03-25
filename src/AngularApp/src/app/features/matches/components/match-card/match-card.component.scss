@@ -17,6 +17,16 @@
   &.past {
     opacity: 0.6;
   }
+
+  &.is-cancelled {
+    border-color: rgba(248, 113, 113, 0.35);
+    background: color-mix(in srgb, #f87171 4%, var(--p-content-background));
+    opacity: 1; // override .past opacity — we handle it ourselves
+
+    &:hover {
+      border-color: rgba(248, 113, 113, 0.55);
+    }
+  }
 }
 
 .card-header {

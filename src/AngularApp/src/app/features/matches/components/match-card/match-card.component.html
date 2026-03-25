@@ -5,7 +5,7 @@
   />
 }
 
-<div (click)="toggle()" [class.expanded]="expanded()" [class.past]="isPast" class="match-card">
+<div (click)="toggle()" [class.expanded]="expanded()" [class.past]="isPast" [class.is-cancelled]="match.status === 'cancelled'" class="match-card">
 
   <div class="card-header">
     <div class="date-block">

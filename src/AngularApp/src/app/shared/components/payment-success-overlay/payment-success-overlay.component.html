@@ -1,12 +1,14 @@
 <div class="overlay" (click)="dismissed.emit()">
 
-  <!-- Confetti -->
+  <!-- Particles (fall for payment, burst for booking) -->
   <div class="confetti-stage" aria-hidden="true">
     @for (p of pieces; track $index) {
       <div
         class="piece"
         [class.is-circle]="p.shape === 'circle'"
+        [class.is-burst]="variant === 'booking'"
         [style.left]="p.left"
+        [style.top]="p.top"
         [style.background]="p.color"
         [style.width]="p.width"
         [style.height]="p.height"
@@ -14,6 +16,8 @@
         [style.animation-duration]="p.duration"
         [style.--rotate]="p.rotate"
         [style.--drift]="p.drift"
+        [style.--tx]="p.tx"
+        [style.--ty]="p.ty"
       ></div>
     }
   </div>
@@ -21,23 +25,31 @@
   <!-- Card -->
   <div class="card" (click)="$event.stopPropagation()">
 
-    <!-- Animated checkmark -->
-    <div class="check-wrap">
-      <svg class="check-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle class="check-circle" cx="26" cy="26" r="24" stroke-width="2"/>
-        <path class="check-path" d="M14 26.5 L22 34.5 L38 18" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
+    <!-- Icon -->
+    @if (variant === 'booking') {
+      <div class="icon-wrap booking-icon">
+        <span class="ball">🎾</span>
+      </div>
+    } @else {
+      <div class="check-wrap">
+        <svg class="check-svg" viewBox="0 0 52 52" fill="none">
+          <circle class="check-circle" cx="26" cy="26" r="24" stroke-width="2"/>
+          <path class="check-path" d="M14 26.5 L22 34.5 L38 18" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    }
 
-    <h2 class="title">Paiement réussi</h2>
+    <h2 class="title">{{ displayTitle }}</h2>
 
     @if (amount) {
       <div class="amount">{{ amount }}</div>
     }
 
-    <p class="subtitle">Votre place est confirmée&nbsp;🎉</p>
+    <p class="subtitle">{{ displaySubtitle }}</p>
 
-    <button class="btn-ok" type="button" (click)="dismissed.emit()">Parfait !</button>
+    <button class="btn-ok" type="button" (click)="dismissed.emit()">
+      {{ variant === 'booking' ? 'Voir mes matchs' : 'Parfait !' }}
+    </button>
 
   </div>
 </div>

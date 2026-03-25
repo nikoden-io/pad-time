@@ -1,4 +1,4 @@
-﻿<div class="matches-page">
+<div class="matches-page">
   <header class="page-header">
     <h1>Mes matchs</h1>
     <a class="btn-book" routerLink="/book">+ Réserver</a>
@@ -14,7 +14,7 @@
 
   @if (loading()) {
     <div class="state-msg"><i class="pi pi-spin pi-spinner"></i> Chargement…</div>
-  } @else if (filtered().length === 0) {
+  } @else if (upcomingActive().length === 0 && others().length === 0) {
     <div class="empty-state">
       <span class="empty-icon">🎾</span>
       <p class="empty-title">Aucun match trouvé</p>
@@ -22,10 +22,35 @@
       <a class="btn-empty" routerLink="/book">Réserver</a>
     </div>
   } @else {
-    <div class="match-list">
-      @for (match of filtered(); track match.matchId) {
-        <app-match-card [match]="match" [sitesMap]="sitesMap()" (paymentDone)="onPaymentDone()"/>
-      }
-    </div>
+
+    <!-- Upcoming active matches -->
+    @if (upcomingActive().length > 0) {
+      <div class="match-list">
+        @for (match of upcomingActive(); track match.matchId) {
+          <app-match-card [match]="match" [sitesMap]="sitesMap()" (paymentDone)="onPaymentDone()"/>
+        }
+      </div>
+    }
+
+    <!-- Separator -->
+    @if (upcomingActive().length > 0 && others().length > 0) {
+      <div class="section-divider">
+        <span class="divider-label">Passés &amp; terminés</span>
+      </div>
+    } @else if (upcomingActive().length === 0 && others().length > 0) {
+      <div class="section-divider">
+        <span class="divider-label">Historique</span>
+      </div>
+    }
+
+    <!-- Past / cancelled / completed matches -->
+    @if (others().length > 0) {
+      <div class="match-list faded">
+        @for (match of others(); track match.matchId) {
+          <app-match-card [match]="match" [sitesMap]="sitesMap()" (paymentDone)="onPaymentDone()"/>
+        }
+      </div>
+    }
+
   }
 </div>

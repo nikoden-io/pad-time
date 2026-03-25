@@ -1,5 +1,11 @@
-﻿<div class="book-page">
-  <p-toast position="top-right"/>
+@if (showBookingSuccess()) {
+  <app-payment-success-overlay
+    variant="booking"
+    (dismissed)="onBookingSuccessDismissed()"
+  />
+}
+
+<div class="book-page">
 
   <header class="book-header">
     <h1>Réserver un match</h1>
