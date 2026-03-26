@@ -1,129 +1,131 @@
-<app-page-shell
-  subtitle="Revenus agrégés par jour et par site"
-  eyebrow="Administration"
-  title="Analytics"
-  titleEm="revenus"
->
+<ng-container *transloco="let t">
+  <app-page-shell
+    [subtitle]="t('admin.analytics.subtitle')"
+    [eyebrow]="t('admin.analytics.eyebrow')"
+    [title]="t('admin.analytics.title')"
+    [titleEm]="t('admin.analytics.titleEm')"
+  >
 
-  <!-- Breadcrumb -->
-  <div class="breadcrumb">
-    <a [routerLink]="['/admin']" class="breadcrumb-link">Tableau de bord</a>
-    <span class="breadcrumb-sep">›</span>
-    <span>Analytics</span>
-  </div>
-
-  <!-- Filters -->
-  <div class="filters-block">
-    <div class="filter-row">
-      <div class="filter-field">
-        <label class="field-label" for="from-date">Du</label>
-        <input
-          (change)="onFromChange($any($event.target).value)"
-          [value]="fromDate()"
-          class="date-input"
-          id="from-date"
-          type="date"
-        />
-      </div>
-      <div class="filter-field">
-        <label class="field-label" for="to-date">Au</label>
-        <input
-          (change)="onToChange($any($event.target).value)"
-          [value]="toDate()"
-          class="date-input"
-          id="to-date"
-          type="date"
-        />
-      </div>
-      <div class="filter-field">
-        <label class="field-label" for="site-filter">Site (optionnel)</label>
-        @if (sitesLoading()) {
-          <div class="loading-inline"><i class="pi pi-spin pi-spinner"></i></div>
-        } @else {
-          <select
-            (change)="onSiteChange($any($event.target).value)"
-            [value]="selectedSiteId()"
-            class="site-select"
-            id="site-filter"
-          >
-            <option value="">Tous les sites</option>
-            @for (site of sites(); track site.siteId) {
-              <option [value]="site.siteId">{{ site.name }}</option>
-            }
-          </select>
-        }
-      </div>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a [routerLink]="['/admin']" class="breadcrumb-link">{{ t('admin.analytics.breadcrumbDashboard') }}</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>{{ t('admin.analytics.breadcrumbAnalytics') }}</span>
     </div>
 
-    <button (click)="load()" [disabled]="loading()" class="btn-load" type="button">
-      @if (loading()) {
-        <i class="pi pi-spin pi-spinner"></i> Chargement…
-      } @else {
-        Charger
-      }
-    </button>
-  </div>
-
-  <!-- Error -->
-  @if (error()) {
-    <div class="error-banner">{{ error() }}</div>
-  }
-
-  <!-- Results -->
-  @if (analytics(); as data) {
-    @if (data.items.length === 0) {
-      <div class="empty-state">
-        <span class="empty-icon">📭</span>
-        <p>Aucun paiement sur cette période.</p>
-      </div>
-    } @else {
-      <!-- Summary KPIs -->
-      <div class="summary-row">
-        <div class="summary-card">
-          <span class="summary-label">Total revenus</span>
-          <span class="summary-value highlight">{{ formatEuros(totalCents()) }}</span>
+    <!-- Filters -->
+    <div class="filters-block">
+      <div class="filter-row">
+        <div class="filter-field">
+          <label class="field-label" for="from-date">{{ t('admin.analytics.dateFrom') }}</label>
+          <input
+            (change)="onFromChange($any($event.target).value)"
+            [value]="fromDate()"
+            class="date-input"
+            id="from-date"
+            type="date"
+          />
         </div>
-        <div class="summary-card">
-          <span class="summary-label">Paiements</span>
-          <span class="summary-value">{{ totalPayments() }}</span>
+        <div class="filter-field">
+          <label class="field-label" for="to-date">{{ t('admin.analytics.dateTo') }}</label>
+          <input
+            (change)="onToChange($any($event.target).value)"
+            [value]="toDate()"
+            class="date-input"
+            id="to-date"
+            type="date"
+          />
         </div>
-        <div class="summary-card">
-          <span class="summary-label">Jours actifs</span>
-          <span class="summary-value">{{ data.items.length }}</span>
+        <div class="filter-field">
+          <label class="field-label" for="site-filter">{{ t('admin.analytics.siteFilter') }}</label>
+          @if (sitesLoading()) {
+            <div class="loading-inline"><i class="pi pi-spin pi-spinner"></i></div>
+          } @else {
+            <select
+              (change)="onSiteChange($any($event.target).value)"
+              [value]="selectedSiteId()"
+              class="site-select"
+              id="site-filter"
+            >
+              <option value="">{{ t('admin.analytics.allSites') }}</option>
+              @for (site of sites(); track site.siteId) {
+                <option [value]="site.siteId">{{ site.name }}</option>
+              }
+            </select>
+          }
         </div>
       </div>
 
-      <!-- Table -->
-      <div class="table-wrap">
-        <table class="revenue-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Site</th>
-              <th class="right">Paiements</th>
-              <th class="right">Montant</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of data.items; track trackItem($index, item)) {
-              <tr>
-                <td>{{ formatDate(item.date) }}</td>
-                <td class="site-cell">{{ siteName(item.siteId) }}</td>
-                <td class="right muted">{{ item.paymentCount }}</td>
-                <td class="right amount">{{ formatEuros(item.amountCents) }}</td>
-              </tr>
-            }
-          </tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="2">Total</td>
-              <td class="right">{{ totalPayments() }}</td>
-              <td class="right amount">{{ formatEuros(totalCents()) }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+      <button (click)="load()" [disabled]="loading()" class="btn-load" type="button">
+        @if (loading()) {
+          <i class="pi pi-spin pi-spinner"></i> {{ t('admin.analytics.loading') }}
+        } @else {
+          {{ t('admin.analytics.load') }}
+        }
+      </button>
+    </div>
+
+    <!-- Error -->
+    @if (error()) {
+      <div class="error-banner">{{ error() }}</div>
     }
-  }
 
-</app-page-shell>
+    <!-- Results -->
+    @if (analytics(); as data) {
+      @if (data.items.length === 0) {
+        <div class="empty-state">
+          <span class="empty-icon">📭</span>
+          <p>{{ t('admin.analytics.noPayments') }}</p>
+        </div>
+      } @else {
+        <!-- Summary KPIs -->
+        <div class="summary-row">
+          <div class="summary-card">
+            <span class="summary-label">{{ t('admin.analytics.totalRevenue') }}</span>
+            <span class="summary-value highlight">{{ formatEuros(totalCents()) }}</span>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">{{ t('admin.analytics.totalPayments') }}</span>
+            <span class="summary-value">{{ totalPayments() }}</span>
+          </div>
+          <div class="summary-card">
+            <span class="summary-label">{{ t('admin.analytics.activeDays') }}</span>
+            <span class="summary-value">{{ data.items.length }}</span>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <table class="revenue-table">
+            <thead>
+              <tr>
+                <th>{{ t('admin.analytics.columns.date') }}</th>
+                <th>{{ t('admin.analytics.columns.site') }}</th>
+                <th class="right">{{ t('admin.analytics.columns.payments') }}</th>
+                <th class="right">{{ t('admin.analytics.columns.amount') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of data.items; track trackItem($index, item)) {
+                <tr>
+                  <td>{{ formatDate(item.date) }}</td>
+                  <td class="site-cell">{{ siteName(item.siteId) }}</td>
+                  <td class="right muted">{{ item.paymentCount }}</td>
+                  <td class="right amount">{{ formatEuros(item.amountCents) }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td colspan="2">{{ t('admin.analytics.total') }}</td>
+                <td class="right">{{ totalPayments() }}</td>
+                <td class="right amount">{{ formatEuros(totalCents()) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      }
+    }
+
+  </app-page-shell>
+</ng-container>

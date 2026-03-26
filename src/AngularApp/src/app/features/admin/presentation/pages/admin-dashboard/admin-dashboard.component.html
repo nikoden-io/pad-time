@@ -1,9 +1,9 @@
 <ng-container *transloco="let t">
   <app-page-shell
     [subtitle]="t('admin.dashboard.subtitle')"
-    eyebrow="Administration"
-    title="Tableau de"
-    titleEm="bord"
+    [eyebrow]="t('admin.dashboard.eyebrow')"
+    [title]="t('admin.dashboard.titleMain')"
+    [titleEm]="t('admin.dashboard.titleEm')"
   >
 
     <!-- KPI row -->
@@ -37,10 +37,10 @@
            class="dash-card"
            style="--card-accent:#f97316;--icon-bg:rgba(249,115,22,0.08);--icon-border:rgba(249,115,22,0.15)">
         <div class="dash-card-icon">🔔</div>
-        <div class="dash-card-title">Vue opérationnelle</div>
-        <div class="dash-card-desc">Alertes J-1, participants impayés et dettes actives par site.</div>
+        <div class="dash-card-title">{{ t('admin.dashboard.overviewCard.title') }}</div>
+        <div class="dash-card-desc">{{ t('admin.dashboard.overviewCard.description') }}</div>
         <span class="dash-card-action">
-          Voir les alertes <span class="arrow">→</span>
+          {{ t('admin.dashboard.overviewCard.action') }} <span class="arrow">→</span>
         </span>
       </div>
 
@@ -49,9 +49,9 @@
            style="--card-accent:#a78bfa;--icon-bg:rgba(167,139,250,0.08);--icon-border:rgba(167,139,250,0.15)">
         <div class="dash-card-icon">📊</div>
         <div class="dash-card-title">{{ t('admin.dashboard.analytics.title') }}</div>
-        <div class="dash-card-desc">Revenus agrégés par jour et par site sur une période donnée.</div>
+        <div class="dash-card-desc">{{ t('admin.dashboard.analyticsCard.description') }}</div>
         <span class="dash-card-action">
-          Voir les analytics <span class="arrow">→</span>
+          {{ t('admin.dashboard.analyticsCard.action') }} <span class="arrow">→</span>
         </span>
       </div>
 

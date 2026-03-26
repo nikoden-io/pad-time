@@ -61,6 +61,15 @@
     "dashboard": {
       "title": "Admin Dashboard",
       "subtitle": "Beheer uw padelsites, terreinen, roosters en meer",
+      "eyebrow": "Administratie",
+      "titleMain": "Dash",
+      "titleEm": "board",
+      "kpis": {
+        "activeSites": "Actieve sites",
+        "matchesToday": "Wedstrijden vandaag",
+        "revenueToday": "Omzet vandaag",
+        "activeDebts": "Actieve schulden"
+      },
       "sites": {
         "title": "Sites",
         "description": "Beheer sites, terreinen, roosters en sluitingen",
@@ -77,7 +86,77 @@
       "members": {
         "title": "Leden",
         "description": "Beheer ledenaccounts en categorieën"
+      },
+      "overviewCard": {
+        "title": "Operationeel overzicht",
+        "description": "J-1-waarschuwingen, onbetaalde deelnemers en actieve schulden per site.",
+        "action": "Waarschuwingen bekijken"
+      },
+      "analyticsCard": {
+        "description": "Geaggregeerde inkomsten per dag en per site over een bepaalde periode.",
+        "action": "Analytics bekijken"
       }
+    },
+    "overview": {
+      "eyebrow": "Administratie",
+      "title": "Operationeel",
+      "titleEm": "overzicht",
+      "subtitle": "Operationele waarschuwingen per site",
+      "breadcrumbDashboard": "Dashboard",
+      "breadcrumbOverview": "Operationeel overzicht",
+      "loadingSites": "Sites laden\u2026",
+      "loadingAlerts": "Waarschuwingen laden\u2026",
+      "selectSite": "Selecteer een site",
+      "chooseSite": "— Kies een site —",
+      "noSites": "Geen sites beschikbaar.",
+      "noAlerts": "Geen waarschuwingen voor deze site.",
+      "alertCount": "waarschuwing",
+      "alertCount_plural": "waarschuwingen",
+      "alerts": {
+        "j1Unprocessed": "Privéwedstrijd gepland voor morgen met onbetaalde deelnemers.",
+        "unpaidParticipants": "Wedstrijd heeft {{count}} onbetaalde deelnemer(s).",
+        "organizerDebt": "Organisator heeft een openstaande schuld van {{amount}} €."
+      },
+      "alertTypes": {
+        "j1Unprocessed": "Onverwerkte J-1-wedstrijden",
+        "unpaidParticipants": "Onbetaalde deelnemers",
+        "organizerDebt": "Organisator-schulden",
+        "other": "Andere waarschuwingen"
+      },
+      "payload": {
+        "match": "Wedstrijd",
+        "member": "Lid",
+        "amount": "Bedrag",
+        "unpaid": "Onbetaald",
+        "scheduled": "Gepland"
+      },
+      "loadError": "Overzicht kan niet worden geladen."
+    },
+    "analytics": {
+      "eyebrow": "Administratie",
+      "title": "Inkomsten",
+      "titleEm": "analytics",
+      "subtitle": "Geaggregeerde inkomsten per dag en per site",
+      "breadcrumbDashboard": "Dashboard",
+      "breadcrumbAnalytics": "Analytics",
+      "dateFrom": "Van",
+      "dateTo": "Tot",
+      "siteFilter": "Site (optioneel)",
+      "allSites": "Alle sites",
+      "load": "Laden",
+      "loading": "Laden\u2026",
+      "noPayments": "Geen betalingen in deze periode.",
+      "totalRevenue": "Totale inkomsten",
+      "totalPayments": "Betalingen",
+      "activeDays": "Actieve dagen",
+      "columns": {
+        "date": "Datum",
+        "site": "Site",
+        "payments": "Betalingen",
+        "amount": "Bedrag"
+      },
+      "total": "Totaal",
+      "loadError": "Analytics kunnen niet worden geladen."
     }
   }
 }

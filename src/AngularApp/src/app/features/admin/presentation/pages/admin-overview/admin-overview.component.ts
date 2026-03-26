@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, DestroyRef, inject, signal} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RouterLink} from '@angular/router';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {ApiService} from '@core/services';
 import {Site, SiteAlert, SiteOverview} from '@core/models';
 import {PageShellComponent} from '@shared/components/page-shell/page-shell.component';
@@ -8,7 +9,7 @@ import {PageShellComponent} from '@shared/components/page-shell/page-shell.compo
 @Component({
   selector: 'app-admin-overview',
   standalone: true,
-  imports: [RouterLink, PageShellComponent],
+  imports: [RouterLink, TranslocoDirective, PageShellComponent],
   templateUrl: './admin-overview.component.html',
   styleUrl: './admin-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +24,7 @@ export class AdminOverviewComponent {
 
   private readonly api = inject(ApiService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly transloco = inject(TranslocoService);
 
   constructor() {
     this.api.getSites().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -51,7 +53,7 @@ export class AdminOverviewComponent {
         this.loading.set(false);
       },
       error: (e: any) => {
-        this.error.set(e?.error?.title ?? 'Impossible de charger l\'aperçu.');
+        this.error.set(e?.error?.title ?? this.transloco.translate('admin.overview.loadError'));
         this.loading.set(false);
       },
     });
@@ -61,10 +63,12 @@ export class AdminOverviewComponent {
     const ov = this.overview();
     if (!ov) return [];
 
+    const t = (key: string) => this.transloco.translate(key);
+
     const groups: Record<string, {label: string; icon: string; color: string; alerts: SiteAlert[]}> = {
-      j1_unprocessed: {label: 'Matchs J-1 non traités', icon: '⏰', color: '#f97316', alerts: []},
-      unpaid_participants: {label: 'Participants impayés', icon: '💸', color: '#f59e0b', alerts: []},
-      organizer_debt: {label: 'Dettes organisateurs', icon: '⚠️', color: '#f87171', alerts: []},
+      j1_unprocessed: {label: t('admin.overview.alertTypes.j1Unprocessed'), icon: '⏰', color: '#f97316', alerts: []},
+      unpaid_participants: {label: t('admin.overview.alertTypes.unpaidParticipants'), icon: '💸', color: '#f59e0b', alerts: []},
+      organizer_debt: {label: t('admin.overview.alertTypes.organizerDebt'), icon: '⚠️', color: '#f87171', alerts: []},
     };
 
     for (const alert of ov.alerts) {
@@ -72,7 +76,7 @@ export class AdminOverviewComponent {
         groups[alert.type].alerts.push(alert);
       } else {
         if (!groups['other']) {
-          groups['other'] = {label: 'Autres alertes', icon: 'ℹ️', color: '#94a3b8', alerts: []};
+          groups['other'] = {label: t('admin.overview.alertTypes.other'), icon: 'ℹ️', color: '#94a3b8', alerts: []};
         }
         groups['other'].alerts.push(alert);
       }
@@ -83,15 +87,34 @@ export class AdminOverviewComponent {
       .map(([type, g]) => ({type, ...g}));
   }
 
+  translateAlert(alert: SiteAlert): string {
+    const t = (key: string, params?: Record<string, any>) => this.transloco.translate(key, params);
+    const payload = alert.payload;
+
+    switch (alert.type) {
+      case 'j1_unprocessed':
+        return t('admin.overview.alerts.j1Unprocessed');
+      case 'unpaid_participants':
+        return t('admin.overview.alerts.unpaidParticipants', { count: payload?.['unpaidCount'] ?? 0 });
+      case 'organizer_debt':
+        return t('admin.overview.alerts.organizerDebt', { amount: ((payload?.['amountCents'] ?? 0) / 100).toFixed(2) });
+      default:
+        return alert.description;
+    }
+  }
+
   formatPayload(payload: Record<string, any> | null): string {
     if (!payload) return '';
+    const t = (key: string) => this.transloco.translate(key);
+    const lang = this.transloco.getActiveLang();
+    const locale = lang === 'fr' ? 'fr-BE' : lang === 'nl' ? 'nl-BE' : lang === 'de' ? 'de-DE' : 'en-GB';
     const parts: string[] = [];
-    if (payload['matchId']) parts.push(`Match: ${payload['matchId']}`);
-    if (payload['memberId']) parts.push(`Membre: ${payload['memberId']}`);
-    if (payload['amountCents'] != null) parts.push(`Montant: ${(payload['amountCents'] / 100).toFixed(2)} €`);
-    if (payload['unpaidCount'] != null) parts.push(`Impayés: ${payload['unpaidCount']}`);
+    if (payload['matchId']) parts.push(`${t('admin.overview.payload.match')}: ${payload['matchId']}`);
+    if (payload['memberId']) parts.push(`${t('admin.overview.payload.member')}: ${payload['memberId']}`);
+    if (payload['amountCents'] != null) parts.push(`${t('admin.overview.payload.amount')}: ${(payload['amountCents'] / 100).toFixed(2)} €`);
+    if (payload['unpaidCount'] != null) parts.push(`${t('admin.overview.payload.unpaid')}: ${payload['unpaidCount']}`);
     if (payload['scheduledAt']) {
-      parts.push(`Planifié: ${new Date(payload['scheduledAt']).toLocaleString('fr-BE')}`);
+      parts.push(`${t('admin.overview.payload.scheduled')}: ${new Date(payload['scheduledAt']).toLocaleString(locale)}`);
     }
     return parts.join(' · ');
   }

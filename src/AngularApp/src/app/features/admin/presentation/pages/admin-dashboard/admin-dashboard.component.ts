@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal} 
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RouterLink} from '@angular/router';
 import {forkJoin} from 'rxjs';
-import {TranslocoDirective} from '@jsverse/transloco';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {PageShellComponent} from '@shared/components/page-shell/page-shell.component';
 import {ApiService} from '@core/services';
 
@@ -22,17 +22,20 @@ interface KpiCard {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardComponent implements OnInit {
-  readonly kpis = signal<KpiCard[]>([
-    {label: 'Sites actifs', value: '—'},
-    {label: "Matches aujourd'hui", value: '—'},
-    {label: 'CA du jour', value: '—'},
-    {label: 'Dettes actives', value: '—'},
-  ]);
+  readonly kpis = signal<KpiCard[]>([]);
 
   private readonly api = inject(ApiService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly transloco = inject(TranslocoService);
 
   ngOnInit(): void {
+    this.kpis.set([
+      {label: this.transloco.translate('admin.dashboard.kpis.activeSites'), value: '—'},
+      {label: this.transloco.translate('admin.dashboard.kpis.matchesToday'), value: '—'},
+      {label: this.transloco.translate('admin.dashboard.kpis.revenueToday'), value: '—'},
+      {label: this.transloco.translate('admin.dashboard.kpis.activeDebts'), value: '—'},
+    ]);
+
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
     const tomorrowStart = new Date(todayStart);
@@ -67,14 +70,13 @@ export class AdminDashboardComponent implements OnInit {
           });
 
           this.kpis.set([
-            {label: 'Sites actifs', value: String(activeSites)},
-            {label: "Matches aujourd'hui", value: String(matchCount)},
-            {label: 'CA du jour', value: caFormatted},
-            {label: 'Dettes actives', value: '—'},
+            {label: this.transloco.translate('admin.dashboard.kpis.activeSites'), value: String(activeSites)},
+            {label: this.transloco.translate('admin.dashboard.kpis.matchesToday'), value: String(matchCount)},
+            {label: this.transloco.translate('admin.dashboard.kpis.revenueToday'), value: caFormatted},
+            {label: this.transloco.translate('admin.dashboard.kpis.activeDebts'), value: '—'},
           ]);
         },
         error: () => {
-          // Partial update fallback: sites only
           this.api.getSites().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (res: any) => {
               const sites = Array.isArray(res) ? res : res?.items ?? [];

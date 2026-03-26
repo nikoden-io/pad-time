@@ -42,7 +42,7 @@ public sealed class GetSiteOverviewQueryHandler : IRequestHandler<GetSiteOvervie
         {
             alerts.Add(new SiteAlertDto(
                 "j1_unprocessed",
-                $"Private match scheduled for tomorrow has unpaid participants.",
+                "alerts.j1Unprocessed",
                 new { matchId = match.Id, scheduledAt = match.StartAtUtc }));
         }
 
@@ -62,7 +62,7 @@ public sealed class GetSiteOverviewQueryHandler : IRequestHandler<GetSiteOvervie
             {
                 alerts.Add(new SiteAlertDto(
                     "unpaid_participants",
-                    $"Match has {unpaidCount} unpaid participant(s).",
+                    "alerts.unpaidParticipants",
                     new { matchId = match.Id, scheduledAt = match.StartAtUtc, unpaidCount }));
             }
         }
@@ -73,7 +73,7 @@ public sealed class GetSiteOverviewQueryHandler : IRequestHandler<GetSiteOvervie
         {
             alerts.Add(new SiteAlertDto(
                 "organizer_debt",
-                $"Organizer has an outstanding debt of {debt.AmountCents} cents.",
+                "alerts.organizerDebt",
                 new { memberId = debt.MemberId, amountCents = debt.AmountCents }));
         }
 

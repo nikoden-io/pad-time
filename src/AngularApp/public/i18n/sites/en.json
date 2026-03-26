@@ -73,6 +73,10 @@
     "activateSuccess": "Site {{action}}d successfully",
     "activateError": "Failed to {{action}} site",
     "editComingSoon": "Edit {{name}} - Dialog will be implemented next",
-    "createComingSoon": "Create site dialog will be implemented next"
+    "createComingSoon": "Create site dialog will be implemented next",
+    "updateSuccess": "Site updated successfully",
+    "createSuccess": "Site created successfully",
+    "updateError": "Failed to update site",
+    "createError": "Failed to create site"
   }
 }

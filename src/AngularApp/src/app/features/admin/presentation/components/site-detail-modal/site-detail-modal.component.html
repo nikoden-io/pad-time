@@ -120,7 +120,7 @@
                     }
                   </span>
                 </div>
-                @if (schedule.applicableDays?.length) {
+                @if (schedule.applicableDays.length) {
                   <div class="days-row">
                     @for (day of schedule.applicableDays; track day) {
                       <span class="day-chip">{{ getDayName(day) }}</span>

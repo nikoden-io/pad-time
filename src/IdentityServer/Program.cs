@@ -20,13 +20,12 @@ try
         .ConfigureServices()
         .ConfigurePipeline();
 
-    // Seed data on every startup in development
-    // if (app.Environment.IsDevelopment())
-    // {
-    //     Log.Information("Seeding database...");
-    //     SeedData.EnsureSeedData(app);
-    //     Log.Information("Done seeding database.");
-    // }
+    if (app.Environment.IsDevelopment())
+    {
+        Log.Information("Seeding database...");
+        SeedData.EnsureSeedData(app);
+        Log.Information("Done seeding database.");
+    }
 
     if (app.Environment.IsDevelopment())
     {

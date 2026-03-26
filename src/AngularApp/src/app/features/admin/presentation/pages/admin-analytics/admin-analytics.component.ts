@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, DestroyRef, inject, signal} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RouterLink} from '@angular/router';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {ApiService} from '@core/services';
 import {RevenueAnalytics, RevenueItem, Site} from '@core/models';
 import {PageShellComponent} from '@shared/components/page-shell/page-shell.component';
@@ -8,7 +9,7 @@ import {PageShellComponent} from '@shared/components/page-shell/page-shell.compo
 @Component({
   selector: 'app-admin-analytics',
   standalone: true,
-  imports: [RouterLink, PageShellComponent],
+  imports: [RouterLink, TranslocoDirective, PageShellComponent],
   templateUrl: './admin-analytics.component.html',
   styleUrl: './admin-analytics.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +28,7 @@ export class AdminAnalyticsComponent {
 
   private readonly api = inject(ApiService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly transloco = inject(TranslocoService);
 
   constructor() {
     this.api.getSites().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -64,7 +66,7 @@ export class AdminAnalyticsComponent {
         this.loading.set(false);
       },
       error: (e: any) => {
-        this.error.set(e?.error?.title ?? 'Impossible de charger les analytics.');
+        this.error.set(e?.error?.title ?? this.transloco.translate('admin.analytics.loadError'));
         this.loading.set(false);
       },
     });

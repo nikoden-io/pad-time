@@ -61,6 +61,15 @@
     "dashboard": {
       "title": "Admin Dashboard",
       "subtitle": "Manage your padel sites, courts, schedules, and more",
+      "eyebrow": "Administration",
+      "titleMain": "Dash",
+      "titleEm": "board",
+      "kpis": {
+        "activeSites": "Active sites",
+        "matchesToday": "Matches today",
+        "revenueToday": "Revenue today",
+        "activeDebts": "Active debts"
+      },
       "sites": {
         "title": "Sites",
         "description": "Manage sites, courts, schedules, and closures",
@@ -77,7 +86,77 @@
       "members": {
         "title": "Members",
         "description": "Manage member accounts and categories"
+      },
+      "overviewCard": {
+        "title": "Operational View",
+        "description": "J-1 alerts, unpaid participants and active debts per site.",
+        "action": "View alerts"
+      },
+      "analyticsCard": {
+        "description": "Aggregated revenue per day and per site over a given period.",
+        "action": "View analytics"
       }
+    },
+    "overview": {
+      "eyebrow": "Administration",
+      "title": "Operational",
+      "titleEm": "view",
+      "subtitle": "Operational alerts per site",
+      "breadcrumbDashboard": "Dashboard",
+      "breadcrumbOverview": "Operational view",
+      "loadingSites": "Loading sites\u2026",
+      "loadingAlerts": "Loading alerts\u2026",
+      "selectSite": "Select a site",
+      "chooseSite": "— Choose a site —",
+      "noSites": "No sites available.",
+      "noAlerts": "No alerts for this site.",
+      "alertCount": "alert",
+      "alertCount_plural": "alerts",
+      "alerts": {
+        "j1Unprocessed": "Private match scheduled for tomorrow with unpaid participants.",
+        "unpaidParticipants": "Match has {{count}} unpaid participant(s).",
+        "organizerDebt": "Organizer has an outstanding debt of {{amount}} €."
+      },
+      "alertTypes": {
+        "j1Unprocessed": "J-1 unprocessed matches",
+        "unpaidParticipants": "Unpaid participants",
+        "organizerDebt": "Organizer debts",
+        "other": "Other alerts"
+      },
+      "payload": {
+        "match": "Match",
+        "member": "Member",
+        "amount": "Amount",
+        "unpaid": "Unpaid",
+        "scheduled": "Scheduled"
+      },
+      "loadError": "Unable to load overview."
+    },
+    "analytics": {
+      "eyebrow": "Administration",
+      "title": "Revenue",
+      "titleEm": "analytics",
+      "subtitle": "Aggregated revenue per day and per site",
+      "breadcrumbDashboard": "Dashboard",
+      "breadcrumbAnalytics": "Analytics",
+      "dateFrom": "From",
+      "dateTo": "To",
+      "siteFilter": "Site (optional)",
+      "allSites": "All sites",
+      "load": "Load",
+      "loading": "Loading\u2026",
+      "noPayments": "No payments for this period.",
+      "totalRevenue": "Total revenue",
+      "totalPayments": "Payments",
+      "activeDays": "Active days",
+      "columns": {
+        "date": "Date",
+        "site": "Site",
+        "payments": "Payments",
+        "amount": "Amount"
+      },
+      "total": "Total",
+      "loadError": "Unable to load analytics."
     }
   }
 }

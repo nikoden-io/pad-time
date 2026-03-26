@@ -61,6 +61,15 @@
     "dashboard": {
       "title": "Admin-Dashboard",
       "subtitle": "Verwalten Sie Ihre Padelstandorte, Plätze, Zeitpläne und mehr",
+      "eyebrow": "Verwaltung",
+      "titleMain": "Dash",
+      "titleEm": "board",
+      "kpis": {
+        "activeSites": "Aktive Standorte",
+        "matchesToday": "Spiele heute",
+        "revenueToday": "Umsatz heute",
+        "activeDebts": "Aktive Schulden"
+      },
       "sites": {
         "title": "Standorte",
         "description": "Standorte, Plätze, Zeitpläne und Schließungen verwalten",
@@ -77,7 +86,77 @@
       "members": {
         "title": "Mitglieder",
         "description": "Mitgliedskonten und Kategorien verwalten"
+      },
+      "overviewCard": {
+        "title": "Betriebsübersicht",
+        "description": "J-1-Alarme, unbezahlte Teilnehmer und aktive Schulden pro Standort.",
+        "action": "Alarme anzeigen"
+      },
+      "analyticsCard": {
+        "description": "Aggregierte Einnahmen pro Tag und Standort über einen bestimmten Zeitraum.",
+        "action": "Analytics anzeigen"
       }
+    },
+    "overview": {
+      "eyebrow": "Verwaltung",
+      "title": "Betriebs",
+      "titleEm": "übersicht",
+      "subtitle": "Betriebsalarme pro Standort",
+      "breadcrumbDashboard": "Dashboard",
+      "breadcrumbOverview": "Betriebsübersicht",
+      "loadingSites": "Standorte werden geladen\u2026",
+      "loadingAlerts": "Alarme werden geladen\u2026",
+      "selectSite": "Standort auswählen",
+      "chooseSite": "— Standort wählen —",
+      "noSites": "Keine Standorte verfügbar.",
+      "noAlerts": "Keine Alarme für diesen Standort.",
+      "alertCount": "Alarm",
+      "alertCount_plural": "Alarme",
+      "alerts": {
+        "j1Unprocessed": "Privates Spiel für morgen mit unbezahlten Teilnehmern geplant.",
+        "unpaidParticipants": "Spiel hat {{count}} unbezahlte(n) Teilnehmer.",
+        "organizerDebt": "Organisator hat eine offene Schuld von {{amount}} €."
+      },
+      "alertTypes": {
+        "j1Unprocessed": "Unbearbeitete J-1-Spiele",
+        "unpaidParticipants": "Unbezahlte Teilnehmer",
+        "organizerDebt": "Organisator-Schulden",
+        "other": "Andere Alarme"
+      },
+      "payload": {
+        "match": "Spiel",
+        "member": "Mitglied",
+        "amount": "Betrag",
+        "unpaid": "Unbezahlt",
+        "scheduled": "Geplant"
+      },
+      "loadError": "Übersicht konnte nicht geladen werden."
+    },
+    "analytics": {
+      "eyebrow": "Verwaltung",
+      "title": "Einnahmen",
+      "titleEm": "analytics",
+      "subtitle": "Aggregierte Einnahmen pro Tag und Standort",
+      "breadcrumbDashboard": "Dashboard",
+      "breadcrumbAnalytics": "Analytics",
+      "dateFrom": "Von",
+      "dateTo": "Bis",
+      "siteFilter": "Standort (optional)",
+      "allSites": "Alle Standorte",
+      "load": "Laden",
+      "loading": "Laden\u2026",
+      "noPayments": "Keine Zahlungen in diesem Zeitraum.",
+      "totalRevenue": "Gesamteinnahmen",
+      "totalPayments": "Zahlungen",
+      "activeDays": "Aktive Tage",
+      "columns": {
+        "date": "Datum",
+        "site": "Standort",
+        "payments": "Zahlungen",
+        "amount": "Betrag"
+      },
+      "total": "Gesamt",
+      "loadError": "Analytics konnten nicht geladen werden."
     }
   }
 }
