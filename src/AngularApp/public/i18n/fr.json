@@ -85,7 +85,8 @@
       },
       "members": {
         "title": "Membres",
-        "description": "Gérer les comptes et catégories de membres"
+        "description": "Gérer les comptes et catégories de membres",
+        "action": "Gérer les Membres"
       },
       "overviewCard": {
         "title": "Vue opérationnelle",
@@ -157,6 +158,67 @@
       },
       "total": "Total",
       "loadError": "Impossible de charger les analytics."
+    },
+    "members": {
+      "eyebrow": "Administration",
+      "title": "Gestion des",
+      "titleEm": "membres",
+      "subtitle": "Comptes, catégories, dettes et statistiques",
+      "breadcrumbDashboard": "Tableau de bord",
+      "breadcrumbMembers": "Membres",
+      "searchPlaceholder": "Rechercher par matricule…",
+      "allCategories": "Toutes les catégories",
+      "allStatuses": "Tous les statuts",
+      "empty": "Aucun membre trouvé.",
+      "categories": {
+        "global": "Global",
+        "site": "Site",
+        "free": "Libre"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "stats": {
+        "total": "Total membres",
+        "active": "Actifs",
+        "totalDebt": "Dettes"
+      },
+      "columns": {
+        "matricule": "Matricule",
+        "category": "Catégorie",
+        "site": "Site",
+        "matches": "Matchs",
+        "debt": "Dette",
+        "status": "Statut",
+        "joined": "Inscription"
+      },
+      "actions": {
+        "view": "Voir détails",
+        "activate": "Activer",
+        "deactivate": "Désactiver"
+      },
+      "detail": {
+        "title": "Détails du membre",
+        "category": "Catégorie",
+        "site": "Site",
+        "joined": "Membre depuis",
+        "statistics": "Statistiques",
+        "totalMatches": "Matchs total",
+        "organized": "Organisés",
+        "played": "Joués",
+        "debt": "Dette impayée",
+        "debtHint": "Ce membre ne peut plus créer de matchs tant que sa dette n'est pas réglée.",
+        "recentMatches": "Derniers matchs"
+      },
+      "matchStatus": {
+        "Completed": "Terminé",
+        "Cancelled": "Annulé",
+        "Locked": "Verrouillé",
+        "Full": "Complet",
+        "Public": "Public",
+        "Private": "Privé"
+      }
     }
   }
 }

@@ -18,6 +18,8 @@ import {
   Payment, AvailabilityResponse,
   SiteOverview,
   RevenueAnalytics,
+  AdminMember,
+  AdminMemberDetail,
 } from '../models';
 
 @Injectable({
@@ -141,5 +143,31 @@ export class ApiService {
       .set('to', params.to);
     if (params.siteId) httpParams = httpParams.set('siteId', params.siteId);
     return this.http.get<RevenueAnalytics>(`${this.baseUrl}/admin/analytics/revenue`, {params: httpParams});
+  }
+
+  // Members
+  getAdminMembers(params?: {
+    page?: number; pageSize?: number;
+    category?: string; isActive?: boolean; search?: string;
+  }): Observable<PaginatedResponse<AdminMember>> {
+    let httpParams = new HttpParams();
+    if (params?.page) httpParams = httpParams.set('page', params.page.toString());
+    if (params?.pageSize) httpParams = httpParams.set('pageSize', params.pageSize.toString());
+    if (params?.category) httpParams = httpParams.set('category', params.category);
+    if (params?.isActive !== undefined) httpParams = httpParams.set('isActive', params.isActive.toString());
+    if (params?.search) httpParams = httpParams.set('search', params.search);
+    return this.http.get<PaginatedResponse<AdminMember>>(`${this.baseUrl}/admin/members`, {params: httpParams});
+  }
+
+  getAdminMemberDetail(memberId: string): Observable<AdminMemberDetail> {
+    return this.http.get<AdminMemberDetail>(`${this.baseUrl}/admin/members/${memberId}`);
+  }
+
+  activateMember(memberId: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/admin/members/${memberId}/activate`, {});
+  }
+
+  deactivateMember(memberId: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/admin/members/${memberId}/deactivate`, {});
   }
 }

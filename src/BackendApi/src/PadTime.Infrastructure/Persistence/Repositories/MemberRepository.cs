@@ -35,4 +35,55 @@ public sealed class MemberRepository : IMemberRepository
     {
         await _context.Members.AddAsync(member, cancellationToken);
     }
+
+    public async Task<(List<Member> Items, int TotalCount)> GetPagedAsync(
+        int page, int pageSize,
+        MemberCategory? category = null,
+        bool? isActive = null,
+        string? search = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.Members.AsQueryable();
+
+        if (category.HasValue)
+            query = query.Where(m => m.Category == category.Value);
+
+        if (isActive.HasValue)
+            query = query.Where(m => m.IsActive == isActive.Value);
+
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(m => m.Matricule.Value.Contains(search));
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .OrderByDescending(m => m.CreatedAtUtc)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, totalCount);
+    }
+
+    public async Task<int> GetMatchCountAsync(Guid memberId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Participants
+            .Where(p => p.MemberId == memberId)
+            .Select(p => p.MatchId)
+            .Distinct()
+            .CountAsync(cancellationToken);
+    }
+
+    public async Task<Dictionary<Guid, int>> GetMatchCountsAsync(IEnumerable<Guid> memberIds, CancellationToken cancellationToken = default)
+    {
+        var ids = memberIds.ToList();
+
+        return await _context.Participants
+            .Where(p => ids.Contains(p.MemberId))
+            .GroupBy(p => p.MemberId)
+            .ToDictionaryAsync(
+                g => g.Key,
+                g => g.Select(p => p.MatchId).Distinct().Count(),
+                cancellationToken);
+    }
 }

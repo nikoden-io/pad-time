@@ -1,0 +1,298 @@
+<ng-container *transloco="let t">
+  <app-page-shell
+    [subtitle]="t('admin.members.subtitle')"
+    [eyebrow]="t('admin.members.eyebrow')"
+    [title]="t('admin.members.title')"
+    [titleEm]="t('admin.members.titleEm')"
+  >
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a [routerLink]="['/admin']" class="breadcrumb-link">{{ t('admin.members.breadcrumbDashboard') }}</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>{{ t('admin.members.breadcrumbMembers') }}</span>
+    </div>
+
+    <!-- Stats cards -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-icon">👥</span>
+        <div class="stat-body">
+          <span class="stat-value">{{ totalMembers() }}</span>
+          <span class="stat-label">{{ t('admin.members.stats.total') }}</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon accent">✅</span>
+        <div class="stat-body">
+          <span class="stat-value">{{ activeMembers() }}</span>
+          <span class="stat-label">{{ t('admin.members.stats.active') }}</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon global">🌍</span>
+        <div class="stat-body">
+          <span class="stat-value">{{ globalMembers() }}</span>
+          <span class="stat-label">{{ t('admin.members.categories.global') }}</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon site">📍</span>
+        <div class="stat-body">
+          <span class="stat-value">{{ siteMembers() }}</span>
+          <span class="stat-label">{{ t('admin.members.categories.site') }}</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon free">🎾</span>
+        <div class="stat-body">
+          <span class="stat-value">{{ freeMembers() }}</span>
+          <span class="stat-label">{{ t('admin.members.categories.free') }}</span>
+        </div>
+      </div>
+      <div class="stat-card" [class.danger]="membersWithDebt() > 0">
+        <span class="stat-icon debt">⚠️</span>
+        <div class="stat-body">
+          <span class="stat-value">{{ totalDebtEuros() }} €</span>
+          <span class="stat-label">{{ t('admin.members.stats.totalDebt') }} ({{ membersWithDebt() }})</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+      <input
+        class="search-input"
+        type="text"
+        [placeholder]="t('admin.members.searchPlaceholder')"
+        [value]="filterSearch()"
+        (input)="onSearchInput($any($event.target).value)"
+      />
+      <select class="filter-select" [value]="filterCategory()" (change)="onCategoryChange($any($event.target).value)">
+        <option value="">{{ t('admin.members.allCategories') }}</option>
+        <option value="Global">{{ t('admin.members.categories.global') }}</option>
+        <option value="Site">{{ t('admin.members.categories.site') }}</option>
+        <option value="Free">{{ t('admin.members.categories.free') }}</option>
+      </select>
+      <select class="filter-select" [value]="filterStatus()" (change)="onStatusChange($any($event.target).value)">
+        <option value="">{{ t('admin.members.allStatuses') }}</option>
+        <option value="active">{{ t('admin.members.status.active') }}</option>
+        <option value="inactive">{{ t('admin.members.status.inactive') }}</option>
+      </select>
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="loading-row"><i class="pi pi-spin pi-spinner"></i> {{ t('common.loading') }}</div>
+    }
+
+    <!-- DESKTOP TABLE -->
+    @if (!loading()) {
+      <div class="table-view">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>{{ t('admin.members.columns.matricule') }}</th>
+                <th>{{ t('admin.members.columns.category') }}</th>
+                <th>{{ t('admin.members.columns.site') }}</th>
+                <th class="center">{{ t('admin.members.columns.matches') }}</th>
+                <th class="center">{{ t('admin.members.columns.debt') }}</th>
+                <th>{{ t('admin.members.columns.status') }}</th>
+                <th>{{ t('admin.members.columns.joined') }}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (member of members(); track member.id) {
+                <tr [class.debt-row]="member.debtAmountCents > 0" [class.inactive-row]="!member.isActive">
+                  <td class="matricule-cell">
+                    <strong>{{ member.matricule }}</strong>
+                    <small>{{ member.subject | slice:0:12 }}…</small>
+                  </td>
+                  <td>
+                    <span class="cat-badge" [attr.data-cat]="member.category.toLowerCase()">
+                      {{ categoryIcon(member.category) }} {{ categoryLabel(member.category) }}
+                    </span>
+                  </td>
+                  <td class="site-cell-text">{{ member.siteName ?? '—' }}</td>
+                  <td class="center mono">{{ member.matchCount }}</td>
+                  <td class="center">
+                    @if (member.debtAmountCents > 0) {
+                      <span class="debt-badge">{{ formatEuros(member.debtAmountCents) }}</span>
+                    } @else {
+                      <span class="no-debt">—</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="status-badge" [class.active]="member.isActive" [class.inactive]="!member.isActive">
+                      <span class="dot"></span>
+                      {{ member.isActive ? t('admin.members.status.active') : t('admin.members.status.inactive') }}
+                    </span>
+                  </td>
+                  <td class="date-cell">{{ formatDate(member.createdAtUtc) }}</td>
+                  <td>
+                    <div class="row-actions">
+                      <button class="act-btn" (click)="openDetail(member)" [title]="t('admin.members.actions.view')">👁</button>
+                      <button class="act-btn" (click)="toggleStatus(member)"
+                              [title]="member.isActive ? t('admin.members.actions.deactivate') : t('admin.members.actions.activate')">
+                        {{ member.isActive ? '⏸' : '▶' }}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr class="empty-row"><td colspan="8">{{ t('admin.members.empty') }}</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MOBILE CARDS -->
+      <div class="cards-view">
+        @for (member of members(); track member.id) {
+          <div class="member-card" [class.debt-card]="member.debtAmountCents > 0" [class.inactive-card]="!member.isActive"
+               (click)="openDetail(member)">
+            <div class="member-card-header">
+              <div class="member-card-main">
+                <span class="member-card-matricule">{{ member.matricule }}</span>
+                <span class="cat-badge small" [attr.data-cat]="member.category.toLowerCase()">
+                  {{ categoryIcon(member.category) }} {{ categoryLabel(member.category) }}
+                </span>
+              </div>
+              <span class="status-badge" [class.active]="member.isActive" [class.inactive]="!member.isActive">
+                <span class="dot"></span>
+                {{ member.isActive ? t('admin.members.status.active') : t('admin.members.status.inactive') }}
+              </span>
+            </div>
+            <div class="member-card-stats">
+              <span class="member-stat">🎾 {{ member.matchCount }} {{ t('admin.members.columns.matches') }}</span>
+              @if (member.siteName) {
+                <span class="member-stat">📍 {{ member.siteName }}</span>
+              }
+              @if (member.debtAmountCents > 0) {
+                <span class="member-stat debt">⚠️ {{ formatEuros(member.debtAmountCents) }}</span>
+              }
+            </div>
+            <div class="member-card-footer">
+              <span class="member-date">{{ formatDate(member.createdAtUtc) }}</span>
+              <button class="act-btn small" (click)="toggleStatus(member); $event.stopPropagation()"
+                      [title]="member.isActive ? t('admin.members.actions.deactivate') : t('admin.members.actions.activate')">
+                {{ member.isActive ? '⏸' : '▶' }}
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state">{{ t('admin.members.empty') }}</div>
+        }
+      </div>
+    }
+
+    <!-- Detail drawer -->
+    @if (showDetail()) {
+      <div class="drawer-backdrop" (click)="closeDetail()"></div>
+      <aside class="drawer">
+        <div class="drawer-header">
+          <h3>{{ t('admin.members.detail.title') }}</h3>
+          <button class="drawer-close" (click)="closeDetail()">✕</button>
+        </div>
+
+        @if (detailLoading()) {
+          <div class="drawer-loading"><i class="pi pi-spin pi-spinner"></i></div>
+        }
+
+        @if (selectedMember(); as m) {
+          <div class="drawer-body">
+            <!-- Identity -->
+            <div class="detail-section">
+              <div class="detail-matricule">
+                <span class="cat-badge large" [attr.data-cat]="m.category.toLowerCase()">
+                  {{ categoryIcon(m.category) }} {{ m.matricule }}
+                </span>
+                <span class="status-badge" [class.active]="m.isActive" [class.inactive]="!m.isActive">
+                  <span class="dot"></span>
+                  {{ m.isActive ? t('admin.members.status.active') : t('admin.members.status.inactive') }}
+                </span>
+              </div>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label">{{ t('admin.members.detail.category') }}</span>
+                  <span class="detail-value">{{ categoryLabel(m.category) }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">{{ t('admin.members.detail.site') }}</span>
+                  <span class="detail-value">{{ m.siteName ?? '—' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">{{ t('admin.members.detail.joined') }}</span>
+                  <span class="detail-value">{{ formatDate(m.createdAtUtc) }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Subject</span>
+                  <span class="detail-value mono small">{{ m.subject }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="detail-section">
+              <h4>{{ t('admin.members.detail.statistics') }}</h4>
+              <div class="detail-stats">
+                <div class="mini-stat">
+                  <span class="mini-stat-value">{{ m.matchCount }}</span>
+                  <span class="mini-stat-label">{{ t('admin.members.detail.totalMatches') }}</span>
+                </div>
+                <div class="mini-stat">
+                  <span class="mini-stat-value">{{ m.totalMatchesOrganized }}</span>
+                  <span class="mini-stat-label">{{ t('admin.members.detail.organized') }}</span>
+                </div>
+                <div class="mini-stat">
+                  <span class="mini-stat-value">{{ m.totalMatchesPlayed }}</span>
+                  <span class="mini-stat-label">{{ t('admin.members.detail.played') }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Debt -->
+            @if (m.debtAmountCents > 0) {
+              <div class="detail-section debt-section">
+                <h4>⚠️ {{ t('admin.members.detail.debt') }}</h4>
+                <div class="debt-amount">{{ formatEuros(m.debtAmountCents) }}</div>
+                <p class="debt-hint">{{ t('admin.members.detail.debtHint') }}</p>
+              </div>
+            }
+
+            <!-- Recent matches -->
+            @if (m.recentMatches.length > 0) {
+              <div class="detail-section">
+                <h4>{{ t('admin.members.detail.recentMatches') }}</h4>
+                <div class="recent-matches">
+                  @for (match of m.recentMatches; track match.matchId) {
+                    <div class="match-row">
+                      <div class="match-info">
+                        <span class="match-date">{{ formatDateTime(match.startAtUtc) }}</span>
+                        <span class="match-role">{{ match.isOrganizer ? '👑' : '🎾' }}</span>
+                      </div>
+                      <span class="match-status" [attr.data-status]="match.status.toLowerCase()">
+                        {{ matchStatusLabel(match.status) }}
+                      </span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Actions -->
+            <div class="detail-actions">
+              <button class="btn-action" [class.danger]="m.isActive" (click)="toggleStatus(m); closeDetail()">
+                {{ m.isActive ? t('admin.members.actions.deactivate') : t('admin.members.actions.activate') }}
+              </button>
+            </div>
+          </div>
+        }
+      </aside>
+    }
+
+  </app-page-shell>
+</ng-container>

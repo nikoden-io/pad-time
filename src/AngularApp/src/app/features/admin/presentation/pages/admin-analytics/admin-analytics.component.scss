@@ -66,6 +66,15 @@
   &:focus { border-color: var(--p-primary-color); }
 }
 
+:host-context(.p-dark) .site-select {
+  color-scheme: dark;
+
+  option {
+    background: #181c27;
+    color: #f0f2f7;
+  }
+}
+
 .loading-inline {
   padding: 0.55rem 0;
   color: var(--p-text-muted-color);

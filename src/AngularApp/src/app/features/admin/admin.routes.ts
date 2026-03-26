@@ -34,4 +34,12 @@ export const adminRoutes: Routes = [
         (m) => m.AdminAnalyticsComponent
       ),
   },
+  {
+    path: 'members',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./presentation/pages/admin-members/admin-members.component').then(
+        (m) => m.AdminMembersComponent
+      ),
+  },
 ];

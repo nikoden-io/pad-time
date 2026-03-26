@@ -85,7 +85,8 @@
       },
       "members": {
         "title": "Members",
-        "description": "Manage member accounts and categories"
+        "description": "Manage member accounts and categories",
+        "action": "Manage Members"
       },
       "overviewCard": {
         "title": "Operational View",
@@ -157,6 +158,67 @@
       },
       "total": "Total",
       "loadError": "Unable to load analytics."
+    },
+    "members": {
+      "eyebrow": "Administration",
+      "title": "Member",
+      "titleEm": "management",
+      "subtitle": "Accounts, categories, debts and statistics",
+      "breadcrumbDashboard": "Dashboard",
+      "breadcrumbMembers": "Members",
+      "searchPlaceholder": "Search by matricule…",
+      "allCategories": "All categories",
+      "allStatuses": "All statuses",
+      "empty": "No members found.",
+      "categories": {
+        "global": "Global",
+        "site": "Site",
+        "free": "Free"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "stats": {
+        "total": "Total members",
+        "active": "Active",
+        "totalDebt": "Debts"
+      },
+      "columns": {
+        "matricule": "Matricule",
+        "category": "Category",
+        "site": "Site",
+        "matches": "Matches",
+        "debt": "Debt",
+        "status": "Status",
+        "joined": "Joined"
+      },
+      "actions": {
+        "view": "View details",
+        "activate": "Activate",
+        "deactivate": "Deactivate"
+      },
+      "detail": {
+        "title": "Member details",
+        "category": "Category",
+        "site": "Site",
+        "joined": "Member since",
+        "statistics": "Statistics",
+        "totalMatches": "Total matches",
+        "organized": "Organized",
+        "played": "Played",
+        "debt": "Outstanding debt",
+        "debtHint": "This member cannot create matches until their debt is settled.",
+        "recentMatches": "Recent matches"
+      },
+      "matchStatus": {
+        "Completed": "Completed",
+        "Cancelled": "Cancelled",
+        "Locked": "Locked",
+        "Full": "Full",
+        "Public": "Public",
+        "Private": "Private"
+      }
     }
   }
 }

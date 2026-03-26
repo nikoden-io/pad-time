@@ -85,7 +85,8 @@
       },
       "members": {
         "title": "Leden",
-        "description": "Beheer ledenaccounts en categorieën"
+        "description": "Beheer ledenaccounts en categorieën",
+        "action": "Leden Beheren"
       },
       "overviewCard": {
         "title": "Operationeel overzicht",
@@ -157,6 +158,30 @@
       },
       "total": "Totaal",
       "loadError": "Analytics kunnen niet worden geladen."
+    },
+    "members": {
+      "eyebrow": "Administratie",
+      "title": "Leden",
+      "titleEm": "beheer",
+      "subtitle": "Accounts, categorieën, schulden en statistieken",
+      "breadcrumbDashboard": "Dashboard",
+      "breadcrumbMembers": "Leden",
+      "searchPlaceholder": "Zoeken op matrikelnummer…",
+      "allCategories": "Alle categorieën",
+      "allStatuses": "Alle statussen",
+      "empty": "Geen leden gevonden.",
+      "categories": { "global": "Globaal", "site": "Site", "free": "Vrij" },
+      "status": { "active": "Actief", "inactive": "Inactief" },
+      "stats": { "total": "Totaal leden", "active": "Actief", "totalDebt": "Schulden" },
+      "columns": { "matricule": "Matrikel", "category": "Categorie", "site": "Site", "matches": "Wedstrijden", "debt": "Schuld", "status": "Status", "joined": "Lid sinds" },
+      "actions": { "view": "Details bekijken", "activate": "Activeren", "deactivate": "Deactiveren" },
+      "detail": {
+        "title": "Liddetails", "category": "Categorie", "site": "Site", "joined": "Lid sinds",
+        "statistics": "Statistieken", "totalMatches": "Totaal wedstrijden", "organized": "Georganiseerd", "played": "Gespeeld",
+        "debt": "Openstaande schuld", "debtHint": "Dit lid kan geen wedstrijden aanmaken totdat de schuld is voldaan.",
+        "recentMatches": "Recente wedstrijden"
+      },
+      "matchStatus": { "Completed": "Voltooid", "Cancelled": "Geannuleerd", "Locked": "Vergrendeld", "Full": "Vol", "Public": "Openbaar", "Private": "Privé" }
     }
   }
 }

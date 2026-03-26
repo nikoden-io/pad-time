@@ -55,12 +55,15 @@
         </span>
       </div>
 
-      <div class="dash-card disabled"
+      <div [routerLink]="['/admin/members']"
+           class="dash-card"
            style="--card-accent:#f59e0b;--icon-bg:rgba(245,158,11,0.08);--icon-border:rgba(245,158,11,0.15)">
         <div class="dash-card-icon">👥</div>
         <div class="dash-card-title">{{ t('admin.dashboard.members.title') }}</div>
         <div class="dash-card-desc">{{ t('admin.dashboard.members.description') }}</div>
-        <span class="dash-card-action locked">🔒 {{ t('common.comingSoon') }}</span>
+        <span class="dash-card-action">
+          {{ t('admin.dashboard.members.action') }} <span class="arrow">→</span>
+        </span>
       </div>
 
     </div>

@@ -22,3 +22,32 @@ export interface RevenueAnalytics {
   currency: string;
   items: RevenueItem[];
 }
+
+// ── Members ──────────────────────────────────────────
+
+export interface AdminMember {
+  id: string;
+  subject: string;
+  matricule: string;
+  category: 'Global' | 'Site' | 'Free';
+  siteId: string | null;
+  siteName: string | null;
+  isActive: boolean;
+  createdAtUtc: string;
+  matchCount: number;
+  debtAmountCents: number;
+}
+
+export interface AdminMemberDetail extends AdminMember {
+  totalMatchesOrganized: number;
+  totalMatchesPlayed: number;
+  recentMatches: MemberMatch[];
+}
+
+export interface MemberMatch {
+  matchId: string;
+  startAtUtc: string;
+  endAtUtc: string;
+  status: string;
+  isOrganizer: boolean;
+}

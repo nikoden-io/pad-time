@@ -85,7 +85,8 @@
       },
       "members": {
         "title": "Mitglieder",
-        "description": "Mitgliedskonten und Kategorien verwalten"
+        "description": "Mitgliedskonten und Kategorien verwalten",
+        "action": "Mitglieder Verwalten"
       },
       "overviewCard": {
         "title": "Betriebsübersicht",
@@ -157,6 +158,30 @@
       },
       "total": "Gesamt",
       "loadError": "Analytics konnten nicht geladen werden."
+    },
+    "members": {
+      "eyebrow": "Verwaltung",
+      "title": "Mitglieder",
+      "titleEm": "verwaltung",
+      "subtitle": "Konten, Kategorien, Schulden und Statistiken",
+      "breadcrumbDashboard": "Dashboard",
+      "breadcrumbMembers": "Mitglieder",
+      "searchPlaceholder": "Nach Matrikelnummer suchen…",
+      "allCategories": "Alle Kategorien",
+      "allStatuses": "Alle Status",
+      "empty": "Keine Mitglieder gefunden.",
+      "categories": { "global": "Global", "site": "Standort", "free": "Frei" },
+      "status": { "active": "Aktiv", "inactive": "Inaktiv" },
+      "stats": { "total": "Mitglieder gesamt", "active": "Aktiv", "totalDebt": "Schulden" },
+      "columns": { "matricule": "Matrikel", "category": "Kategorie", "site": "Standort", "matches": "Spiele", "debt": "Schulden", "status": "Status", "joined": "Beitritt" },
+      "actions": { "view": "Details anzeigen", "activate": "Aktivieren", "deactivate": "Deaktivieren" },
+      "detail": {
+        "title": "Mitgliedsdetails", "category": "Kategorie", "site": "Standort", "joined": "Mitglied seit",
+        "statistics": "Statistiken", "totalMatches": "Spiele gesamt", "organized": "Organisiert", "played": "Gespielt",
+        "debt": "Offene Schulden", "debtHint": "Dieses Mitglied kann keine Spiele erstellen, bis die Schulden beglichen sind.",
+        "recentMatches": "Letzte Spiele"
+      },
+      "matchStatus": { "Completed": "Abgeschlossen", "Cancelled": "Abgesagt", "Locked": "Gesperrt", "Full": "Voll", "Public": "Öffentlich", "Private": "Privat" }
     }
   }
 }
