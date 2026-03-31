@@ -1,0 +1,106 @@
+# =============================================================================
+# PadTime — Pipeline CI
+# Triggered on feature/*, develop, and pull requests to develop/main
+# Jobs: .NET build + test, Angular build
+# =============================================================================
+
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - 'feature/**'
+      - 'release/**'
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+
+  # ===========================================================================
+  # JOB 1 — .NET Build & Test
+  # ===========================================================================
+
+  dotnet:
+    name: .NET Build & Test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: padtime_test
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore packages
+        working-directory: src/BackendApi
+        run: dotnet restore
+
+      - name: Build
+        working-directory: src/BackendApi
+        run: dotnet build --no-restore -c Release
+
+      - name: Run tests
+        working-directory: src/BackendApi
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5434;Database=padtime_test;Username=test_user;Password=test_password"
+        run: dotnet test --no-build -c Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-test-results
+          path: src/BackendApi/TestResults/**/*.trx
+          if-no-files-found: ignore
+
+  # ===========================================================================
+  # JOB 2 — Angular Build (parallel with .NET)
+  # ===========================================================================
+
+  angular:
+    name: Angular Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: src/AngularApp/package-lock.json
+
+      - name: Install dependencies
+        working-directory: src/AngularApp
+        run: npm ci
+
+      - name: Build
+        working-directory: src/AngularApp
+        run: npm run build
+
+      - name: Run tests
+        working-directory: src/AngularApp
+        run: npm test -- --watch=false --browsers=ChromeHeadless
+        continue-on-error: true

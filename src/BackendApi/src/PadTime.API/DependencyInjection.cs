@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using FluentValidation;
+using HealthChecks.NpgSql;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -170,6 +171,13 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUserService>();
         services.AddScoped<IAuditLogger, AuditLogger>();
+
+        // Health checks
+        services.AddHealthChecks()
+            .AddNpgSql(
+                configuration.GetConnectionString("DefaultConnection")!,
+                name: "database",
+                tags: ["ready"]);
 
         return services;
     }

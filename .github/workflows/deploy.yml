@@ -57,6 +57,12 @@ jobs:
         working-directory: src/BackendApi
         run: dotnet build --no-restore -c Release
 
+      - name: Run tests
+        working-directory: src/BackendApi
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5434;Database=padtime_test;Username=test_user;Password=test_password"
+        run: dotnet test --no-build -c Release --logger "trx;LogFileName=test-results.trx" --results-directory ./TestResults
+
   # ===========================================================================
   # JOB 2 — Build & Push IdentityServer
   # ===========================================================================
