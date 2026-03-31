@@ -9,6 +9,7 @@ using PadTime.API.Extensions;
 using PadTime.Application.Admin.Commands.ToggleMemberStatus;
 using PadTime.Application.Admin.Queries.GetMemberDetail;
 using PadTime.Application.Admin.Queries.GetMembers;
+using PadTime.Application.Admin.Queries.GetAiTrends;
 using PadTime.Application.Admin.Queries.GetRevenueAnalytics;
 using PadTime.Application.Admin.Queries.GetSiteOverview;
 using PadTime.Domain.Members;
@@ -82,6 +83,21 @@ public sealed class AdminController : ControllerBase
         var query = new GetRevenueAnalyticsQuery(siteId, from, to);
         var result = await _mediator.Send(query, cancellationToken);
 
+        return result.ToActionResult();
+    }
+
+    /// <summary>
+    /// Returns AI-generated business trend insights based on site analytics.
+    /// </summary>
+    /// <response code="200">Trends successfully generated.</response>
+    [HttpGet("analytics/ai-trends")]
+    [ProducesResponseType(typeof(AiTrendsResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAiTrends(
+        [FromQuery] Guid? siteId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetAiTrendsQuery(siteId);
+        var result = await _mediator.Send(query, cancellationToken);
         return result.ToActionResult();
     }
 

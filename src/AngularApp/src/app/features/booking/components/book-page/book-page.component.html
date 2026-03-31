@@ -13,7 +13,9 @@
   </header>
 
   <!-- AI Suggestions -->
-  <app-smart-suggestions (suggestionSelected)="onSuggestionSelected($event)" />
+  <div style="margin-bottom: 1.5rem">
+    <app-smart-suggestions (suggestionSelected)="onSuggestionSelected($event)" />
+  </div>
 
   <!-- Step 1 — toujours visible -->
   @if (sitesLoading()) {

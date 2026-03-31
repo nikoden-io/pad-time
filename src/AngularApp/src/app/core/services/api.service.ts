@@ -24,6 +24,7 @@ import {
   RevenueAnalytics,
   AdminMember,
   AdminMemberDetail,
+  AiTrendsResponse,
 } from '../models';
 
 @Injectable({
@@ -177,5 +178,12 @@ export class ApiService {
 
   deactivateMember(memberId: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/admin/members/${memberId}/deactivate`, {});
+  }
+
+  // AI Trends
+  getAiTrends(siteId?: string): Observable<AiTrendsResponse> {
+    let params = new HttpParams();
+    if (siteId) params = params.set('siteId', siteId);
+    return this.http.get<AiTrendsResponse>(`${this.baseUrl}/admin/analytics/ai-trends`, {params});
   }
 }

@@ -88,6 +88,10 @@
         "description": "Gérer les comptes et catégories de membres",
         "action": "Gérer les Membres"
       },
+      "aiTrends": {
+        "title": "Tendances & Insights",
+        "unavailable": "Analyse IA indisponible pour le moment"
+      },
       "overviewCard": {
         "title": "Vue opérationnelle",
         "description": "Alertes J-1, participants impayés et dettes actives par site.",

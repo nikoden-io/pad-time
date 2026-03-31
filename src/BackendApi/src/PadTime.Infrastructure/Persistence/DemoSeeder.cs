@@ -37,10 +37,18 @@ public static class DemoSeeder
         CreateDemoData(context);
     }
 
+    private static readonly string[] DemoMatricules =
+        ["G1001", "G1002", "G1003", "G1004", "G1005", "G1006", "G1007",
+         "S10001", "S10002", "S10003", "S10004",
+         "L10001", "L10002", "L10003"];
+
     private static void CleanDemoData(PadTimeDbContext context)
     {
+        // Find demo members by subject prefix OR by known demo matricules
+        // (members whose subject was adopted by a real identity login)
         var demoMemberIds = context.Members
-            .Where(m => m.Subject.StartsWith(DemoSubjectPrefix))
+            .Where(m => m.Subject.StartsWith(DemoSubjectPrefix)
+                        || DemoMatricules.Contains(m.Matricule.Value))
             .Select(m => m.Id)
             .ToList();
 
@@ -71,7 +79,7 @@ public static class DemoSeeder
         }
 
         context.Members
-            .Where(m => m.Subject.StartsWith(DemoSubjectPrefix))
+            .Where(m => demoMemberIds.Contains(m.Id))
             .ExecuteDelete();
     }
 

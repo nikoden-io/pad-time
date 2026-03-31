@@ -19,6 +19,42 @@
       }
     </div>
 
+    <!-- AI Trends -->
+    <div class="ai-trends-section">
+      <div class="ai-trends-header">
+        <span class="ai-trends-badge">
+          <i class="pi pi-sparkles ai-sparkle"></i>
+          <span>Pad'AI</span>
+        </span>
+        <span class="ai-trends-title">{{ t('admin.dashboard.aiTrends.title') }}</span>
+      </div>
+
+      @if (trendsLoading()) {
+        <div class="ai-trends-grid">
+          <div class="trend-skeleton" *ngFor="let i of [1,2,3,4]">
+            <div class="skel-line wide"></div>
+            <div class="skel-line medium"></div>
+          </div>
+        </div>
+      } @else if (aiTrends().length > 0) {
+        <div class="ai-trends-grid">
+          @for (trend of aiTrends(); track trend.category) {
+            <div class="trend-card" [attr.data-impact]="trend.impact">
+              <div class="trend-icon">{{ trend.icon }}</div>
+              <div class="trend-content">
+                <div class="trend-category">{{ trend.category }}</div>
+                <div class="trend-title">{{ trend.title }}</div>
+                <div class="trend-desc">{{ trend.description }}</div>
+              </div>
+              <div class="trend-impact-dot"></div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="ai-trends-empty">{{ t('admin.dashboard.aiTrends.unavailable') }}</p>
+      }
+    </div>
+
     <!-- Cards -->
     <div class="dash-grid">
 

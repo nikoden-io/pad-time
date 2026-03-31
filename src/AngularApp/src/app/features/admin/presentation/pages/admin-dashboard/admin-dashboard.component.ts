@@ -6,8 +6,10 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RouterLink} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
+import {CommonModule} from '@angular/common';
 import {PageShellComponent} from '@shared/components/page-shell/page-shell.component';
 import {ApiService} from '@core/services';
+import {AiTrend} from '@core/models';
 
 interface KpiCard {
   label: string;
@@ -19,13 +21,16 @@ interface KpiCard {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterLink, TranslocoDirective, PageShellComponent],
+  imports: [CommonModule, RouterLink, TranslocoDirective, PageShellComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardComponent implements OnInit {
   readonly kpis = signal<KpiCard[]>([]);
+  readonly aiTrends = signal<AiTrend[]>([]);
+  readonly trendsLoading = signal(true);
+  readonly trendsFallback = signal(false);
 
   private readonly api = inject(ApiService);
   private readonly destroyRef = inject(DestroyRef);
@@ -38,6 +43,19 @@ export class AdminDashboardComponent implements OnInit {
       {label: this.transloco.translate('admin.dashboard.kpis.revenueToday'), value: '—'},
       {label: this.transloco.translate('admin.dashboard.kpis.activeDebts'), value: '—'},
     ]);
+
+    // Load AI trends
+    this.api.getAiTrends().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => {
+        this.aiTrends.set(res.trends ?? []);
+        this.trendsFallback.set(res.fallbackUsed);
+        this.trendsLoading.set(false);
+      },
+      error: () => {
+        this.trendsLoading.set(false);
+        this.trendsFallback.set(true);
+      },
+    });
 
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);

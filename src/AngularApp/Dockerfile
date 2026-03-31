@@ -20,9 +20,9 @@ RUN npm ci --prefer-offline
 # Copie le reste du code source
 COPY . .
 
-# ng build = production par défaut (voir angular.json defaultConfiguration)
+# ng build en mode development pour Docker local (localhost URLs)
 # Output : dist/webfront/browser/
-RUN npm run build
+RUN npx ng build --configuration=development
 
 # -----------------------------------------------------------------------------
 # STAGE 2 — Serve

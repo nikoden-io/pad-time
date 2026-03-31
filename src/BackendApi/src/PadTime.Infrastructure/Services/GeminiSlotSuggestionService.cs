@@ -14,7 +14,7 @@ namespace PadTime.Infrastructure.Services;
 /// Calls the Google Gemini API to generate slot suggestions based on user context.
 /// Returns an empty list on any failure (non-critical, advisory feature).
 /// </summary>
-public sealed class GeminiSlotSuggestionService : ISlotSuggestionService
+public sealed class GeminiSlotSuggestionService : ISlotSuggestionService, IAiCompletionService
 {
     private static readonly Action<ILogger, Exception?> LogApiKeyMissing =
         LoggerMessage.Define(LogLevel.Warning, new EventId(1, nameof(LogApiKeyMissing)),
@@ -115,6 +115,41 @@ public sealed class GeminiSlotSuggestionService : ISlotSuggestionService
         }
     }
 
+    public async Task<string?> CompleteJsonAsync(string prompt, CancellationToken cancellationToken = default)
+    {
+        var apiKey = _configuration["Gemini:ApiKey"];
+        if (string.IsNullOrWhiteSpace(apiKey))
+            apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+
+        if (string.IsNullOrWhiteSpace(apiKey))
+            return null;
+
+        var model = _configuration["Gemini:Model"] ?? "gemini-2.5-flash";
+
+        try
+        {
+            var requestBody = BuildRequestBody(prompt);
+            var client = _httpClientFactory.CreateClient("Gemini");
+            client.DefaultRequestHeaders.Remove("x-goog-api-key");
+            client.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent";
+
+            var response = await client.PostAsJsonAsync(url, requestBody, JsonOptions, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var geminiResponse = await response.Content.ReadFromJsonAsync<GeminiResponse>(JsonOptions, cancellationToken);
+            var text = geminiResponse?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
+
+            return string.IsNullOrWhiteSpace(text) ? null : ExtractJson(text);
+        }
+        catch (Exception ex)
+        {
+            LogApiFailed(_logger, ex.Message, ex);
+            return null;
+        }
+    }
+
     private static string BuildPrompt(SlotSuggestionContext context)
     {
         var patternJson = JsonSerializer.Serialize(new
@@ -162,9 +197,9 @@ public sealed class GeminiSlotSuggestionService : ISlotSuggestionService
             - Prefer the player's usual day-of-week and time-of-day patterns
             - Prefer courts the player has used before
             - Suggest diverse days (not all on the same date)
-            - For each suggestion, explain in 1 short sentence why it's a good fit (in French)
+            - For the "reason" field: write a short, engaging sentence in French that speaks DIRECTLY to the user using "vous" (formal). Make it feel like a personalized recommendation, not a technical explanation. Examples: "Votre créneau fétiche du mercredi soir, sur votre court préféré !", "On vous a gardé votre horaire habituel sur un court peu demandé", "Parfait pour découvrir Liège un dimanche après-midi"
             - Assign a confidenceTag: "strong_match" if it aligns with multiple preferences, "good_fit" if it aligns with some, "worth_trying" if it's an exploratory suggestion
-            - If the player has no history, suggest popular/low-utilization slots
+            - If the player has no history, suggest popular/low-utilization slots with welcoming messages like "Un excellent créneau pour votre première partie !"
 
             Return ONLY a JSON array of exactly 3 objects with these fields:
             siteId (guid), courtId (guid), startAtUtc (ISO string), endAtUtc (ISO string), reason (string in French), confidenceTag (string)

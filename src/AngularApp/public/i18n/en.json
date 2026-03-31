@@ -88,6 +88,10 @@
         "description": "Manage member accounts and categories",
         "action": "Manage Members"
       },
+      "aiTrends": {
+        "title": "Trends & Insights",
+        "unavailable": "AI analysis unavailable at the moment"
+      },
       "overviewCard": {
         "title": "Operational View",
         "description": "J-1 alerts, unpaid participants and active debts per site.",

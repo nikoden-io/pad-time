@@ -80,11 +80,10 @@ $rainbow-gradient: linear-gradient(
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.2rem 0.6rem 0.2rem 0.35rem;
+  padding: 0.25rem 0.65rem 0.25rem 0.4rem;
   border-radius: 20px;
-  background: $rainbow-gradient;
-  background-size: 300% 300%;
-  animation: rainbow 4s ease infinite;
+  background: var(--p-content-background);
+  border: 1.5px solid var(--p-content-border-color);
   white-space: nowrap;
 }
 
@@ -92,20 +91,20 @@ $rainbow-gradient: linear-gradient(
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.2rem;
-  height: 1.2rem;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  font-size: 0.6rem;
-  color: #fff;
+  font-size: 0.75rem;
+  background: $rainbow-gradient;
+  background-size: 300% 300%;
+  animation: rainbow 4s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .ai-badge-text {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--p-text-color);
 }
 
 .header-title {

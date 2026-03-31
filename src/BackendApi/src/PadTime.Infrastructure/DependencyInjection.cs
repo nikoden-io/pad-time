@@ -63,7 +63,9 @@ public static class DependencyInjection
             client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
-        services.AddScoped<ISlotSuggestionService, GeminiSlotSuggestionService>();
+        services.AddScoped<GeminiSlotSuggestionService>();
+        services.AddScoped<ISlotSuggestionService>(sp => sp.GetRequiredService<GeminiSlotSuggestionService>());
+        services.AddScoped<IAiCompletionService>(sp => sp.GetRequiredService<GeminiSlotSuggestionService>());
 
         // Background jobs
         services.AddHostedService<MatchLifecycleJob>();

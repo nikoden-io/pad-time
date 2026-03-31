@@ -61,3 +61,24 @@ export interface MemberMatch {
   status: string;
   isOrganizer: boolean;
 }
+
+// ── AI Trends ───────────────────────────────────────
+
+/** Impact direction of a business trend. */
+export type TrendImpact = 'positive' | 'negative' | 'neutral';
+
+/** A single AI-generated business trend insight. */
+export interface AiTrend {
+  category: string;
+  title: string;
+  description: string;
+  impact: TrendImpact;
+  icon: string;
+}
+
+/** Response containing AI-generated business trends. */
+export interface AiTrendsResponse {
+  trends: AiTrend[];
+  generatedAtUtc: string;
+  fallbackUsed: boolean;
+}
