@@ -19,6 +19,13 @@ public sealed class OrganizerDebtRepository : IOrganizerDebtRepository
             .FirstOrDefaultAsync(d => d.MemberId == memberId, cancellationToken);
     }
 
+    public async Task<List<OrganizerDebt>> GetAllActiveAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.OrganizerDebts
+            .Where(d => d.AmountCents > 0)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task AddAsync(OrganizerDebt debt, CancellationToken cancellationToken = default)
     {
         await _context.OrganizerDebts.AddAsync(debt, cancellationToken);

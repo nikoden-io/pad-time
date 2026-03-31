@@ -33,6 +33,25 @@ public sealed class PaymentRepository : IPaymentRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<List<(Payment Payment, Guid SiteId)>> GetPaidBySiteAndDateRangeAsync(
+        Guid? siteId,
+        DateTime fromUtc,
+        DateTime toUtc,
+        CancellationToken cancellationToken = default)
+    {
+        var query =
+            from p in _context.Payments
+            join m in _context.Matches on p.MatchId equals m.Id
+            where p.State == PaymentState.Paid
+                  && p.CreatedAtUtc >= fromUtc
+                  && p.CreatedAtUtc <= toUtc
+                  && (siteId == null || m.SiteId == siteId)
+            select new { Payment = p, m.SiteId };
+
+        var rows = await query.ToListAsync(cancellationToken);
+        return rows.Select(r => (r.Payment, r.SiteId)).ToList();
+    }
+
     public async Task AddAsync(Payment payment, CancellationToken cancellationToken = default)
     {
         await _context.Payments.AddAsync(payment, cancellationToken);

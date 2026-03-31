@@ -1,6 +1,86 @@
-﻿<section class="step-block">
+<section class="step-block">
   <h2 class="step-label"><span class="step-num">3</span> Confirmation</h2>
 
+  <!-- Type selector -->
+  <div class="type-selector">
+    <button
+      (click)="selectType('public')"
+      [class.active]="!isPrivate()"
+      class="type-btn"
+      type="button"
+    >
+      <span class="type-icon">🌐</span>
+      <span class="type-label">Public</span>
+      <span class="type-desc">Ouvert aux inscriptions</span>
+    </button>
+    <button
+      (click)="selectType('private')"
+      [class.active]="isPrivate()"
+      class="type-btn"
+      type="button"
+    >
+      <span class="type-icon">🔒</span>
+      <span class="type-label">Privé</span>
+      <span class="type-desc">Sur invitation</span>
+    </button>
+  </div>
+
+  <!-- Participants section (private only) -->
+  @if (isPrivate()) {
+    <div class="participants-section">
+      <div class="participants-header">
+        <span class="participants-title">Participants</span>
+        <span class="participants-count">{{ participants().length }}/3</span>
+      </div>
+
+      <!-- Add participant input -->
+      @if (canAddParticipant()) {
+        <div class="add-participant">
+          <input
+            (input)="onMatriculeInput(matriculeInputEl.value)"
+            (keydown.enter)="addParticipant()"
+            #matriculeInputEl
+            [value]="matriculeInput()"
+            class="matricule-input"
+            [class.has-error]="matriculeError()"
+            placeholder="Matricule (ex: G1234)"
+            type="text"
+            maxlength="6"
+          />
+          <button
+            (click)="addParticipant()"
+            [disabled]="!matriculeInput()"
+            class="btn-add"
+            type="button"
+          >Ajouter</button>
+        </div>
+        @if (matriculeError()) {
+          <div class="field-error">{{ matriculeError() }}</div>
+        }
+      }
+
+      <!-- Participants list -->
+      @if (participants().length > 0) {
+        <div class="participants-list">
+          @for (p of participants(); track p; let i = $index) {
+            <div class="participant-chip">
+              <span class="chip-avatar">{{ p[0] }}</span>
+              <span class="chip-label">{{ p }}</span>
+              <button (click)="removeParticipant(i)" class="chip-remove" type="button" title="Retirer">×</button>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="participants-empty">Aucun participant ajouté — vous serez seul(e) au départ.</p>
+      }
+
+      <p class="participants-hint">
+        Les participants devront payer avant J-1 pour conserver leur place.
+      </p>
+    </div>
+  }
+
+  <!-- Recap -->
   <div class="recap-card">
     <div class="recap-row">
       <span class="recap-label">Site</span>
@@ -16,7 +96,9 @@
     </div>
     <div class="recap-row">
       <span class="recap-label">Type</span>
-      <span class="recap-value">Public</span>
+      <span [class.badge-private]="isPrivate()" [class.badge-public]="!isPrivate()" class="recap-badge">
+        {{ isPrivate() ? 'Privé' : 'Public' }}
+      </span>
     </div>
     <div class="recap-row price-row">
       <span class="recap-label">Prix total</span>
@@ -24,7 +106,7 @@
     </div>
   </div>
 
-  <button (click)="confirm.emit()" [disabled]="submitting" class="btn-confirm" type="button">
+  <button (click)="onConfirm()" [disabled]="submitting" class="btn-confirm" type="button">
     @if (submitting) {
       <i class="pi pi-spin pi-spinner"></i> Création…
     } @else {

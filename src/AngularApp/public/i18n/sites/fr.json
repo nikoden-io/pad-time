@@ -74,6 +74,10 @@
     "activateSuccess": "Site {{action}} avec succès",
     "activateError": "Échec de {{action}}",
     "editComingSoon": "Modifier {{name}} - Dialogue à venir",
-    "createComingSoon": "Créer un site - Dialogue à venir"
+    "createComingSoon": "Créer un site - Dialogue à venir",
+    "updateSuccess": "Site mis à jour avec succès",
+    "createSuccess": "Site créé avec succès",
+    "updateError": "Échec de la mise à jour",
+    "createError": "Échec de la création"
   }
 }

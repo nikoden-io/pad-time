@@ -66,7 +66,7 @@
                       {{ site.postcode }} {{ site.city }}, {{ site.country }}
                     </div>
                   </td>
-                  <td><span class="court-chip">{{ site.courtCount ?? '—' }}</span></td>
+                  <td><span class="court-chip">{{ site.courtCount }}</span></td>
                   <td>
                     <span [class.active]="site.isActive" [class.inactive]="!site.isActive" class="status-badge">
                       <span class="dot"></span>
@@ -127,7 +127,7 @@
                   {{ site.isActive ? t('status.active') : t('status.inactive') }}
                 </span>
                 <span class="site-card-courts">
-                  {{ site.courtCount ?? '—' }} terrain{{ (site.courtCount ?? 0) > 1 ? 's' : '' }}
+                  {{ site.courtCount }} terrain{{ site.courtCount > 1 ? 's' : '' }}
                 </span>
               </div>
             </div>

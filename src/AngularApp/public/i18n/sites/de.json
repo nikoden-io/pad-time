@@ -74,6 +74,10 @@
     "activateSuccess": "Standort erfolgreich {{action}}",
     "activateError": "{{action}} fehlgeschlagen",
     "editComingSoon": "{{name}} bearbeiten - Dialog kommt bald",
-    "createComingSoon": "Standort erstellen - Dialog kommt bald"
+    "createComingSoon": "Standort erstellen - Dialog kommt bald",
+    "updateSuccess": "Standort erfolgreich aktualisiert",
+    "createSuccess": "Standort erfolgreich erstellt",
+    "updateError": "Aktualisierung fehlgeschlagen",
+    "createError": "Erstellung fehlgeschlagen"
   }
 }

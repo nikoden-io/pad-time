@@ -1,4 +1,5 @@
 using System.Globalization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using PadTime.API;
 using PadTime.API.Middleware;
@@ -41,6 +42,7 @@ try
         var context = scope.ServiceProvider.GetRequiredService<PadTimeDbContext>();
         context.Database.Migrate();
         DbSeeder.SeedData(context);
+        DemoSeeder.SeedDemoData(context);
     }
 
 
@@ -64,6 +66,16 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
+
+    // Health check endpoints (P7 requirement)
+    app.MapHealthChecks("/health/live", new HealthCheckOptions
+    {
+        Predicate = _ => false // Liveness: no dependency checks
+    });
+    app.MapHealthChecks("/health/ready", new HealthCheckOptions
+    {
+        Predicate = check => check.Tags.Contains("ready")
+    });
 
     app.Run();
 }

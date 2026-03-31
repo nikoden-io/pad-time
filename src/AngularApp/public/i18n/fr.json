@@ -61,6 +61,15 @@
     "dashboard": {
       "title": "Tableau de Bord Admin",
       "subtitle": "Gérez vos sites de padel, terrains, horaires et plus encore",
+      "eyebrow": "Administration",
+      "titleMain": "Tableau de",
+      "titleEm": "bord",
+      "kpis": {
+        "activeSites": "Sites actifs",
+        "matchesToday": "Matchs aujourd'hui",
+        "revenueToday": "CA du jour",
+        "activeDebts": "Dettes actives"
+      },
       "sites": {
         "title": "Sites",
         "description": "Gérer les sites, terrains, horaires et fermetures",
@@ -76,7 +85,139 @@
       },
       "members": {
         "title": "Membres",
-        "description": "Gérer les comptes et catégories de membres"
+        "description": "Gérer les comptes et catégories de membres",
+        "action": "Gérer les Membres"
+      },
+      "overviewCard": {
+        "title": "Vue opérationnelle",
+        "description": "Alertes J-1, participants impayés et dettes actives par site.",
+        "action": "Voir les alertes"
+      },
+      "analyticsCard": {
+        "description": "Revenus agrégés par jour et par site sur une période donnée.",
+        "action": "Voir les analytics"
+      }
+    },
+    "overview": {
+      "eyebrow": "Administration",
+      "title": "Vue",
+      "titleEm": "opérationnelle",
+      "subtitle": "Alertes opérationnelles par site",
+      "breadcrumbDashboard": "Tableau de bord",
+      "breadcrumbOverview": "Vue opérationnelle",
+      "loadingSites": "Chargement des sites\u2026",
+      "loadingAlerts": "Chargement des alertes\u2026",
+      "selectSite": "Sélectionner un site",
+      "chooseSite": "— Choisir un site —",
+      "noSites": "Aucun site disponible.",
+      "noAlerts": "Aucune alerte pour ce site.",
+      "alertCount": "alerte",
+      "alertCount_plural": "alertes",
+      "alerts": {
+        "j1Unprocessed": "Match privé prévu demain avec des participants impayés.",
+        "unpaidParticipants": "Match avec {{count}} participant(s) impayé(s).",
+        "organizerDebt": "L'organisateur a une dette impayée de {{amount}} €."
+      },
+      "alertTypes": {
+        "j1Unprocessed": "Matchs J-1 non traités",
+        "unpaidParticipants": "Participants impayés",
+        "organizerDebt": "Dettes organisateurs",
+        "other": "Autres alertes"
+      },
+      "payload": {
+        "match": "Match",
+        "member": "Membre",
+        "amount": "Montant",
+        "unpaid": "Impayés",
+        "scheduled": "Planifié"
+      },
+      "loadError": "Impossible de charger l'aperçu."
+    },
+    "analytics": {
+      "eyebrow": "Administration",
+      "title": "Analytics",
+      "titleEm": "revenus",
+      "subtitle": "Revenus agrégés par jour et par site",
+      "breadcrumbDashboard": "Tableau de bord",
+      "breadcrumbAnalytics": "Analytics",
+      "dateFrom": "Du",
+      "dateTo": "Au",
+      "siteFilter": "Site (optionnel)",
+      "allSites": "Tous les sites",
+      "load": "Charger",
+      "loading": "Chargement\u2026",
+      "noPayments": "Aucun paiement sur cette période.",
+      "totalRevenue": "Total revenus",
+      "totalPayments": "Paiements",
+      "activeDays": "Jours actifs",
+      "columns": {
+        "date": "Date",
+        "site": "Site",
+        "payments": "Paiements",
+        "amount": "Montant"
+      },
+      "total": "Total",
+      "loadError": "Impossible de charger les analytics."
+    },
+    "members": {
+      "eyebrow": "Administration",
+      "title": "Gestion des",
+      "titleEm": "membres",
+      "subtitle": "Comptes, catégories, dettes et statistiques",
+      "breadcrumbDashboard": "Tableau de bord",
+      "breadcrumbMembers": "Membres",
+      "searchPlaceholder": "Rechercher par matricule…",
+      "allCategories": "Toutes les catégories",
+      "allStatuses": "Tous les statuts",
+      "empty": "Aucun membre trouvé.",
+      "categories": {
+        "global": "Global",
+        "site": "Site",
+        "free": "Libre"
+      },
+      "status": {
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "stats": {
+        "total": "Total membres",
+        "active": "Actifs",
+        "totalDebt": "Dettes"
+      },
+      "columns": {
+        "matricule": "Matricule",
+        "category": "Catégorie",
+        "site": "Site",
+        "matches": "Matchs",
+        "debt": "Dette",
+        "status": "Statut",
+        "joined": "Inscription"
+      },
+      "actions": {
+        "view": "Voir détails",
+        "activate": "Activer",
+        "deactivate": "Désactiver"
+      },
+      "detail": {
+        "title": "Détails du membre",
+        "category": "Catégorie",
+        "site": "Site",
+        "joined": "Membre depuis",
+        "statistics": "Statistiques",
+        "totalMatches": "Matchs total",
+        "organized": "Organisés",
+        "played": "Joués",
+        "debt": "Dette impayée",
+        "debtHint": "Ce membre ne peut plus créer de matchs tant que sa dette n'est pas réglée.",
+        "recentMatches": "Derniers matchs"
+      },
+      "matchStatus": {
+        "Completed": "Terminé",
+        "Cancelled": "Annulé",
+        "Locked": "Verrouillé",
+        "Full": "Complet",
+        "Public": "Public",
+        "Private": "Privé"
       }
     }
   }

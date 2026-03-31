@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Common;
+using PadTime.Infrastructure.BackgroundJobs;
 using PadTime.Infrastructure.Persistence;
 using PadTime.Infrastructure.Persistence.Repositories;
 using PadTime.Infrastructure.Services;
@@ -40,6 +41,9 @@ public static class DependencyInjection
 
         // Services
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+        // Background jobs
+        services.AddHostedService<MatchLifecycleJob>();
 
         return services;
     }

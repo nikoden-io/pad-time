@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PadTime.API.Authorization;
 using PadTime.API.Extensions;
 using PadTime.Application.Billing.Commands.PayMatchParticipation;
+using PadTime.Application.Billing.Queries.GetPayment;
 
 namespace PadTime.API.Controllers;
 
@@ -17,6 +18,23 @@ public sealed class PaymentsController : ControllerBase
     public PaymentsController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    /// <summary>
+    /// Retrieves a payment by its identifier.
+    /// Only the owner or an admin can access the payment.
+    /// </summary>
+    /// <response code="200">Payment successfully retrieved.</response>
+    /// <response code="404">Payment not found or access denied.</response>
+    [HttpGet("{paymentId:guid}")]
+    [ProducesResponseType(typeof(PaymentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPayment(Guid paymentId, CancellationToken cancellationToken)
+    {
+        var query = new GetPaymentQuery(paymentId);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return result.ToActionResult();
     }
 
     /// <summary>

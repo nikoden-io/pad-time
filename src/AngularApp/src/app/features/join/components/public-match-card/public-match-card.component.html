@@ -1,0 +1,80 @@
+@if (paySuccess()) {
+  <app-payment-success-overlay
+    [amount]="paidAmountStr"
+    (dismissed)="paySuccess.set(false)"
+  />
+}
+
+<div [class.full]="isFull" [class.joined]="joinSuccess()" class="public-card">
+
+  <div class="card-left">
+    <div class="date-block">
+      <span class="date-day">{{ formatDay(match.startAtUtc) }}</span>
+      <span class="date-month">{{ formatMonth(match.startAtUtc) }}</span>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="card-title">{{ siteName }}</div>
+    <div class="card-meta">
+      <span class="card-time">{{ format(match.startAtUtc) }} → {{ format(match.endAtUtc) }}</span>
+    </div>
+
+    <div class="seats-row">
+      <div class="dots">
+        @for (filled of dots(); track $index) {
+          <div [class.filled]="filled" class="dot"></div>
+        }
+      </div>
+      @if (isFull) {
+        <span class="seats-label full">Complet</span>
+      } @else {
+        <span class="seats-label">{{ availableSeats }} place{{ availableSeats > 1 ? 's' : '' }} libre{{ availableSeats > 1 ? 's' : '' }}</span>
+      }
+    </div>
+
+    @if (joinError()) {
+      <div class="join-error">{{ joinError() }}</div>
+    }
+    @if (payError()) {
+      <div class="join-error">{{ payError() }}</div>
+    }
+  </div>
+
+  <div class="card-right">
+    <div class="price-tag">{{ pricePerSeatEur }} €<span class="price-sub">/place</span></div>
+
+    @if (paySuccess()) {
+      <div class="pay-success">✓ Payé !</div>
+    } @else if (joinSuccess()) {
+      <button
+        (click)="pay()"
+        [disabled]="paying()"
+        class="btn-pay"
+        type="button"
+      >
+        @if (paying()) {
+          <i class="pi pi-spin pi-spinner"></i>
+        } @else {
+          Payer ({{ pricePerSeatEur }} €)
+        }
+      </button>
+    } @else {
+      <button
+        (click)="join()"
+        [disabled]="joining() || isFull"
+        class="btn-join"
+        type="button"
+      >
+        @if (joining()) {
+          <i class="pi pi-spin pi-spinner"></i>
+        } @else if (isFull) {
+          Complet
+        } @else {
+          Rejoindre
+        }
+      </button>
+    }
+  </div>
+
+</div>

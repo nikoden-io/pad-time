@@ -16,6 +16,10 @@ import {
   MatchListParams,
   PaginatedResponse,
   Payment, AvailabilityResponse,
+  SiteOverview,
+  RevenueAnalytics,
+  AdminMember,
+  AdminMemberDetail,
 } from '../models';
 
 @Injectable({
@@ -119,5 +123,51 @@ export class ApiService {
   // Payments
   getPayment(paymentId: string): Observable<Payment> {
     return this.http.get<Payment>(`${this.baseUrl}/payments/${paymentId}`);
+  }
+
+  payMatch(matchId: string, idempotencyKey: string): Observable<{paymentId: string; status: string}> {
+    return this.http.post<{paymentId: string; status: string}>(
+      `${this.baseUrl}/payments/matches/${matchId}/pay`,
+      {idempotencyKey}
+    );
+  }
+
+  // Admin
+  getAdminOverview(siteId: string): Observable<SiteOverview> {
+    return this.http.get<SiteOverview>(`${this.baseUrl}/admin/sites/${siteId}/overview`);
+  }
+
+  getAdminRevenue(params: {siteId?: string; from: string; to: string}): Observable<RevenueAnalytics> {
+    let httpParams = new HttpParams()
+      .set('from', params.from)
+      .set('to', params.to);
+    if (params.siteId) httpParams = httpParams.set('siteId', params.siteId);
+    return this.http.get<RevenueAnalytics>(`${this.baseUrl}/admin/analytics/revenue`, {params: httpParams});
+  }
+
+  // Members
+  getAdminMembers(params?: {
+    page?: number; pageSize?: number;
+    category?: string; isActive?: boolean; search?: string;
+  }): Observable<PaginatedResponse<AdminMember>> {
+    let httpParams = new HttpParams();
+    if (params?.page) httpParams = httpParams.set('page', params.page.toString());
+    if (params?.pageSize) httpParams = httpParams.set('pageSize', params.pageSize.toString());
+    if (params?.category) httpParams = httpParams.set('category', params.category);
+    if (params?.isActive !== undefined) httpParams = httpParams.set('isActive', params.isActive.toString());
+    if (params?.search) httpParams = httpParams.set('search', params.search);
+    return this.http.get<PaginatedResponse<AdminMember>>(`${this.baseUrl}/admin/members`, {params: httpParams});
+  }
+
+  getAdminMemberDetail(memberId: string): Observable<AdminMemberDetail> {
+    return this.http.get<AdminMemberDetail>(`${this.baseUrl}/admin/members/${memberId}`);
+  }
+
+  activateMember(memberId: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/admin/members/${memberId}/activate`, {});
+  }
+
+  deactivateMember(memberId: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/admin/members/${memberId}/deactivate`, {});
   }
 }

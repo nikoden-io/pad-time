@@ -1,5 +1,11 @@
-﻿<div class="book-page">
-  <p-toast position="top-right"/>
+@if (showBookingSuccess()) {
+  <app-payment-success-overlay
+    variant="booking"
+    (dismissed)="onBookingSuccessDismissed()"
+  />
+}
+
+<div class="book-page">
 
   <header class="book-header">
     <h1>Réserver un match</h1>
@@ -38,7 +44,7 @@
     <div id="match-form">
       <app-match-form
         (cancel)="onCancel()"
-        (confirm)="onConfirm()"
+        (confirm)="onConfirm($event)"
         [site]="selectedSite()"
         [slot]="selectedSlot()!"
         [submitting]="submitting()"

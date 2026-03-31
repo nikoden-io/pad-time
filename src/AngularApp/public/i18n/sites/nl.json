@@ -74,6 +74,10 @@
     "activateSuccess": "Site succesvol ge{{action}}d",
     "activateError": "{{action}} mislukt",
     "editComingSoon": "{{name}} bewerken - Dialoog komt binnenkort",
-    "createComingSoon": "Site aanmaken - Dialoog komt binnenkort"
+    "createComingSoon": "Site aanmaken - Dialoog komt binnenkort",
+    "updateSuccess": "Site succesvol bijgewerkt",
+    "createSuccess": "Site succesvol aangemaakt",
+    "updateError": "Bijwerken mislukt",
+    "createError": "Aanmaken mislukt"
   }
 }
