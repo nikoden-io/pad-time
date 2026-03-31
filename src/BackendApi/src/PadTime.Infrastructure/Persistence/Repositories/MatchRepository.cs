@@ -1,24 +1,37 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Booking;
 
 namespace PadTime.Infrastructure.Persistence.Repositories;
 
+/// <summary>
+/// Repository for <see cref="Match"/> entity data access operations including
+/// slot conflict checks, public/user/site match queries, and lifecycle batch queries.
+/// </summary>
 public sealed class MatchRepository : IMatchRepository
 {
     private readonly PadTimeDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MatchRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public MatchRepository(PadTimeDbContext context)
     {
         _context = context;
     }
 
+    /// <inheritdoc />
     public async Task<Match?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Matches
             .FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<Match?> GetByIdWithParticipantsAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Matches
@@ -26,6 +39,7 @@ public sealed class MatchRepository : IMatchRepository
             .FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<bool> ExistsForSlotAsync(Guid courtId, DateTime startAtUtc, CancellationToken cancellationToken = default)
     {
         return await _context.Matches
@@ -36,6 +50,7 @@ public sealed class MatchRepository : IMatchRepository
                 cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<bool> HasActiveBookingsForCourtAsync(Guid courtId, CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
@@ -47,6 +62,7 @@ public sealed class MatchRepository : IMatchRepository
                 cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<List<Match>> GetPublicMatchesAsync(
         Guid? siteId,
         DateTime fromUtc,
@@ -71,6 +87,7 @@ public sealed class MatchRepository : IMatchRepository
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<List<Match>> GetByMemberIdAsync(
         Guid memberId,
         DateTime? fromUtc,
@@ -92,6 +109,7 @@ public sealed class MatchRepository : IMatchRepository
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<List<Match>> GetBySiteIdAsync(
         Guid siteId,
         DateTime? fromUtc,
@@ -117,6 +135,7 @@ public sealed class MatchRepository : IMatchRepository
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<List<Match>> GetMatchesForDayBeforeProcessingAsync(
         DateTime targetDateUtc,
         CancellationToken cancellationToken = default)
@@ -131,6 +150,7 @@ public sealed class MatchRepository : IMatchRepository
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<List<Match>> GetMatchesToLockAsync(
         DateTime nowUtc,
         CancellationToken cancellationToken = default)
@@ -144,6 +164,7 @@ public sealed class MatchRepository : IMatchRepository
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<List<Match>> GetMatchesToCompleteAsync(
         DateTime nowUtc,
         CancellationToken cancellationToken = default)
@@ -154,6 +175,7 @@ public sealed class MatchRepository : IMatchRepository
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task AddAsync(Match match, CancellationToken cancellationToken = default)
     {
         await _context.Matches.AddAsync(match, cancellationToken);

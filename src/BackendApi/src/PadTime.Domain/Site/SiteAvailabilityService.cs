@@ -1,4 +1,7 @@
-﻿using PadTime.Domain.Booking;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using PadTime.Domain.Booking;
 using PadTime.Domain.Common;
 
 namespace PadTime.Domain.Site;
@@ -9,6 +12,11 @@ namespace PadTime.Domain.Site;
 /// </summary>
 public sealed class SiteAvailabilityService
 {
+    /// <summary>
+    /// Returns the highest-priority schedule applicable on the given date, or <c>null</c> if none applies.
+    /// </summary>
+    /// <param name="schedules">The site's configured schedules.</param>
+    /// <param name="date">The date to check.</param>
     public static SiteSchedule? GetApplicableSchedule(
         IEnumerable<SiteSchedule> schedules,
         DateOnly date)
@@ -19,6 +27,11 @@ public sealed class SiteAvailabilityService
             .FirstOrDefault();
     }
 
+    /// <summary>
+    /// Determines whether the entire site is fully closed on the given date.
+    /// </summary>
+    /// <param name="closures">The site's closures.</param>
+    /// <param name="date">The date to check.</param>
     public static bool IsSiteClosed(
         IEnumerable<SiteClosure> closures,
         DateOnly date)
@@ -31,6 +44,12 @@ public sealed class SiteAvailabilityService
         return false;
     }
 
+    /// <summary>
+    /// Determines whether a specific court is fully closed on the given date.
+    /// </summary>
+    /// <param name="closures">The site's closures.</param>
+    /// <param name="date">The date to check.</param>
+    /// <param name="courtId">The court to check.</param>
     public static bool IsCourtClosed(
         IEnumerable<SiteClosure> closures,
         DateOnly date,
@@ -44,6 +63,13 @@ public sealed class SiteAvailabilityService
         return false;
     }
 
+    /// <summary>
+    /// Computes the effective operating hours for a date, accounting for reduced-hours closures.
+    /// Returns <c>null</c> if the site is fully closed or has no applicable schedule.
+    /// </summary>
+    /// <param name="schedules">The site's configured schedules.</param>
+    /// <param name="closures">The site's closures.</param>
+    /// <param name="date">The date to check.</param>
     public static (TimeOnly opening, TimeOnly closing)? GetEffectiveHours(
         IEnumerable<SiteSchedule> schedules,
         IEnumerable<SiteClosure> closures,
@@ -69,6 +95,14 @@ public sealed class SiteAvailabilityService
         return (schedule.OpeningTime, schedule.ClosingTime);
     }
 
+    /// <summary>
+    /// Generates all bookable time slots for a date, respecting closures and effective hours.
+    /// Optionally filters by a specific court's closure status.
+    /// </summary>
+    /// <param name="schedules">The site's configured schedules.</param>
+    /// <param name="closures">The site's closures.</param>
+    /// <param name="date">The date to generate slots for.</param>
+    /// <param name="courtId">Optional court ID to check for court-specific closures.</param>
     public static IEnumerable<TimeSlot> GetAvailableSlots(
         IEnumerable<SiteSchedule> schedules,
         IEnumerable<SiteClosure> closures,
@@ -127,6 +161,12 @@ public sealed class SiteAvailabilityService
         }
     }
 
+    /// <summary>
+    /// Validates that a new or updated schedule does not conflict with existing schedules.
+    /// Schedules conflict when they overlap in date range, share the same priority, and have overlapping applicable days.
+    /// </summary>
+    /// <param name="newSchedule">The schedule to validate.</param>
+    /// <param name="existingSchedules">Existing schedules to check against.</param>
     public static Result ValidateScheduleOverlap(
         SiteSchedule newSchedule,
         IEnumerable<SiteSchedule> existingSchedules)

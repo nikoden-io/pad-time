@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Booking;
@@ -6,6 +9,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Booking.Queries.GetPublicMatches;
 
+/// <summary>
+/// Handles <see cref="GetPublicMatchesQuery"/> by fetching public matches within the date range,
+/// computing paid participant counts and available seats for each match.
+/// </summary>
 public sealed class GetPublicMatchesQueryHandler
     : IRequestHandler<GetPublicMatchesQuery, Result<IReadOnlyList<PublicMatchDto>>>
 {

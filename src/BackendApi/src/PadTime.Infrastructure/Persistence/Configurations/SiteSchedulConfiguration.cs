@@ -1,11 +1,20 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadTime.Domain.Site;
 
 namespace PadTime.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Configures the Entity Framework mapping for the <see cref="SiteSchedule"/> entity.
+/// Maps to the "site_schedules" table with composite indexes for priority-based schedule resolution,
+/// overlap detection, and validity period queries.
+/// </summary>
 public sealed class SiteScheduleConfiguration : IEntityTypeConfiguration<SiteSchedule>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<SiteSchedule> builder)
     {
         builder.ToTable("site_schedules");

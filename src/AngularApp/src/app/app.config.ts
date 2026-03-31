@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {
   ApplicationConfig,
   provideZoneChangeDetection,
@@ -17,6 +20,11 @@ import {TranslocoHttpLoader} from './transloco-loader';
 import {provideTransloco} from '@jsverse/transloco';
 import {LanguageInitService} from '@core/services/language-init.service';
 
+/**
+ * Global application configuration for the PadTime Angular app.
+ * Registers routing, HTTP interceptors, OIDC authentication, PrimeNG theming,
+ * Transloco i18n support, and language initialization.
+ */
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({eventCoalescing: true}),

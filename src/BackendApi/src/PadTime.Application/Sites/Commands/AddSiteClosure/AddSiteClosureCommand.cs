@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Domain.Common;
 using PadTime.Domain.Site;

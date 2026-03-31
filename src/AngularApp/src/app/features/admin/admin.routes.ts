@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {Routes} from '@angular/router';
 import {authGuard, adminGuard} from '@core/guards';
 

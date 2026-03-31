@@ -1,9 +1,22 @@
-﻿using PadTime.Domain.Site;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using PadTime.Domain.Site;
 
 namespace PadTime.Infrastructure.Persistence;
 
+/// <summary>
+/// Seeds essential reference data (sites, courts, schedules, and Belgian holiday closures)
+/// into the database. Runs once; skips if sites already exist.
+/// </summary>
 public static class DbSeeder
 {
+    /// <summary>
+    /// Seeds initial site, court, schedule, and closure data if the database is empty.
+    /// Creates two Belgian padel sites (Brussels and Liege) with courts, operating schedules,
+    /// and public holiday closures for 2025-2026.
+    /// </summary>
+    /// <param name="context">The database context to seed data into.</param>
     public static void SeedData(PadTimeDbContext context)
     {
         if (context.Sites.Any())

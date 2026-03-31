@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {Component, inject, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {NgIcon, provideIcons} from '@ng-icons/core';

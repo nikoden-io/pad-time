@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Sites.Commands.DeleteCourt;
 
+/// <summary>
+/// Handles <see cref="DeleteCourtCommand"/> by verifying the court exists, has no active bookings,
+/// and then removing it from the site.
+/// </summary>
 public sealed class DeleteCourtCommandHandler(
     ISiteRepository siteRepository,
     IMatchRepository matchRepository,

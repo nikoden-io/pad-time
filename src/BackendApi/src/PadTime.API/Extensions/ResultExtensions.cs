@@ -1,10 +1,23 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.AspNetCore.Mvc;
 using PadTime.Domain.Common;
 
 namespace PadTime.API.Extensions;
 
+/// <summary>
+/// Extension methods for converting domain <see cref="Result"/> and <see cref="Result{T}"/> objects
+/// into appropriate ASP.NET Core <see cref="IActionResult"/> responses with RFC 7807 problem details.
+/// </summary>
 public static class ResultExtensions
 {
+    /// <summary>
+    /// Converts a <see cref="Result"/> to an <see cref="IActionResult"/>.
+    /// Returns 200 OK on success, or a problem details response on failure.
+    /// </summary>
+    /// <param name="result">The domain result to convert.</param>
+    /// <returns>An appropriate action result.</returns>
     public static IActionResult ToActionResult(this Result result)
     {
         if (result.IsSuccess)
@@ -13,6 +26,13 @@ public static class ResultExtensions
         return ToProblemDetails(result.PadTimeError);
     }
 
+    /// <summary>
+    /// Converts a <see cref="Result{T}"/> to an <see cref="IActionResult"/>.
+    /// Returns 200 OK with the value on success, or a problem details response on failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the success value.</typeparam>
+    /// <param name="result">The domain result to convert.</param>
+    /// <returns>An appropriate action result.</returns>
     public static IActionResult ToActionResult<T>(this Result<T> result)
     {
         if (result.IsSuccess)
@@ -21,6 +41,14 @@ public static class ResultExtensions
         return ToProblemDetails(result.PadTimeError);
     }
 
+    /// <summary>
+    /// Converts a <see cref="Result{T}"/> to a 201 Created response on success,
+    /// or a problem details response on failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the success value.</typeparam>
+    /// <param name="result">The domain result to convert.</param>
+    /// <param name="location">The URI of the newly created resource.</param>
+    /// <returns>An appropriate action result.</returns>
     public static IActionResult ToCreatedResult<T>(this Result<T> result, string location)
     {
         if (result.IsSuccess)
@@ -29,6 +57,12 @@ public static class ResultExtensions
         return ToProblemDetails(result.PadTimeError);
     }
 
+    /// <summary>
+    /// Creates an RFC 7807 problem details response from a <see cref="PadTimeError"/>.
+    /// Maps domain error codes to appropriate HTTP status codes.
+    /// </summary>
+    /// <param name="padTimeError">The domain error to convert.</param>
+    /// <returns>An <see cref="ObjectResult"/> containing the problem details.</returns>
     public static IActionResult ToProblemDetails(PadTimeError padTimeError)
     {
         var statusCode = GetStatusCode(padTimeError.Code);

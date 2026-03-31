@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using MediatR;
 using PadTime.Domain.Common;
 
 namespace PadTime.Application.Booking.Queries.GetUserMatches;

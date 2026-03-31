@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -8,6 +11,11 @@ using PadTime.Domain.Members;
 
 namespace PadTime.Application.Booking.Commands.JoinMatch;
 
+/// <summary>
+/// Handles <see cref="JoinMatchCommand"/> by auto-provisioning the member if needed,
+/// joining the public match, creating a payment, and confirming the participation.
+/// Supports idempotency via the idempotency key.
+/// </summary>
 public sealed class JoinMatchCommandHandler : IRequestHandler<JoinMatchCommand, Result<JoinMatchResult>>
 {
     private readonly IMatchRepository _matchRepository;

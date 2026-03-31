@@ -1,3 +1,7 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+/** RFC 7807 Problem Details response structure for API errors. */
 export interface ProblemDetails {
   type: string;
   title: string;
@@ -7,6 +11,7 @@ export interface ProblemDetails {
   errors?: Record<string, string[]>;
 }
 
+/** Generic paginated response envelope for list API endpoints. */
 export interface PaginatedResponse<T> {
   items: T[];
   page: number;
@@ -15,6 +20,7 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
+/** Well-known API error type codes used for client-side error handling. */
 export const ErrorCodes = {
   SLOT_CONFLICT: 'booking.slot_conflict',
   RESERVATION_WINDOW_DENIED: 'booking.reservation_window_denied',

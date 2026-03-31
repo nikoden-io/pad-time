@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Billing.Queries.GetPayment;
 
+/// <summary>
+/// Handles <see cref="GetPaymentQuery"/> by fetching a payment and enforcing authorization.
+/// Non-admin users can only view their own payments.
+/// </summary>
 public sealed class GetPaymentQueryHandler : IRequestHandler<GetPaymentQuery, Result<PaymentDto>>
 {
     private readonly IPaymentRepository _paymentRepository;

@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Billing;
@@ -7,6 +10,11 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Billing.Commands.PayMatchParticipation;
 
+/// <summary>
+/// Handles <see cref="PayMatchParticipationCommand"/> by creating a payment for the current user's
+/// match participation. Supports idempotency by returning existing payments for duplicate keys.
+/// Validates that the user is a participant with an unpaid status before processing.
+/// </summary>
 public sealed class PayMatchParticipationCommandHandler
     : IRequestHandler<PayMatchParticipationCommand, Result<PayMatchParticipationResult>>
 {

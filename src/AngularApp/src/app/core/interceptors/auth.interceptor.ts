@@ -1,9 +1,16 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { switchMap, take } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
+/**
+ * HTTP interceptor that attaches the OIDC Bearer token to outgoing API requests.
+ * Only applies the Authorization header to requests targeting the configured API base URL.
+ */
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn

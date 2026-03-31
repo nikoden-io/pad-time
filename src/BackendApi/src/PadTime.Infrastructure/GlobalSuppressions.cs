@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage(

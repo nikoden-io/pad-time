@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.AspNetCore.Authorization;
 using PadTime.API.Authorization.Requirements;
 using PadTime.Application.Common.Interfaces;
@@ -14,12 +17,24 @@ public class SiteManagementHandler : AuthorizationHandler<SiteManagementRequirem
     private readonly ICurrentUser _currentUser;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SiteManagementHandler"/> class.
+    /// </summary>
+    /// <param name="currentUser">Service providing the current authenticated user's claims.</param>
+    /// <param name="httpContextAccessor">Accessor for the current HTTP context to extract route/query parameters.</param>
     public SiteManagementHandler(ICurrentUser currentUser, IHttpContextAccessor httpContextAccessor)
     {
         _currentUser = currentUser;
         _httpContextAccessor = httpContextAccessor;
     }
 
+    /// <summary>
+    /// Evaluates whether the current user meets the <see cref="SiteManagementRequirement"/>.
+    /// Requires admin role. Global admins pass unconditionally; site admins pass only for their assigned site.
+    /// </summary>
+    /// <param name="context">The authorization handler context.</param>
+    /// <param name="requirement">The site management requirement being evaluated.</param>
+    /// <returns>A completed task once the requirement is evaluated.</returns>
     protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         SiteManagementRequirement requirement)

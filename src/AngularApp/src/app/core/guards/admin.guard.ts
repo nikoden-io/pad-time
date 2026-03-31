@@ -1,7 +1,14 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 
+/**
+ * Route guard that restricts access to users with a site-level or global admin role.
+ * Redirects non-admin users to the home page.
+ */
 export const adminGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -15,6 +22,10 @@ export const adminGuard: CanActivateFn = () => {
   return false;
 };
 
+/**
+ * Route guard that restricts access to users with the global admin role only.
+ * Redirects non-global-admin users to the home page.
+ */
 export const globalAdminGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);

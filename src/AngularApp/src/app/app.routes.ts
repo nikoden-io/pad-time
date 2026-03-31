@@ -1,7 +1,15 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {Routes} from '@angular/router';
 import {ShellComponent} from './layout/components';
 import {authGuard} from './core/guards';
 
+/**
+ * Top-level route definitions for the PadTime application.
+ * Routes are organized into three groups: authentication routes (outside the shell),
+ * main application routes (inside the shell with navbar), and a wildcard fallback.
+ */
 export const routes: Routes = [
   // Auth routes (outside shell)
   {

@@ -1,11 +1,19 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadTime.Domain.Billing;
 
 namespace PadTime.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Configures the Entity Framework mapping for the <see cref="OrganizerDebt"/> entity.
+/// Maps to the "organizer_debts" table with a unique constraint enforcing one debt record per member.
+/// </summary>
 public sealed class OrganizerDebtConfiguration : IEntityTypeConfiguration<OrganizerDebt>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<OrganizerDebt> builder)
     {
         builder.ToTable("organizer_debts");

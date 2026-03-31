@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using System.IdentityModel.Tokens.Jwt;
 using FluentValidation;
 using HealthChecks.NpgSql;
@@ -14,8 +17,20 @@ using PadTime.Application.Common.Interfaces;
 
 namespace PadTime.API;
 
+/// <summary>
+/// Registers all API-layer services including controllers, authentication, authorization,
+/// CORS, Swagger, health checks, and user-related services.
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Adds API-layer services to the dependency injection container.
+    /// Configures controllers, FluentValidation, Swagger/OpenAPI, JWT or test authentication,
+    /// authorization policies, CORS, health checks, and scoped user services.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="configuration">The application configuration for reading auth and CORS settings.</param>
+    /// <returns>The configured service collection for chaining.</returns>
     public static IServiceCollection AddApiServices(
         this IServiceCollection services,
         IConfiguration configuration)

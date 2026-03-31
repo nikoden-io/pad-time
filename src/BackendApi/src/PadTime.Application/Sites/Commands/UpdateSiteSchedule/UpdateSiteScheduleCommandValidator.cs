@@ -1,4 +1,7 @@
-﻿using FluentValidation;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using FluentValidation;
 
 namespace PadTime.Application.Sites.Commands.UpdateSiteSchedule;
 

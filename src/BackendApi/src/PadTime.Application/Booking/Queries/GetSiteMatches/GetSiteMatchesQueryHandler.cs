@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -6,6 +9,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Booking.Queries.GetSiteMatches;
 
+/// <summary>
+/// Handles <see cref="GetSiteMatchesQuery"/> by fetching matches for a site with date filtering.
+/// Enforces site-admin scope so admins can only view matches in their own site.
+/// </summary>
 public sealed class GetSiteMatchesQueryHandler : IRequestHandler<GetSiteMatchesQuery, Result<IReadOnlyList<SiteMatchDto>>>
 {
     private readonly IMatchRepository _matchRepository;

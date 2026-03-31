@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Sites.Commands.DeleteSiteSchedule;
 
+/// <summary>
+/// Handles <see cref="DeleteSiteScheduleCommand"/> by loading the site with schedules
+/// and delegating removal to the domain model.
+/// </summary>
 public sealed class DeleteSiteScheduleCommandHandler(
     ISiteRepository siteRepository,
     IDateTimeProvider dateTimeProvider,

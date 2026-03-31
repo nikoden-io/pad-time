@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Sites.Commands.ActivateSite;
 
+/// <summary>
+/// Handles <see cref="ActivateSiteCommand"/> by verifying the site exists and is not already active,
+/// then activating it.
+/// </summary>
 public sealed class ActivateSiteCommandHandler(
     ISiteRepository sites,
     IUnitOfWork uow,

@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 ﻿import {
   ChangeDetectionStrategy, Component, DestroyRef,
   Input, OnChanges, Output, EventEmitter, inject, signal, computed,

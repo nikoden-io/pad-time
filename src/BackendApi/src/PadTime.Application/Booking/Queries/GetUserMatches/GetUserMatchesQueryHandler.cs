@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Booking;
@@ -6,6 +9,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Booking.Queries.GetUserMatches;
 
+/// <summary>
+/// Handles <see cref="GetUserMatchesQuery"/> by retrieving matches where the current authenticated user
+/// is a participant or organizer, and mapping them to DTOs with participant details.
+/// </summary>
 public sealed class GetUserMatchesQueryHandler : IRequestHandler<GetUserMatchesQuery, Result<IReadOnlyList<UserMatchDto>>>
 {
     private readonly IMatchRepository _matchRepository;

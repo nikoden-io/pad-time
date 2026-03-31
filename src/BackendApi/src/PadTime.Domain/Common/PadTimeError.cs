@@ -1,13 +1,24 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 namespace PadTime.Domain.Common;
 
 /// <summary>
 /// Represents a domain error with a machine-readable code and human-readable message.
 /// Codes follow the pattern: bounded_context.error_name (e.g., booking.slot_conflict)
 /// </summary>
+/// <param name="Code">Machine-readable error code following the pattern <c>bounded_context.error_name</c>.</param>
+/// <param name="Message">Human-readable error description.</param>
 public sealed record PadTimeError(string Code, string Message)
 {
+    /// <summary>
+    /// Represents the absence of an error. Used internally by <see cref="Result"/> for successful outcomes.
+    /// </summary>
     public static readonly PadTimeError None = new(string.Empty, string.Empty);
 
+    /// <summary>
+    /// Implicitly converts a <see cref="PadTimeError"/> to its error code string.
+    /// </summary>
     public static implicit operator string(PadTimeError padTimeError) => padTimeError.Code;
 }
 
@@ -17,6 +28,9 @@ public sealed record PadTimeError(string Code, string Message)
 /// </summary>
 public static class DomainErrors
 {
+    /// <summary>
+    /// Errors related to match booking operations.
+    /// </summary>
     public static class Booking
     {
         public static readonly PadTimeError SlotConflict =
@@ -56,6 +70,9 @@ public static class DomainErrors
             new("booking.invalid_transition", "This state transition is not allowed.");
     }
 
+    /// <summary>
+    /// Errors related to payment and debt operations.
+    /// </summary>
     public static class Billing
     {
         public static readonly PadTimeError OrganizerDebtBlock =
@@ -74,6 +91,9 @@ public static class DomainErrors
             new("billing.invalid_amount", "Payment amount must be positive.");
     }
 
+    /// <summary>
+    /// Errors related to member management.
+    /// </summary>
     public static class Member
     {
         public static readonly PadTimeError NotFound =
@@ -86,6 +106,9 @@ public static class DomainErrors
             new("member.inactive", "This member account is inactive.");
     }
 
+    /// <summary>
+    /// Errors related to site configuration and availability.
+    /// </summary>
     public static class Site
     {
         public static readonly PadTimeError NotFound = new(
@@ -133,6 +156,9 @@ public static class DomainErrors
             "Site is already active.");
     }
 
+    /// <summary>
+    /// Errors related to site schedule validation.
+    /// </summary>
     public static class SiteSchedule
     {
         public static readonly PadTimeError InvalidDateRange = new(
@@ -144,6 +170,9 @@ public static class DomainErrors
             "Closing time must be after opening time.");
     }
 
+    /// <summary>
+    /// Errors related to court management.
+    /// </summary>
     public static class Court
     {
         public static readonly PadTimeError NotFound =

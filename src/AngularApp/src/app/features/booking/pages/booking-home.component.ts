@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {Component} from '@angular/core';
 import {BookPageComponent} from '@features/booking/components/book-page/book-page.component';
 import {PageShellComponent} from '@shared/components/page-shell/page-shell.component';

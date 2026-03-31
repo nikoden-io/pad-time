@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Domain.Common;
 
 namespace PadTime.Domain.Booking;
@@ -7,10 +10,28 @@ namespace PadTime.Domain.Booking;
 /// </summary>
 public sealed class TimeSlot : ValueObject
 {
+    /// <summary>
+    /// The date of the time slot.
+    /// </summary>
     public DateOnly Date { get; }
+
+    /// <summary>
+    /// The slot start time (local time).
+    /// </summary>
     public TimeOnly StartTime { get; }
+
+    /// <summary>
+    /// The slot end time (local time).
+    /// </summary>
     public TimeOnly EndTime { get; }
 
+    /// <summary>
+    /// Creates a new time slot for the specified date and time range.
+    /// </summary>
+    /// <param name="date">The date of the slot.</param>
+    /// <param name="startTime">The start time (must be before <paramref name="endTime"/>).</param>
+    /// <param name="endTime">The end time.</param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="endTime"/> is not after <paramref name="startTime"/>.</exception>
     public TimeSlot(DateOnly date, TimeOnly startTime, TimeOnly endTime)
     {
         if (endTime <= startTime)
@@ -21,6 +42,11 @@ public sealed class TimeSlot : ValueObject
         EndTime = endTime;
     }
 
+    /// <summary>
+    /// Creates a <see cref="TimeSlot"/> from two <see cref="DateTime"/> values, extracting date and time components.
+    /// </summary>
+    /// <param name="start">The start date and time.</param>
+    /// <param name="end">The end date and time (must be after <paramref name="start"/>).</param>
     public static TimeSlot FromDateTimes(DateTime start, DateTime end)
     {
         if (end <= start)
@@ -50,6 +76,9 @@ public sealed class TimeSlot : ValueObject
         return TimeZoneInfo.ConvertTimeToUtc(localDateTime, timezone);
     }
 
+    /// <summary>
+    /// The duration of the time slot.
+    /// </summary>
     public TimeSpan Duration => EndTime - StartTime;
 
     protected override IEnumerable<object?> GetEqualityComponents()

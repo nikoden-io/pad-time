@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Sites.Commands.DeactivateSite;
 
+/// <summary>
+/// Handles <see cref="DeactivateSiteCommand"/> by verifying the site exists and is currently active,
+/// then deactivating it.
+/// </summary>
 public sealed class DeactivateSiteCommandHandler(
     ISiteRepository sites,
     IUnitOfWork uow,

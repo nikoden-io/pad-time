@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {inject, Injectable} from '@angular/core';
 import {Translation, TranslocoLoader} from '@jsverse/transloco';
 import {HttpClient} from '@angular/common/http';

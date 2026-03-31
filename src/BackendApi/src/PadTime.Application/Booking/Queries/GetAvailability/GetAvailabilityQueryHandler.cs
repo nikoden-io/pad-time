@@ -1,9 +1,16 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Site;
 
 namespace PadTime.Application.Booking.Queries.GetAvailability;
 
+/// <summary>
+/// Handles <see cref="GetAvailabilityQuery"/> by computing available time slots for each active court
+/// based on the site schedule, closures, and existing bookings.
+/// </summary>
 public sealed class GetAvailabilityQueryHandler : IRequestHandler<GetAvailabilityQuery, AvailabilityResult>
 {
     private readonly ISiteRepository _siteRepository;

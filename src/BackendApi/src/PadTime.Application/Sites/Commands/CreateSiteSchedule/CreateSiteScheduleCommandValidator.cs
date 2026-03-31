@@ -1,7 +1,14 @@
-﻿using FluentValidation;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using FluentValidation;
 
 namespace PadTime.Application.Sites.Commands.CreateSiteSchedule;
 
+/// <summary>
+/// Validates <see cref="CreateSiteScheduleCommand"/> ensuring required fields, valid time ranges,
+/// and sensible date constraints.
+/// </summary>
 public sealed class CreateSiteScheduleCommandValidator : AbstractValidator<CreateSiteScheduleCommand>
 {
     public CreateSiteScheduleCommandValidator()

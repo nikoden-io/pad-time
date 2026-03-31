@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -9,8 +12,9 @@ using PadTime.Domain.Site;
 namespace PadTime.Application.Booking.Commands.CreateMatch;
 
 /// <summary>
-/// Handles the retrieval of matches where the current authenticated user is a participant.
-/// Applies authorization scope and maps domain entities to DTOs.
+/// Handles <see cref="CreateMatchCommand"/> by validating site/court availability, booking window,
+/// member eligibility, organizer debt, and slot conflicts before creating the match.
+/// For private matches, adds specified participants by matricule.
 /// </summary>
 public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchCommand, Result<Guid>>
 {
@@ -43,15 +47,7 @@ public sealed class CreateMatchCommandHandler : IRequestHandler<CreateMatchComma
         _unitOfWork = unitOfWork;
     }
 
-    /// <summary>
-    /// Handles the query and returns the list of matches for the current user.
-    /// </summary>
-    /// <param name="request">Query parameters including optional date filter and pagination.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>
-    /// A result containing the list of matches if successful,
-    /// or an error if the current user cannot be resolved.
-    /// </returns>
+    /// <inheritdoc />
     public async Task<Result<Guid>> Handle(CreateMatchCommand request, CancellationToken cancellationToken)
     {
         var utcNow = _dateTimeProvider.UtcNow;

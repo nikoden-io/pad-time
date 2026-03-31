@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +15,10 @@ using PadTime.Domain.Members;
 
 namespace PadTime.API.Controllers;
 
+/// <summary>
+/// Provides administrative endpoints for site oversight, revenue analytics, and member management.
+/// All actions require an admin-level authorization policy.
+/// </summary>
 [ApiController]
 [Route("api/v1/admin")]
 [Authorize(Policy = Policies.RequireAdmin)]
@@ -19,6 +26,10 @@ public sealed class AdminController : ControllerBase
 {
     private readonly IMediator _mediator;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AdminController"/> class.
+    /// </summary>
+    /// <param name="mediator">MediatR mediator for dispatching queries and commands.</param>
     public AdminController(IMediator mediator)
     {
         _mediator = mediator;

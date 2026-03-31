@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -675,10 +678,22 @@ public sealed class SitesController(IMediator mediator, IAuditLogger auditLogger
     }
 }
 
+/// <summary>Request body for creating a new court.</summary>
+/// <param name="Label">Display label for the court (e.g., "Court 1").</param>
 public sealed record CreateCourtRequest(string Label);
 
+/// <summary>Response returned after successful court creation.</summary>
+/// <param name="CourtId">Identifier of the newly created court.</param>
 public sealed record CreateCourtResponse(Guid CourtId);
 
+/// <summary>Request body for creating a new site.</summary>
+/// <param name="Name">Name of the site.</param>
+/// <param name="StreetNumber">Street number of the site address.</param>
+/// <param name="Street">Street name of the site address.</param>
+/// <param name="Postcode">Postal code of the site address.</param>
+/// <param name="City">City of the site address.</param>
+/// <param name="Country">Country of the site address.</param>
+/// <param name="Timezone">IANA timezone identifier (e.g., "Europe/Brussels").</param>
 public sealed record CreateSiteRequest(
     string Name,
     string StreetNumber,
@@ -689,8 +704,18 @@ public sealed record CreateSiteRequest(
     string Timezone
 );
 
+/// <summary>Response returned after successful site creation.</summary>
+/// <param name="SiteId">Identifier of the newly created site.</param>
 public sealed record CreateSiteResponse(Guid SiteId);
 
+/// <summary>Request body for updating an existing site.</summary>
+/// <param name="Name">Updated name of the site.</param>
+/// <param name="StreetNumber">Updated street number.</param>
+/// <param name="Street">Updated street name.</param>
+/// <param name="Postcode">Updated postal code.</param>
+/// <param name="City">Updated city.</param>
+/// <param name="Country">Updated country.</param>
+/// <param name="Timezone">Updated IANA timezone identifier.</param>
 public sealed record UpdateSiteRequest(
     string Name,
     string StreetNumber,
@@ -701,8 +726,18 @@ public sealed record UpdateSiteRequest(
     string Timezone
 );
 
+/// <summary>Request body for updating a court.</summary>
+/// <param name="Label">Updated display label for the court.</param>
 public sealed record UpdateCourtRequest(string Label);
 
+/// <summary>Request body for creating a site schedule.</summary>
+/// <param name="Name">Display name of the schedule.</param>
+/// <param name="ValidFrom">Start date of the schedule validity period.</param>
+/// <param name="ValidUntil">Optional end date of the schedule validity period.</param>
+/// <param name="OpeningTime">Daily opening time.</param>
+/// <param name="ClosingTime">Daily closing time.</param>
+/// <param name="ApplicableDays">Days of the week this schedule applies to. Null means all days.</param>
+/// <param name="Priority">Priority for schedule resolution when multiple schedules overlap.</param>
 public sealed record CreateSiteScheduleRequest(
     string Name,
     DateOnly ValidFrom,
@@ -713,8 +748,18 @@ public sealed record CreateSiteScheduleRequest(
     int Priority
 );
 
+/// <summary>Response returned after successful schedule creation.</summary>
+/// <param name="ScheduleId">Identifier of the newly created schedule.</param>
 public sealed record CreateSiteScheduleResponse(Guid ScheduleId);
 
+/// <summary>Request body for updating a site schedule.</summary>
+/// <param name="Name">Updated display name of the schedule.</param>
+/// <param name="ValidFrom">Updated start date of the schedule validity period.</param>
+/// <param name="ValidUntil">Updated optional end date of the schedule validity period.</param>
+/// <param name="OpeningTime">Updated daily opening time.</param>
+/// <param name="ClosingTime">Updated daily closing time.</param>
+/// <param name="ApplicableDays">Updated applicable days of the week. Null means all days.</param>
+/// <param name="Priority">Updated priority for schedule resolution.</param>
 public sealed record UpdateSiteScheduleRequest(
     string Name,
     DateOnly ValidFrom,
@@ -725,6 +770,15 @@ public sealed record UpdateSiteScheduleRequest(
     int Priority
 );
 
+/// <summary>Request body for adding a site closure.</summary>
+/// <param name="Type">The type of closure (full day, modified hours, etc.).</param>
+/// <param name="Reason">The reason for the closure (public holiday, maintenance, etc.).</param>
+/// <param name="Description">Optional description providing additional context.</param>
+/// <param name="StartDate">Start date of the closure period.</param>
+/// <param name="EndDate">Optional end date of the closure period.</param>
+/// <param name="ModifiedOpeningTime">Modified opening time during the closure, if applicable.</param>
+/// <param name="ModifiedClosingTime">Modified closing time during the closure, if applicable.</param>
+/// <param name="AffectedCourtIds">Optional list of specific court identifiers affected by the closure.</param>
 public sealed record AddSiteClosureRequest(
     ClosureType Type,
     ClosureReason Reason,
@@ -736,4 +790,6 @@ public sealed record AddSiteClosureRequest(
     Guid[]? AffectedCourtIds
 );
 
+/// <summary>Response returned after successful closure creation.</summary>
+/// <param name="ClosureId">Identifier of the newly created closure.</param>
 public sealed record AddSiteClosureResponse(Guid ClosureId);

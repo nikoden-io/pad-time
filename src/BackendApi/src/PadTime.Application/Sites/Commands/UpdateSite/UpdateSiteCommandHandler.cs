@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Sites.Commands.UpdateSite;
 
+/// <summary>
+/// Handles <see cref="UpdateSiteCommand"/> by loading the site and applying the updated information
+/// through the domain model.
+/// </summary>
 public sealed class UpdateSiteCommandHandler(
     ISiteRepository sites,
     IUnitOfWork uow,

@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {
   ChangeDetectionStrategy, Component, computed,
   effect, inject, input, output, signal,

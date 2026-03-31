@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {Injectable, signal, computed} from '@angular/core';
 import {Site, SiteDetail, Court, Schedule, Closure, PagedResult} from '@core/models';
 

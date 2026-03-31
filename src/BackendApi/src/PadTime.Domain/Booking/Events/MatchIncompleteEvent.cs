@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Domain.Common;
 
 namespace PadTime.Domain.Booking.Events;

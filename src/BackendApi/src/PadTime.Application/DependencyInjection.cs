@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -5,8 +8,14 @@ using PadTime.Application.Common.Behaviors;
 
 namespace PadTime.Application;
 
+/// <summary>
+/// Registers application-layer services (MediatR, FluentValidation, pipeline behaviors) into the DI container.
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Adds all application-layer services to the service collection.
+    /// </summary>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         var assembly = typeof(DependencyInjection).Assembly;

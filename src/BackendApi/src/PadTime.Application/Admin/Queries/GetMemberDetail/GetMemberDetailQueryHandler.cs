@@ -1,9 +1,16 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Common;
 
 namespace PadTime.Application.Admin.Queries.GetMemberDetail;
 
+/// <summary>
+/// Handles <see cref="GetMemberDetailQuery"/> by assembling detailed member data
+/// including match counts, organizer debt, site affiliation, and recent match history.
+/// </summary>
 public sealed class GetMemberDetailQueryHandler(
     IMemberRepository members,
     IMatchRepository matches,

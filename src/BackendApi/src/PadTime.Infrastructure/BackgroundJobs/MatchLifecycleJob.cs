@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -50,6 +53,11 @@ public sealed class MatchLifecycleJob : BackgroundService
     private readonly ILogger<MatchLifecycleJob> _logger;
     private static readonly TimeSpan Interval = TimeSpan.FromMinutes(1);
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MatchLifecycleJob"/> class.
+    /// </summary>
+    /// <param name="scopeFactory">Factory for creating scoped service providers per job iteration.</param>
+    /// <param name="logger">Logger for recording lifecycle transition events.</param>
     public MatchLifecycleJob(IServiceScopeFactory scopeFactory, ILogger<MatchLifecycleJob> logger)
     {
         _scopeFactory = scopeFactory;

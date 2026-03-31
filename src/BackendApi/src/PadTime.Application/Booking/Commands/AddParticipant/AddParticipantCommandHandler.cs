@@ -1,10 +1,17 @@
-﻿using MediatR;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Common;
 
 namespace PadTime.Application.Booking.Commands.AddParticipant;
 
+/// <summary>
+/// Handles <see cref="AddParticipantCommand"/> by verifying the current user is the match organizer,
+/// resolving the target member by matricule, and adding them as a participant.
+/// </summary>
 public sealed class AddParticipantCommandHandler : IRequestHandler<AddParticipantCommand, Result>
 {
     private readonly IMatchRepository _matchRepository;

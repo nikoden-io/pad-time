@@ -1,7 +1,14 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using FluentValidation;
 
 namespace PadTime.Application.Sites.Commands.CreateSite;
 
+/// <summary>
+/// Validates <see cref="CreateSiteCommand"/> ensuring all address fields are present, within length limits,
+/// and the timezone is a valid IANA identifier.
+/// </summary>
 public sealed class CreateSiteCommandValidator : AbstractValidator<CreateSiteCommand>
 {
     public CreateSiteCommandValidator()

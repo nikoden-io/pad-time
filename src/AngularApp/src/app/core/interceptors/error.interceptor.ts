@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
@@ -7,6 +10,11 @@ import { ProblemDetails } from '../models';
 // Track if we're already redirecting to prevent loops
 let isRedirecting = false;
 
+/**
+ * HTTP interceptor that handles API error responses globally.
+ * Redirects to the login page on 401 Unauthorized, logs 403 Forbidden errors,
+ * and attempts to parse RFC 7807 ProblemDetails from error payloads.
+ */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 

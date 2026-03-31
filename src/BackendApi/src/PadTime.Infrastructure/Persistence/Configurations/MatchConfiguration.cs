@@ -1,11 +1,20 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadTime.Domain.Booking;
 
 namespace PadTime.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Configures the Entity Framework mapping for the <see cref="Match"/> entity.
+/// Maps to the "matches" table with an anti-double-booking unique constraint on court + start time
+/// (excluding cancelled matches) and indexes for common query patterns.
+/// </summary>
 public sealed class MatchConfiguration : IEntityTypeConfiguration<Match>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Match> builder)
     {
         builder.ToTable("matches");

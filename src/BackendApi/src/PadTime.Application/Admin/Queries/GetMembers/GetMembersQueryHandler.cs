@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Application.Common.Models;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Admin.Queries.GetMembers;
 
+/// <summary>
+/// Handles <see cref="GetMembersQuery"/> by retrieving a paginated member list
+/// enriched with match counts, organizer debts, and site names.
+/// </summary>
 public sealed class GetMembersQueryHandler(
     IMemberRepository members,
     IOrganizerDebtRepository debts,

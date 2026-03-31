@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +18,9 @@ using PadTime.Domain.Booking;
 
 namespace PadTime.API.Controllers;
 
+/// <summary>
+/// Manages padel match operations including creation, retrieval, joining, participant management, and cancellation.
+/// </summary>
 [ApiController]
 [Route("api/v1/matches")]
 [Authorize(Policy = Policies.RequireUser)]
@@ -22,6 +28,10 @@ public sealed class MatchesController : ControllerBase
 {
     private readonly IMediator _mediator;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MatchesController"/> class.
+    /// </summary>
+    /// <param name="mediator">MediatR mediator for dispatching commands and queries.</param>
     public MatchesController(IMediator mediator)
     {
         _mediator = mediator;
@@ -246,6 +256,10 @@ public sealed class MatchesController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Request body for adding a participant to a private match.
+    /// </summary>
+    /// <param name="Matricule">The matricule identifier of the member to add.</param>
     public sealed record AddParticipantRequest(string Matricule);
 
     /// <summary>
@@ -314,6 +328,14 @@ public sealed class MatchesController : ControllerBase
     }
 }
 
+/// <summary>
+/// Request body for creating a new match.
+/// </summary>
+/// <param name="SiteId">Identifier of the site where the match will be played.</param>
+/// <param name="CourtId">Identifier of the court to book.</param>
+/// <param name="StartAt">Start time of the match (UTC).</param>
+/// <param name="Type">Match type: "public" or "private".</param>
+/// <param name="PrivateParticipantsMatricules">Optional list of matricules for pre-invited participants (private matches only).</param>
 public sealed record CreateMatchRequest(
     Guid SiteId,
     Guid CourtId,
@@ -321,8 +343,21 @@ public sealed record CreateMatchRequest(
     string Type,
     List<string>? PrivateParticipantsMatricules = null);
 
+/// <summary>
+/// Response returned after successful match creation.
+/// </summary>
+/// <param name="MatchId">Identifier of the newly created match.</param>
 public sealed record CreateMatchResponse(Guid MatchId);
 
+/// <summary>
+/// Request body for joining a public match.
+/// </summary>
+/// <param name="IdempotencyKey">Client-generated idempotency key to prevent duplicate join operations.</param>
 public sealed record JoinMatchRequest(string IdempotencyKey);
 
+/// <summary>
+/// Response returned after successfully joining a match.
+/// </summary>
+/// <param name="PaymentId">Identifier of the payment created for this participation.</param>
+/// <param name="Status">Current payment status.</param>
 public sealed record JoinMatchResponse(Guid PaymentId, string Status);

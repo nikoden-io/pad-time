@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Domain.Billing.Events;
 using PadTime.Domain.Common;
 
@@ -5,10 +8,14 @@ namespace PadTime.Domain.Billing;
 
 /// <summary>
 /// Aggregate root tracking an organizer's outstanding debt.
-/// Debt blocks match creation until cleared.
+/// Debt is incurred when a match starts with fewer than four paid participants;
+/// the organizer is charged for the unfilled spots. Debt blocks new match creation until fully cleared.
 /// </summary>
 public sealed class OrganizerDebt : AggregateRoot<Guid>
 {
+    /// <summary>
+    /// Identifier of the member who owes the debt.
+    /// </summary>
     public Guid MemberId { get; private set; }
 
     /// <summary>
@@ -16,11 +23,25 @@ public sealed class OrganizerDebt : AggregateRoot<Guid>
     /// </summary>
     public int AmountCents { get; private set; }
 
+    /// <summary>
+    /// When the debt record was created (UTC).
+    /// </summary>
     public DateTime CreatedAtUtc { get; private set; }
+
+    /// <summary>
+    /// When the debt was last modified (UTC).
+    /// </summary>
     public DateTime UpdatedAtUtc { get; private set; }
 
     private OrganizerDebt() { } // EF Core
 
+    /// <summary>
+    /// Creates a new debt record for the specified member.
+    /// Raises <see cref="Events.DebtCreatedEvent"/> if the initial amount is positive.
+    /// </summary>
+    /// <param name="memberId">The member who owes the debt.</param>
+    /// <param name="initialAmountCents">Initial debt amount in cents (must be non-negative).</param>
+    /// <param name="utcNow">Current UTC timestamp.</param>
     public static OrganizerDebt Create(Guid memberId, int initialAmountCents, DateTime utcNow)
     {
         if (initialAmountCents < 0)

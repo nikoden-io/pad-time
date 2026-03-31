@@ -1,10 +1,18 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using PadTime.Application.Common.Interfaces.Repositories;
 
 namespace PadTime.Infrastructure.Persistence.Repositories;
 
+/// <summary>
+/// Repository for site-level statistical queries including booking counts,
+/// court utilization rates, and daily booking statistics for dashboard displays.
+/// </summary>
 public sealed class SiteStatisticsRepository(PadTimeDbContext context) : ISiteStatisticsRepository
 {
+    /// <inheritdoc />
     public async Task<int> GetBookingCountForPeriodAsync(
         Guid siteId, 
         DateTime startDate, 
@@ -22,6 +30,7 @@ public sealed class SiteStatisticsRepository(PadTimeDbContext context) : ISiteSt
             .CountAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<int> GetUpcomingBookingCountAsync(
         Guid siteId, 
         DateOnly startDate, 
@@ -44,6 +53,7 @@ public sealed class SiteStatisticsRepository(PadTimeDbContext context) : ISiteSt
             .CountAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<DateTime> GetLastBookingDateAsync(
         Guid siteId, 
         CancellationToken cancellationToken = default)
@@ -61,6 +71,7 @@ public sealed class SiteStatisticsRepository(PadTimeDbContext context) : ISiteSt
         return lastBooking == default ? DateTime.MinValue : lastBooking;
     }
 
+    /// <inheritdoc />
     public async Task<List<CourtUtilizationStats>> GetCourtUtilizationAsync(
         Guid siteId, 
         DateTime startDate, 
@@ -91,6 +102,7 @@ public sealed class SiteStatisticsRepository(PadTimeDbContext context) : ISiteSt
         return courtStats;
     }
 
+    /// <inheritdoc />
     public async Task<List<DailyBookingStats>> GetDailyBookingStatsAsync(
         Guid siteId, 
         DateOnly startDate, 

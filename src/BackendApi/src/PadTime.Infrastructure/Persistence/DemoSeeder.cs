@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using PadTime.Domain.Billing;
 using PadTime.Domain.Booking;
@@ -23,6 +26,11 @@ public static class DemoSeeder
 {
     private const string DemoSubjectPrefix = "demo|";
 
+    /// <summary>
+    /// Cleans previous demo data and seeds fresh demo data with dates relative to today.
+    /// Should only be called in development environments.
+    /// </summary>
+    /// <param name="context">The database context to seed demo data into.</param>
     public static void SeedDemoData(PadTimeDbContext context)
     {
         CleanDemoData(context);

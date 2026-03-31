@@ -1,7 +1,11 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 // ========================================
 // CORE TYPES
 // ========================================
 
+/** A padel site (club) with its address, timezone, and associated courts. */
 export interface Site {
   siteId: string;
   name: string;
@@ -17,12 +21,14 @@ export interface Site {
   courts: CourtSummary[];
 }
 
+/** Lightweight court representation used in site listings. */
 export interface CourtSummary {
   courtId: string;
   label: string;
   isActive: boolean;
 }
 
+/** Full site detail including courts, schedules, and closures. */
 export interface SiteDetail {
   siteId: string;
   name: string;
@@ -40,6 +46,7 @@ export interface SiteDetail {
   closures: Closure[];
 }
 
+/** A padel court belonging to a site. */
 export interface Court {
   courtId: string;
   label: string;
@@ -47,6 +54,7 @@ export interface Court {
   createdAtUtc: string;
 }
 
+/** An opening schedule for a site, defining operating hours on specific days. */
 export interface Schedule {
   scheduleId: string;
   name: string;
@@ -61,6 +69,7 @@ export interface Schedule {
   updatedAtUtc: string | null;
 }
 
+/** A temporary closure or modified schedule for a site or specific courts. */
 export interface Closure {
   closureId: string;
   type: string;
@@ -79,6 +88,7 @@ export interface Closure {
 // PAGINATION
 // ========================================
 
+/** Generic paginated result with navigation metadata. */
 export interface PagedResult<T> {
   items: T[];
   page: number;
@@ -93,6 +103,7 @@ export interface PagedResult<T> {
 // REQUEST DTOs
 // ========================================
 
+/** Request payload to create a new site. */
 export interface CreateSiteRequest {
   name: string;
   streetNumber: string;
@@ -103,6 +114,7 @@ export interface CreateSiteRequest {
   timezone: string;
 }
 
+/** Request payload to update an existing site. */
 export interface UpdateSiteRequest {
   name: string;
   streetNumber: string;

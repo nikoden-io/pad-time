@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Domain.Common;
 
 namespace PadTime.Domain.Site;
@@ -65,6 +68,9 @@ public enum ClosureReason
 /// </summary>
 public sealed class SiteClosure : Entity<Guid>
 {
+    /// <summary>
+    /// The site this closure applies to.
+    /// </summary>
     public Guid SiteId { get; private set; }
 
     /// <summary>
@@ -111,7 +117,14 @@ public sealed class SiteClosure : Entity<Guid>
     /// </summary>
     public Guid[]? AffectedCourtIds { get; private set; }
 
+    /// <summary>
+    /// When the closure was created (UTC).
+    /// </summary>
     public DateTime CreatedAtUtc { get; private set; }
+
+    /// <summary>
+    /// When the closure was last modified (UTC).
+    /// </summary>
     public DateTime? UpdatedAtUtc { get; private set; }
 
     private SiteClosure() { } // EF Core

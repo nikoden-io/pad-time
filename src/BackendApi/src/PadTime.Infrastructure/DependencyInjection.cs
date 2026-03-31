@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +14,20 @@ using PadTime.Infrastructure.Services;
 
 namespace PadTime.Infrastructure;
 
+/// <summary>
+/// Registers all infrastructure-layer services including the database context, repositories,
+/// unit of work, background jobs, and cross-cutting services.
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Adds infrastructure-layer services to the dependency injection container.
+    /// Configures PostgreSQL via Entity Framework Core, registers repositories,
+    /// the unit of work, the <see cref="IDateTimeProvider"/>, and the match lifecycle background job.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <param name="configuration">The application configuration for reading the connection string.</param>
+    /// <returns>The configured service collection for chaining.</returns>
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)

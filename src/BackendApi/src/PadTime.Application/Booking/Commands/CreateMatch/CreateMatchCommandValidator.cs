@@ -1,7 +1,14 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using FluentValidation;
 
 namespace PadTime.Application.Booking.Commands.CreateMatch;
 
+/// <summary>
+/// Validates <see cref="CreateMatchCommand"/> ensuring required fields are present,
+/// the start time is in the future, the match type is valid, and at most 3 additional participants are specified.
+/// </summary>
 public sealed class CreateMatchCommandValidator : AbstractValidator<CreateMatchCommand>
 {
     public CreateMatchCommandValidator()

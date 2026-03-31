@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Admin.Queries.GetRevenueAnalytics;
 
+/// <summary>
+/// Handles <see cref="GetRevenueAnalyticsQuery"/> by aggregating paid payments into daily revenue items.
+/// Site admins are automatically restricted to their own site scope.
+/// </summary>
 public sealed class GetRevenueAnalyticsQueryHandler
     : IRequestHandler<GetRevenueAnalyticsQuery, Result<RevenueAnalyticsDto>>
 {

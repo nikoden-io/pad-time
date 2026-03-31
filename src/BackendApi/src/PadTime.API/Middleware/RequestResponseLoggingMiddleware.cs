@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
@@ -36,12 +39,23 @@ public sealed class RequestResponseLoggingMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<RequestResponseLoggingMiddleware> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequestResponseLoggingMiddleware"/> class.
+    /// </summary>
+    /// <param name="next">The next middleware delegate in the pipeline.</param>
+    /// <param name="logger">Logger for recording request and response details.</param>
     public RequestResponseLoggingMiddleware(RequestDelegate next, ILogger<RequestResponseLoggingMiddleware> logger)
     {
         _next = next;
         _logger = logger;
     }
 
+    /// <summary>
+    /// Intercepts the HTTP pipeline to log request details, capture the response body,
+    /// and record timing information. Skips logging for health, metrics, and Swagger endpoints.
+    /// Sensitive fields in JSON payloads are automatically redacted.
+    /// </summary>
+    /// <param name="context">The HTTP context for the current request.</param>
     public async Task InvokeAsync(HttpContext context)
     {
         var stopwatch = Stopwatch.StartNew();

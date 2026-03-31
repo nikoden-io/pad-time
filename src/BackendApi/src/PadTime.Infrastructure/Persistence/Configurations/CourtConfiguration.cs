@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadTime.Domain.Booking;
@@ -5,8 +8,13 @@ using PadTime.Domain.Site;
 
 namespace PadTime.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Configures the Entity Framework mapping for the <see cref="Court"/> entity.
+/// Maps to the "courts" table with unique constraint on site + label and performance indexes.
+/// </summary>
 public sealed class CourtConfiguration : IEntityTypeConfiguration<Court>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Court> builder)
     {
         builder.ToTable("courts");

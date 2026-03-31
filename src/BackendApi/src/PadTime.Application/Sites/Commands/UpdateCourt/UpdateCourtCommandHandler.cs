@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Sites.Commands.UpdateCourt;
 
+/// <summary>
+/// Handles <see cref="UpdateCourtCommand"/> by verifying the site exists, checking for duplicate labels
+/// among sibling courts, and delegating the update to the domain model.
+/// </summary>
 public sealed class UpdateCourtCommandHandler(
     ISiteRepository siteRepository,
     IDateTimeProvider dateTimeProvider,

@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Application.Common.Models;
@@ -5,8 +8,13 @@ using PadTime.Domain.Site;
 
 namespace PadTime.Infrastructure.Persistence.Repositories;
 
+/// <summary>
+/// Repository for <see cref="Site"/> entity data access operations including
+/// paginated queries with search/filtering, schedule and closure eager loading, and active booking checks.
+/// </summary>
 public sealed class SiteRepository(PadTimeDbContext context) : ISiteRepository
 {
+    /// <inheritdoc />
     public async Task<Site?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await context.Sites
@@ -14,6 +22,7 @@ public sealed class SiteRepository(PadTimeDbContext context) : ISiteRepository
             .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<Site?> GetByIdWithSchedulesAndClosuresAsync(
         Guid id,
         CancellationToken cancellationToken = default)
@@ -25,6 +34,7 @@ public sealed class SiteRepository(PadTimeDbContext context) : ISiteRepository
             .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<List<Site>> GetAllActiveAsync(CancellationToken cancellationToken = default)
     {
         return await context.Sites
@@ -34,6 +44,7 @@ public sealed class SiteRepository(PadTimeDbContext context) : ISiteRepository
             .ToListAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<PagedResult<Site>> GetPagedAsync(
         int page, 
         int pageSize, 
@@ -84,23 +95,27 @@ public sealed class SiteRepository(PadTimeDbContext context) : ISiteRepository
         return new PagedResult<Site>(sites, page, pageSize, totalCount);
     }
 
+    /// <inheritdoc />
     public async Task AddAsync(Site site, CancellationToken cancellationToken = default)
     {
         await context.Sites.AddAsync(site, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task UpdateAsync(Site site, CancellationToken cancellationToken = default)
     {
         context.Sites.Update(site);
         await Task.CompletedTask;
     }
 
+    /// <inheritdoc />
     public async Task DeleteAsync(Site site, CancellationToken cancellationToken = default)
     {
         context.Sites.Remove(site);
         await Task.CompletedTask;
     }
 
+    /// <inheritdoc />
     public async Task<bool> HasActiveBookingsAsync(Guid siteId, CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;

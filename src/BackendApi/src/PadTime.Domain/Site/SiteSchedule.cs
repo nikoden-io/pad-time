@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Domain.Booking;
 using PadTime.Domain.Common;
 
@@ -19,6 +22,9 @@ public sealed class SiteSchedule : Entity<Guid>
     /// </summary>
     public const int BreakDurationMinutes = 15;
 
+    /// <summary>
+    /// The site this schedule belongs to.
+    /// </summary>
     public Guid SiteId { get; private set; }
 
     /// <summary>
@@ -64,11 +70,22 @@ public sealed class SiteSchedule : Entity<Guid>
     /// </summary>
     public int Priority { get; private set; }
 
+    /// <summary>
+    /// When the schedule was created (UTC).
+    /// </summary>
     public DateTime CreatedAtUtc { get; private set; }
+
+    /// <summary>
+    /// When the schedule was last modified (UTC).
+    /// </summary>
     public DateTime? UpdatedAtUtc { get; private set; }
 
     private SiteSchedule() { } // EF Core
 
+    /// <summary>
+    /// Creates a new site schedule with the specified parameters.
+    /// Validates that the time range and date range are valid, and that applicable days are not empty.
+    /// </summary>
     public static Result<SiteSchedule> Create(
         Guid siteId,
         string name,
@@ -220,12 +237,20 @@ public sealed class SiteSchedule : Entity<Guid>
         return Result.Success();
     }
 
+    /// <summary>
+    /// Activates this schedule so it participates in availability calculations.
+    /// </summary>
+    /// <param name="utcNow">Current UTC timestamp.</param>
     public void Activate(DateTime utcNow)
     {
         IsActive = true;
         UpdatedAtUtc = utcNow;
     }
 
+    /// <summary>
+    /// Deactivates this schedule, excluding it from availability calculations.
+    /// </summary>
+    /// <param name="utcNow">Current UTC timestamp.</param>
     public void Deactivate(DateTime utcNow)
     {
         IsActive = false;

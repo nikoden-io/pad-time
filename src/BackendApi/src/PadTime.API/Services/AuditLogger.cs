@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Application.Common.Interfaces;
 using System.Text.Json;
 
@@ -11,6 +14,11 @@ public sealed class AuditLogger : IAuditLogger
     private readonly ILogger<AuditLogger> _logger;
     private readonly ICurrentUser _currentUser;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuditLogger"/> class.
+    /// </summary>
+    /// <param name="logger">Logger for writing structured audit log entries.</param>
+    /// <param name="currentUser">Service providing the current authenticated user's identity.</param>
     public AuditLogger(ILogger<AuditLogger> logger, ICurrentUser currentUser)
     {
         _logger = logger;
@@ -29,6 +37,7 @@ public sealed class AuditLogger : IAuditLogger
             new EventId(2, nameof(LogFailedActionAsync)),
             "Failed Administrative Action: {Action} on {ResourceType} {ResourceId} by user {UserId} with role {UserRole}. Reason: {Reason}");
 
+    /// <inheritdoc />
     public Task LogAdministrativeActionAsync(
         string action,
         string resourceType,
@@ -63,6 +72,7 @@ public sealed class AuditLogger : IAuditLogger
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc />
     public Task LogFailedActionAsync(
         string action,
         string resourceType,

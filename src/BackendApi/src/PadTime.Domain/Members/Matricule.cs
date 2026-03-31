@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using System.Text.RegularExpressions;
 using PadTime.Domain.Common;
 
@@ -9,7 +12,14 @@ namespace PadTime.Domain.Members;
 /// </summary>
 public sealed partial class Matricule : ValueObject
 {
+    /// <summary>
+    /// The raw matricule string (e.g., "G1234", "S12345", "L12345").
+    /// </summary>
     public string Value { get; }
+
+    /// <summary>
+    /// The member category derived from the matricule prefix.
+    /// </summary>
     public MemberCategory Category { get; }
 
     private Matricule(string value, MemberCategory category)
@@ -36,6 +46,12 @@ public sealed partial class Matricule : ValueObject
         };
     }
 
+    /// <summary>
+    /// Creates a validated <see cref="Matricule"/> from a raw string value.
+    /// The value is normalized to uppercase and validated against the expected patterns.
+    /// </summary>
+    /// <param name="value">The matricule string to validate (e.g., "G1234", "S12345", "L12345").</param>
+    /// <returns>A result containing the validated matricule or an <see cref="DomainErrors.Member.InvalidMatricule"/> error.</returns>
     public static Result<Matricule> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))

@@ -1,10 +1,15 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Domain.Booking;
 using PadTime.Domain.Common;
 
 namespace PadTime.Domain.Site;
 
 /// <summary>
-/// Represents a padel site with courts, schedules, and closures.
+/// Aggregate root representing a padel site with courts, operating schedules, and closures.
+/// Manages the full lifecycle of courts and availability configuration.
+/// Invariants: schedule overlaps with same priority and days are rejected, closures cannot conflict with active bookings.
 /// </summary>
 public sealed class Site : AggregateRoot<Guid>
 {
@@ -12,11 +17,34 @@ public sealed class Site : AggregateRoot<Guid>
     private readonly List<SiteSchedule> _schedules = [];
     private readonly List<SiteClosure> _closures = [];
 
+    /// <summary>
+    /// Display name of the site.
+    /// </summary>
     public string Name { get; private set; } = null!;
+
+    /// <summary>
+    /// Street number of the site address.
+    /// </summary>
     public string StreetNumber { get; private set; } = null!;
+
+    /// <summary>
+    /// Street name of the site address.
+    /// </summary>
     public string Street { get; private set; } = null!;
+
+    /// <summary>
+    /// Postal code of the site address.
+    /// </summary>
     public string Postcode { get; private set; } = null!;
+
+    /// <summary>
+    /// City of the site address.
+    /// </summary>
     public string City { get; private set; } = null!;
+
+    /// <summary>
+    /// Country of the site address.
+    /// </summary>
     public string Country { get; private set; } = null!;
 
     /// <summary>
@@ -25,17 +53,41 @@ public sealed class Site : AggregateRoot<Guid>
     /// </summary>
     public string Timezone { get; private set; } = null!;
 
+    /// <summary>
+    /// Whether the site is currently active and accepting bookings.
+    /// </summary>
     public bool IsActive { get; private set; }
 
+    /// <summary>
+    /// When the site was created (UTC).
+    /// </summary>
     public DateTime CreatedAtUtc { get; private set; }
+
+    /// <summary>
+    /// When the site was last modified (UTC).
+    /// </summary>
     public DateTime? UpdatedAtUtc { get; private set; }
 
+    /// <summary>
+    /// The courts belonging to this site.
+    /// </summary>
     public IReadOnlyList<Court> Courts => _courts.AsReadOnly();
+
+    /// <summary>
+    /// The operating schedules configured for this site.
+    /// </summary>
     public IReadOnlyList<SiteSchedule> Schedules => _schedules.AsReadOnly();
+
+    /// <summary>
+    /// Closures and schedule modifications for this site.
+    /// </summary>
     public IReadOnlyList<SiteClosure> Closures => _closures.AsReadOnly();
 
     private Site() { } // EF Core
 
+    /// <summary>
+    /// Creates a new active site with the specified address and timezone.
+    /// </summary>
     public static Site Create(
         string name,
         string streetNumber,
@@ -326,12 +378,20 @@ public sealed class Site : AggregateRoot<Guid>
         return TimeZoneInfo.FindSystemTimeZoneById(Timezone);
     }
 
+    /// <summary>
+    /// Activates the site, allowing new bookings.
+    /// </summary>
+    /// <param name="utcNow">Current UTC timestamp.</param>
     public void Activate(DateTime utcNow)
     {
         IsActive = true;
         UpdatedAtUtc = utcNow;
     }
 
+    /// <summary>
+    /// Deactivates the site, preventing new bookings.
+    /// </summary>
+    /// <param name="utcNow">Current UTC timestamp.</param>
     public void Deactivate(DateTime utcNow)
     {
         IsActive = false;

@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Domain.Common;
 
 namespace PadTime.Domain.Members;
@@ -60,6 +63,16 @@ public sealed class Member : AggregateRoot<Guid>
         CreatedAtUtc = createdAtUtc;
     }
 
+    /// <summary>
+    /// Creates a new member from OIDC claims. Validates the matricule format and enforces
+    /// site assignment rules: Site members must have a <paramref name="siteId"/>, while
+    /// Global and Free members cannot be site-restricted.
+    /// </summary>
+    /// <param name="subject">The OIDC subject identifier from the identity provider.</param>
+    /// <param name="matriculeValue">The raw matricule string to validate.</param>
+    /// <param name="siteId">The assigned site ID (required for Site members, ignored for others).</param>
+    /// <param name="utcNow">Current UTC timestamp.</param>
+    /// <returns>A result containing the created member or a domain error.</returns>
     public static Result<Member> Create(
         string subject,
         string matriculeValue,
@@ -127,12 +140,20 @@ public sealed class Member : AggregateRoot<Guid>
         return matchDate <= maxDate;
     }
 
+    /// <summary>
+    /// Deactivates the member account, preventing further bookings.
+    /// </summary>
+    /// <param name="utcNow">Current UTC timestamp.</param>
     public void Deactivate(DateTime utcNow)
     {
         IsActive = false;
         UpdatedAtUtc = utcNow;
     }
 
+    /// <summary>
+    /// Reactivates a previously deactivated member account.
+    /// </summary>
+    /// <param name="utcNow">Current UTC timestamp.</param>
     public void Reactivate(DateTime utcNow)
     {
         IsActive = true;

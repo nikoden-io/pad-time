@@ -1,41 +1,57 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Members;
 
 namespace PadTime.Infrastructure.Persistence.Repositories;
 
+/// <summary>
+/// Repository for <see cref="Member"/> entity data access operations including
+/// lookup by subject/matricule, paginated queries with filtering, and match count statistics.
+/// </summary>
 public sealed class MemberRepository : IMemberRepository
 {
     private readonly PadTimeDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MemberRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public MemberRepository(PadTimeDbContext context)
     {
         _context = context;
     }
 
+    /// <inheritdoc />
     public async Task<Member?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Members
             .FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<Member?> GetBySubjectAsync(string subject, CancellationToken cancellationToken = default)
     {
         return await _context.Members
             .FirstOrDefaultAsync(m => m.Subject == subject, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<Member?> GetByMatriculeAsync(string matricule, CancellationToken cancellationToken = default)
     {
         return await _context.Members
             .FirstOrDefaultAsync(m => m.Matricule.Value == matricule, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task AddAsync(Member member, CancellationToken cancellationToken = default)
     {
         await _context.Members.AddAsync(member, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<(List<Member> Items, int TotalCount)> GetPagedAsync(
         int page, int pageSize,
         MemberCategory? category = null,
@@ -65,6 +81,7 @@ public sealed class MemberRepository : IMemberRepository
         return (items, totalCount);
     }
 
+    /// <inheritdoc />
     public async Task<int> GetMatchCountAsync(Guid memberId, CancellationToken cancellationToken = default)
     {
         return await _context.Participants
@@ -74,6 +91,7 @@ public sealed class MemberRepository : IMemberRepository
             .CountAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<Dictionary<Guid, int>> GetMatchCountsAsync(IEnumerable<Guid> memberIds, CancellationToken cancellationToken = default)
     {
         var ids = memberIds.ToList();

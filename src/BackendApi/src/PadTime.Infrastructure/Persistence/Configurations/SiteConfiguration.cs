@@ -1,11 +1,20 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadTime.Domain.Site;
 
 namespace PadTime.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Configures the Entity Framework mapping for the <see cref="Site"/> entity.
+/// Maps to the "sites" table with cascading relationships to courts, schedules, and closures,
+/// unique name+city constraint, and indexes for search, filtering, and pagination.
+/// </summary>
 public sealed class SiteConfiguration : IEntityTypeConfiguration<Site>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Site> builder)
     {
         builder.ToTable("sites");

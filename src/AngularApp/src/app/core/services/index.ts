@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 export {ApiService} from './api.service';
 export {
   AdminApiService, type SiteOverview, type Alert, type RevenueResponse, type RevenueItem

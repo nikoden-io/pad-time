@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using System.Globalization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -89,5 +92,7 @@ finally
     Log.CloseAndFlush();
 }
 
-// For integration tests
+/// <summary>
+/// Entry point marker for the PadTime API. Exposed as partial to support integration test project references.
+/// </summary>
 public partial class Program;

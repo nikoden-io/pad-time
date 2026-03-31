@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Common;
@@ -6,6 +9,9 @@ using PadTime.Domain.Site;
 
 namespace PadTime.Application.Sites.Commands.CreateSite;
 
+/// <summary>
+/// Handles <see cref="CreateSiteCommand"/> by creating a new site entity and persisting it.
+/// </summary>
 public sealed class CreateSiteCommandHandler(
     ISiteRepository sites,
     IUnitOfWork uow,

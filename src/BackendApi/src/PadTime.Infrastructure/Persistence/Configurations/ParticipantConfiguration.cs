@@ -1,11 +1,19 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadTime.Domain.Booking;
 
 namespace PadTime.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Configures the Entity Framework mapping for the <see cref="Participant"/> entity.
+/// Maps to the "participants" table with a unique constraint ensuring one participation per member per match.
+/// </summary>
 public sealed class ParticipantConfiguration : IEntityTypeConfiguration<Participant>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Participant> builder)
     {
         builder.ToTable("participants");

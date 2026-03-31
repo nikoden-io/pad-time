@@ -1,3 +1,7 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+/** Barrel file for core domain models, DTOs, and type definitions. */
 export * from './admin.model';
 export * from './api.model';
 export * from './booking.model';

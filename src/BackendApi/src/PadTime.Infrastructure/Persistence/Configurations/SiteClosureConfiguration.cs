@@ -1,11 +1,20 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadTime.Domain.Site;
 
 namespace PadTime.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Configures the Entity Framework mapping for the <see cref="SiteClosure"/> entity.
+/// Maps to the "site_closures" table with composite indexes for period queries,
+/// GIN index for court-specific closures, and type/reason filtering indexes.
+/// </summary>
 public sealed class SiteClosureConfiguration : IEntityTypeConfiguration<SiteClosure>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<SiteClosure> builder)
     {
         builder.ToTable("site_closures");

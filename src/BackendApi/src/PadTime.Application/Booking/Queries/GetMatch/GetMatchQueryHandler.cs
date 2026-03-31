@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -6,6 +9,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Booking.Queries.GetMatch;
 
+/// <summary>
+/// Handles <see cref="GetMatchQuery"/> by fetching match details with participants,
+/// enforcing visibility rules for private matches and site-admin scope restrictions.
+/// </summary>
 public sealed class GetMatchQueryHandler : IRequestHandler<GetMatchQuery, Result<MatchDto>>
 {
     private readonly IMatchRepository _matchRepository;

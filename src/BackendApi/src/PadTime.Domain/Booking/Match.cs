@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Domain.Booking.Events;
 using PadTime.Domain.Common;
 
@@ -5,18 +8,43 @@ namespace PadTime.Domain.Booking;
 
 /// <summary>
 /// Aggregate root for a padel match booking.
-/// Enforces all business rules and state machine transitions.
+/// Enforces the match lifecycle state machine (Private/Public -> Full -> Locked -> Completed/Cancelled)
+/// and all business rules around participant management, payments, and the J-1 deadline transition.
+/// Invariants: a match has at most 4 participants, the organizer is always the first participant,
+/// and state transitions follow the defined state machine.
 /// </summary>
 public sealed class Match : AggregateRoot<Guid>
 {
+    /// <summary>
+    /// Maximum number of participants in a padel match (4 players).
+    /// </summary>
     public const int MaxParticipants = 4;
+
+    /// <summary>
+    /// Price per participant in euro cents (15.00 EUR).
+    /// </summary>
     public const int PricePerParticipantCents = 1500; // 15€
+
+    /// <summary>
+    /// Total price for a full match in euro cents (60.00 EUR).
+    /// </summary>
     public const int TotalPriceCents = MaxParticipants * PricePerParticipantCents; // 60€
 
     private readonly List<Participant> _participants = [];
 
+    /// <summary>
+    /// The site where the match takes place.
+    /// </summary>
     public Guid SiteId { get; private set; }
+
+    /// <summary>
+    /// The court assigned to the match.
+    /// </summary>
     public Guid CourtId { get; private set; }
+
+    /// <summary>
+    /// The member who created and is responsible for filling the match.
+    /// </summary>
     public Guid OrganizerId { get; private set; }
 
     /// <summary>
@@ -29,18 +57,36 @@ public sealed class Match : AggregateRoot<Guid>
     /// </summary>
     public DateTime EndAtUtc { get; private set; }
 
+    /// <summary>
+    /// Whether this is a private (organizer-managed) or public (open join) match.
+    /// </summary>
     public PadMatchType Type { get; private set; }
+
+    /// <summary>
+    /// Current state in the match lifecycle state machine.
+    /// </summary>
     public MatchStatus Status { get; private set; }
 
+    /// <summary>
+    /// When the match was created (UTC).
+    /// </summary>
     public DateTime CreatedAtUtc { get; private set; }
+
+    /// <summary>
+    /// When the match was last modified (UTC).
+    /// </summary>
     public DateTime? UpdatedAtUtc { get; private set; }
 
+    /// <summary>
+    /// The list of participants in this match, including the organizer.
+    /// </summary>
     public IReadOnlyList<Participant> Participants => _participants.AsReadOnly();
 
     private Match() { } // EF Core
 
     /// <summary>
-    /// Creates a new match.
+    /// Creates a new match with the organizer automatically added as the first participant.
+    /// The initial status is determined by the match type (Private or Public).
     /// </summary>
     public static Result<Match> Create(
         Guid siteId,
@@ -261,21 +307,33 @@ public sealed class Match : AggregateRoot<Guid>
         UpdatedAtUtc = utcNow;
     }
 
+    /// <summary>
+    /// Returns the number of non-excluded participants.
+    /// </summary>
     public int GetActiveParticipantCount()
     {
         return _participants.Count(p => p.PaymentStatus != PaymentStatus.Excluded);
     }
 
+    /// <summary>
+    /// Returns the number of participants who have confirmed payment.
+    /// </summary>
     public int GetPaidParticipantCount()
     {
         return _participants.Count(p => p.PaymentStatus == PaymentStatus.Paid);
     }
 
+    /// <summary>
+    /// Indicates whether the match has room for additional participants.
+    /// </summary>
     public bool HasAvailableSpots()
     {
         return GetActiveParticipantCount() < MaxParticipants;
     }
 
+    /// <summary>
+    /// Returns the participant with the <see cref="ParticipantRole.Organizer"/> role, or <c>null</c> if not found.
+    /// </summary>
     public Participant? GetOrganizer()
     {
         return _participants.FirstOrDefault(p => p.IsOrganizer);

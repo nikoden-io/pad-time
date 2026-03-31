@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 export type MemberCategory = 'global' | 'site' | 'free';
 export type UserRole = 'user' | 'admin_site' | 'admin_global';
 

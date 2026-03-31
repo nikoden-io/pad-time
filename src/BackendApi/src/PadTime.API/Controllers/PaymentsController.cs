@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PadTime.API.Authorization;
@@ -8,6 +11,9 @@ using PadTime.Application.Billing.Queries.GetPayment;
 
 namespace PadTime.API.Controllers;
 
+/// <summary>
+/// Manages payment operations including retrieval and match participation payments.
+/// </summary>
 [ApiController]
 [Route("api/v1/payments")]
 [Authorize(Policy = Policies.RequireUser)]
@@ -15,6 +21,10 @@ public sealed class PaymentsController : ControllerBase
 {
     private readonly IMediator _mediator;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PaymentsController"/> class.
+    /// </summary>
+    /// <param name="mediator">MediatR mediator for dispatching commands and queries.</param>
     public PaymentsController(IMediator mediator)
     {
         _mediator = mediator;
@@ -66,5 +76,15 @@ public sealed class PaymentsController : ControllerBase
     }
 }
 
+/// <summary>
+/// Request body for paying a match participation fee.
+/// </summary>
+/// <param name="IdempotencyKey">Client-generated idempotency key to prevent duplicate payments.</param>
 public sealed record PayMatchRequest(string IdempotencyKey);
+
+/// <summary>
+/// Response returned after a successful match participation payment.
+/// </summary>
+/// <param name="PaymentId">Identifier of the processed payment.</param>
+/// <param name="Status">Current payment status.</param>
 public sealed record PayMatchResponse(Guid PaymentId, string Status);

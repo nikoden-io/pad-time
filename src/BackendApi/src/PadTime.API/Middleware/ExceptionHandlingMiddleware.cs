@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using System.Text.Json;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -35,8 +38,14 @@ public sealed class ExceptionHandlingMiddleware
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
     private readonly IWebHostEnvironment _environment;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExceptionHandlingMiddleware"/> class.
+    /// </summary>
+    /// <param name="next">The next middleware delegate in the pipeline.</param>
+    /// <param name="logger">Logger for recording exception details.</param>
+    /// <param name="environment">Hosting environment used to determine detail level in responses.</param>
     public ExceptionHandlingMiddleware(
-        RequestDelegate next, 
+        RequestDelegate next,
         ILogger<ExceptionHandlingMiddleware> logger,
         IWebHostEnvironment environment)
     {
@@ -45,6 +54,11 @@ public sealed class ExceptionHandlingMiddleware
         _environment = environment;
     }
 
+    /// <summary>
+    /// Invokes the middleware, catching any unhandled exceptions and converting them
+    /// to structured RFC 7807 problem details JSON responses.
+    /// </summary>
+    /// <param name="context">The HTTP context for the current request.</param>
     public async Task InvokeAsync(HttpContext context)
     {
         try

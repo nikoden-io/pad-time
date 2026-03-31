@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {Component, inject} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {NavbarComponent} from './navbar/navbar.component';

@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {Component} from '@angular/core';
 import {MyMatchesPageComponent} from '@features/matches/components/my-matches-page/my-matches-page.component';
 import {PageShellComponent} from '@shared/components/page-shell/page-shell.component';

@@ -1,10 +1,17 @@
-﻿using MediatR;
+﻿// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
+using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
 using PadTime.Domain.Common;
 
 namespace PadTime.Application.Sites.Commands.UpdateSiteSchedule;
 
+/// <summary>
+/// Handles <see cref="UpdateSiteScheduleCommand"/> by loading the site with schedules
+/// and delegating the update to the domain model.
+/// </summary>
 public sealed class UpdateSiteScheduleCommandHandler(
     ISiteRepository siteRepository,
     IUnitOfWork unitOfWork,

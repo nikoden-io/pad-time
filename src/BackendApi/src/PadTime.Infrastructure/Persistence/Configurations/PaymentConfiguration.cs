@@ -1,11 +1,19 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadTime.Domain.Billing;
 
 namespace PadTime.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Configures the Entity Framework mapping for the <see cref="Payment"/> entity.
+/// Maps to the "payments" table with a unique idempotency key constraint to prevent duplicate payments.
+/// </summary>
 public sealed class PaymentConfiguration : IEntityTypeConfiguration<Payment>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Payment> builder)
     {
         builder.ToTable("payments");

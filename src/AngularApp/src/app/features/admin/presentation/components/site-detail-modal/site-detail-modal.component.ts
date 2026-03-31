@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {ChangeDetectionStrategy, Component, input, output, signal} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Dialog} from 'primeng/dialog';

@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 import {computed, effect, Injectable, signal} from '@angular/core';
 
 export type ThemeMode = 'light' | 'dark' | 'system';

@@ -1,7 +1,13 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using FluentValidation;
 
 namespace PadTime.Application.Sites.Commands.UpdateCourt;
 
+/// <summary>
+/// Validates <see cref="UpdateCourtCommand"/> ensuring site/court identifiers and label are provided and within length limits.
+/// </summary>
 public sealed class UpdateCourtCommandValidator : AbstractValidator<UpdateCourtCommand>
 {
     public UpdateCourtCommandValidator()

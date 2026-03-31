@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -6,6 +9,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Booking.Commands.CancelMatch;
 
+/// <summary>
+/// Handles <see cref="CancelMatchCommand"/> by enforcing authorization rules (organizer ownership,
+/// admin scope, locked-match restrictions) and delegating cancellation to the domain model.
+/// </summary>
 public sealed class CancelMatchCommandHandler : IRequestHandler<CancelMatchCommand, Result>
 {
     private readonly IMatchRepository _matchRepository;

@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -6,6 +9,11 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Admin.Queries.GetSiteOverview;
 
+/// <summary>
+/// Handles <see cref="GetSiteOverviewQuery"/> by computing alerts for a site, including
+/// J-1 unprocessed private matches, upcoming matches with unpaid participants, and active organizer debts.
+/// Enforces site-admin scope restrictions.
+/// </summary>
 public sealed class GetSiteOverviewQueryHandler : IRequestHandler<GetSiteOverviewQuery, Result<SiteOverviewDto>>
 {
     private readonly IMatchRepository _matchRepository;

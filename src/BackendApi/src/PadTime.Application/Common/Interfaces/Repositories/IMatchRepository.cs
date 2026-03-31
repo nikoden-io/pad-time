@@ -1,10 +1,23 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using PadTime.Domain.Booking;
 
 namespace PadTime.Application.Common.Interfaces.Repositories;
 
+/// <summary>
+/// Repository interface for match persistence and query operations.
+/// </summary>
 public interface IMatchRepository
 {
+    /// <summary>
+    /// Retrieves a match by its unique identifier, or <c>null</c> if not found.
+    /// </summary>
     Task<Match?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves a match by its unique identifier with participants eagerly loaded, or <c>null</c> if not found.
+    /// </summary>
     Task<Match?> GetByIdWithParticipantsAsync(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -17,6 +30,9 @@ public interface IMatchRepository
     /// </summary>
     Task<bool> HasActiveBookingsForCourtAsync(Guid courtId, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Retrieves public matches within a date range with optional site filtering and pagination.
+    /// </summary>
     Task<List<Match>> GetPublicMatchesAsync(
         Guid? siteId,
         DateTime fromUtc,
@@ -25,6 +41,9 @@ public interface IMatchRepository
         int pageSize,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Retrieves matches where the specified member is a participant or organizer, with optional date filtering and pagination.
+    /// </summary>
     Task<List<Match>> GetByMemberIdAsync(
         Guid memberId,
         DateTime? fromUtc,
@@ -32,6 +51,9 @@ public interface IMatchRepository
         int pageSize,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Retrieves matches for a site within an optional date range, with pagination.
+    /// </summary>
     Task<List<Match>> GetBySiteIdAsync(
         Guid siteId,
         DateTime? fromUtc,
@@ -61,5 +83,8 @@ public interface IMatchRepository
         DateTime nowUtc,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Adds a new match to the data store.
+    /// </summary>
     Task AddAsync(Match match, CancellationToken cancellationToken = default);
 }

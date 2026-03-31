@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using MediatR;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
@@ -5,6 +8,10 @@ using PadTime.Domain.Common;
 
 namespace PadTime.Application.Sites.Commands.DeleteSite;
 
+/// <summary>
+/// Handles <see cref="DeleteSiteCommand"/> by verifying the site exists and has no active bookings
+/// before permanently deleting it.
+/// </summary>
 public sealed class DeleteSiteCommandHandler(
     ISiteRepository sites,
     IUnitOfWork uow)

@@ -1,11 +1,20 @@
+// -----------------------------------------------------------------------
+// Copyright (c) Nikoden.IO. All rights reserved.
+// -----------------------------------------------------------------------
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadTime.Domain.Members;
 
 namespace PadTime.Infrastructure.Persistence.Configurations;
 
+/// <summary>
+/// Configures the Entity Framework mapping for the <see cref="Member"/> entity.
+/// Maps to the "members" table with owned Matricule value object, unique subject constraint,
+/// and concurrency token.
+/// </summary>
 public sealed class MemberConfiguration : IEntityTypeConfiguration<Member>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Member> builder)
     {
         builder.ToTable("members");
