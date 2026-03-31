@@ -30,7 +30,7 @@ public sealed record MemberListItemDto(
     Guid Id,
     string Subject,
     string Matricule,
-    MemberCategory Category,
+    string Category,
     Guid? SiteId,
     string? SiteName,
     bool IsActive,

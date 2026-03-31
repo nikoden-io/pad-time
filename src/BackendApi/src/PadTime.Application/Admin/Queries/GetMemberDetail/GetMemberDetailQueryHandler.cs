@@ -57,7 +57,7 @@ public sealed class GetMemberDetailQueryHandler(
                 m.Id,
                 m.StartAtUtc,
                 m.EndAtUtc,
-                m.Status,
+                m.Status.ToString(),
                 m.OrganizerId == request.MemberId))
             .ToList();
 
@@ -65,7 +65,7 @@ public sealed class GetMemberDetailQueryHandler(
             member.Id,
             member.Subject,
             member.Matricule.Value,
-            member.Category,
+            member.Category.ToString(),
             member.SiteId,
             siteName,
             member.IsActive,

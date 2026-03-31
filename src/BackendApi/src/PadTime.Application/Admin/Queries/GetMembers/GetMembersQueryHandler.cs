@@ -49,7 +49,7 @@ public sealed class GetMembersQueryHandler(
             m.Id,
             m.Subject,
             m.Matricule.Value,
-            m.Category,
+            m.Category.ToString(),
             m.SiteId,
             m.SiteId.HasValue && siteNames.TryGetValue(m.SiteId.Value, out var name) ? name : null,
             m.IsActive,

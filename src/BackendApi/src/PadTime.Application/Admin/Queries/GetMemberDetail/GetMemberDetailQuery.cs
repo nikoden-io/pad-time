@@ -21,7 +21,7 @@ public sealed record MemberDetailDto(
     Guid Id,
     string Subject,
     string Matricule,
-    MemberCategory Category,
+    string Category,
     Guid? SiteId,
     string? SiteName,
     bool IsActive,
@@ -39,5 +39,5 @@ public sealed record MemberMatchDto(
     Guid MatchId,
     DateTime StartAtUtc,
     DateTime EndAtUtc,
-    MatchStatus Status,
+    string Status,
     bool IsOrganizer);
