@@ -79,8 +79,6 @@ public sealed class GetAiTrendsQueryHandler
             // Gather analytics context
             var thirtyDaysAgo = now.AddDays(-30);
             var sixtyDaysAgo = now.AddDays(-60);
-            var today = DateOnly.FromDateTime(now);
-            var sevenDaysAgo = today.AddDays(-7);
 
             var siteData = new List<object>();
 
@@ -92,8 +90,6 @@ public sealed class GetAiTrendsQueryHandler
                     site.Id, sixtyDaysAgo, thirtyDaysAgo, cancellationToken);
                 var courtUtil = await _statisticsRepository.GetCourtUtilizationAsync(
                     site.Id, thirtyDaysAgo, now, cancellationToken);
-                var dailyStats = await _statisticsRepository.GetDailyBookingStatsAsync(
-                    site.Id, sevenDaysAgo, today, cancellationToken);
 
                 siteData.Add(new
                 {
@@ -104,12 +100,6 @@ public sealed class GetAiTrendsQueryHandler
                         ? Math.Round((bookingsLast30 - bookingsPrev30) * 100.0 / bookingsPrev30, 1)
                         : 0,
                     courtUtilization = courtUtil.Select(c => new { court = c.CourtLabel, pct = c.UtilizationPercentage }),
-                    dailyBookingsLast7days = dailyStats.Select(d => new
-                    {
-                        date = d.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
-                        bookings = d.BookingCount,
-                        uniqueUsers = d.UniqueUsers,
-                    }),
                 });
             }
 
