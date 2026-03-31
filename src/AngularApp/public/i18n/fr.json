@@ -220,5 +220,14 @@
         "Private": "Privé"
       }
     }
+  },
+  "suggestions": {
+    "title": "Suggestions IA",
+    "subtitle": "Basées sur votre historique",
+    "noSuggestions": "Aucune suggestion disponible pour le moment",
+    "loading": "Analyse de vos préférences...",
+    "strong_match": "Idéal",
+    "good_fit": "Bon choix",
+    "worth_trying": "À découvrir"
   }
 }

@@ -57,6 +57,14 @@ public static class DependencyInjection
         // Services
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
+        // AI Services
+        services.AddHttpClient("Gemini", client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(10);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
+        services.AddScoped<ISlotSuggestionService, GeminiSlotSuggestionService>();
+
         // Background jobs
         services.AddHostedService<MatchLifecycleJob>();
 

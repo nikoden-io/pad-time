@@ -183,5 +183,14 @@
       },
       "matchStatus": { "Completed": "Abgeschlossen", "Cancelled": "Abgesagt", "Locked": "Gesperrt", "Full": "Voll", "Public": "Öffentlich", "Private": "Privat" }
     }
+  },
+  "suggestions": {
+    "title": "KI-Vorschläge",
+    "subtitle": "Basierend auf Ihrer Buchungshistorie",
+    "noSuggestions": "Derzeit keine Vorschläge verfügbar",
+    "loading": "Ihre Präferenzen werden analysiert...",
+    "strong_match": "Starke Übereinstimmung",
+    "good_fit": "Gute Wahl",
+    "worth_trying": "Einen Versuch wert"
   }
 }

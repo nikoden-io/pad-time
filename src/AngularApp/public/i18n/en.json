@@ -220,5 +220,14 @@
         "Private": "Private"
       }
     }
+  },
+  "suggestions": {
+    "title": "AI Suggestions",
+    "subtitle": "Based on your booking history",
+    "noSuggestions": "No suggestions available at the moment",
+    "loading": "Analyzing your preferences...",
+    "strong_match": "Strong match",
+    "good_fit": "Good fit",
+    "worth_trying": "Worth trying"
   }
 }

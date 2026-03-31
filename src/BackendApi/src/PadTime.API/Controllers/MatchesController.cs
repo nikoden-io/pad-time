@@ -13,6 +13,7 @@ using PadTime.Application.Booking.Commands.JoinMatch;
 using PadTime.Application.Booking.Queries.GetMatch;
 using PadTime.Application.Booking.Queries.GetPublicMatches;
 using PadTime.Application.Booking.Queries.GetSiteMatches;
+using PadTime.Application.Booking.Queries.GetSlotSuggestions;
 using PadTime.Application.Booking.Queries.GetUserMatches;
 using PadTime.Domain.Booking;
 
@@ -92,6 +93,19 @@ public sealed class MatchesController : ControllerBase
 
         var query = new GetSiteMatchesQuery(siteId.Value, from, to, page, pageSize);
         var result = await _mediator.Send(query, ct);
+        return result.ToActionResult();
+    }
+
+    /// <summary>
+    /// Returns AI-generated slot suggestions based on the user's booking history and current availability.
+    /// </summary>
+    /// <response code="200">Suggestions successfully generated.</response>
+    [HttpGet("suggestions")]
+    [ProducesResponseType(typeof(GetSlotSuggestionsResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetSuggestions(CancellationToken cancellationToken)
+    {
+        var query = new GetSlotSuggestionsQuery();
+        var result = await _mediator.Send(query, cancellationToken);
         return result.ToActionResult();
     }
 

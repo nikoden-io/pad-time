@@ -40,6 +40,20 @@ public sealed class EnsureMemberExistsBehavior<TRequest, TResponse> : IPipelineB
 
             if (member is null)
             {
+                // Check if a demo member exists with the same matricule — adopt it
+                if (!string.IsNullOrEmpty(_currentUser.Matricule))
+                {
+                    var demoMember = await _memberRepository.GetByMatriculeAsync(
+                        _currentUser.Matricule, cancellationToken);
+
+                    if (demoMember is not null)
+                    {
+                        demoMember.UpdateSubject(_currentUser.Subject);
+                        await _unitOfWork.SaveChangesAsync(cancellationToken);
+                        return await next();
+                    }
+                }
+
                 var result = Member.Create(
                     _currentUser.Subject,
                     _currentUser.Matricule,

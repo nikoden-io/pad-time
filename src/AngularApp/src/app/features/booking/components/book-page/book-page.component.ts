@@ -9,7 +9,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CommonModule} from '@angular/common';
 import {Router} from '@angular/router';
 import {ApiService} from '@core/services';
-import {Site, AvailabilitySlot, CreateMatchRequest} from '@core/models';
+import {Site, AvailabilitySlot, CreateMatchRequest, SlotSuggestion} from '@core/models';
 import {
   SiteCourtSelectorComponent,
 } from '@features/booking/components/site-court-selector/site-court-selector.component';
@@ -18,6 +18,9 @@ import {MatchFormComponent, MatchFormOutput} from '@features/booking/components/
 import {
   PaymentSuccessOverlayComponent,
 } from '@shared/components/payment-success-overlay/payment-success-overlay.component';
+import {
+  SmartSuggestionsComponent,
+} from '@features/booking/components/smart-suggestions/smart-suggestions.component';
 
 @Component({
   selector: 'app-book-page',
@@ -28,6 +31,7 @@ import {
     SlotPickerComponent,
     MatchFormComponent,
     PaymentSuccessOverlayComponent,
+    SmartSuggestionsComponent,
   ],
   templateUrl: './book-page.component.html',
   styleUrls: ['./book-page.component.scss'],
@@ -78,6 +82,22 @@ export class BookPageComponent {
   onSlotSelected(slot: AvailabilitySlot) {
     this.selectedSlot.set(slot);
     setTimeout(() => document.querySelector('#match-form')?.scrollIntoView({behavior: 'smooth'}), 80);
+  }
+
+  onSuggestionSelected(suggestion: SlotSuggestion) {
+    this.onSiteSelected(suggestion.siteId);
+    this.selectedDate.set(new Date(suggestion.date));
+    setTimeout(() => {
+      this.selectedCourtId.set(suggestion.courtId);
+      this.selectedSlot.set({
+        courtId: suggestion.courtId,
+        courtLabel: suggestion.courtLabel,
+        startAt: suggestion.startAtUtc,
+        endAt: suggestion.endAtUtc,
+        available: true,
+      });
+      setTimeout(() => document.querySelector('#match-form')?.scrollIntoView({behavior: 'smooth'}), 80);
+    }, 300);
   }
 
   onCancel() {

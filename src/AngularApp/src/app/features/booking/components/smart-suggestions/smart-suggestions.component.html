@@ -1,0 +1,56 @@
+<ng-container *transloco="let t">
+  <div class="suggestions-block">
+    <!-- Header -->
+    <button class="suggestions-header" (click)="toggleCollapsed()">
+      <span class="header-left">
+        <i class="pi pi-sparkles header-icon"></i>
+        <span class="header-title">{{ t('suggestions.title') }}</span>
+        <span class="header-subtitle">{{ t('suggestions.subtitle') }}</span>
+      </span>
+      <i class="pi" [class.pi-chevron-down]="collapsed()" [class.pi-chevron-up]="!collapsed()"></i>
+    </button>
+
+    <!-- Body -->
+    @if (!collapsed()) {
+      <div class="suggestions-body">
+        <!-- Loading state -->
+        @if (loading()) {
+          <div class="suggestions-loading">
+            <div class="skeleton-card" *ngFor="let i of [1, 2, 3]">
+              <div class="skeleton-line wide"></div>
+              <div class="skeleton-line medium"></div>
+              <div class="skeleton-line narrow"></div>
+            </div>
+          </div>
+        }
+
+        <!-- Error / empty state -->
+        @else if (hasError() || suggestions().length === 0) {
+          <p class="suggestions-empty">{{ t('suggestions.noSuggestions') }}</p>
+        }
+
+        <!-- Suggestion cards -->
+        @else {
+          <div class="suggestions-grid">
+            @for (s of suggestions(); track s.startAtUtc) {
+              <button class="suggestion-card" (click)="selectSuggestion(s)">
+                <div class="card-top">
+                  <span class="confidence-badge" [attr.data-confidence]="s.confidenceTag">
+                    {{ t('suggestions.' + s.confidenceTag) }}
+                  </span>
+                </div>
+                <div class="card-site">{{ s.siteName }}</div>
+                <div class="card-court">{{ s.courtLabel }}</div>
+                <div class="card-datetime">
+                  <span class="card-date">{{ formatDate(s.startAtUtc) }}</span>
+                  <span class="card-time">{{ formatTime(s.startAtUtc) }} - {{ formatTime(s.endAtUtc) }}</span>
+                </div>
+                <div class="card-reason">{{ s.reason }}</div>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</ng-container>

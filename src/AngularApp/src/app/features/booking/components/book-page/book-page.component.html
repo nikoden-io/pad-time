@@ -12,6 +12,9 @@
     <p>Choisissez un site, un créneau et confirmez.</p>
   </header>
 
+  <!-- AI Suggestions -->
+  <app-smart-suggestions (suggestionSelected)="onSuggestionSelected($event)" />
+
   <!-- Step 1 — toujours visible -->
   @if (sitesLoading()) {
     <div class="step-loading"><i class="pi pi-spin pi-spinner"></i> Chargement…</div>

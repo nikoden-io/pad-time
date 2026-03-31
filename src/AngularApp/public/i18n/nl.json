@@ -183,5 +183,14 @@
       },
       "matchStatus": { "Completed": "Voltooid", "Cancelled": "Geannuleerd", "Locked": "Vergrendeld", "Full": "Vol", "Public": "Openbaar", "Private": "Privé" }
     }
+  },
+  "suggestions": {
+    "title": "AI-suggesties",
+    "subtitle": "Op basis van uw boekingsgeschiedenis",
+    "noSuggestions": "Momenteel geen suggesties beschikbaar",
+    "loading": "Uw voorkeuren analyseren...",
+    "strong_match": "Sterke match",
+    "good_fit": "Goede keuze",
+    "worth_trying": "Het proberen waard"
   }
 }

@@ -141,6 +141,15 @@ public sealed class Member : AggregateRoot<Guid>
     }
 
     /// <summary>
+    /// Updates the OIDC subject identifier (used when linking a demo member to a real identity).
+    /// </summary>
+    public void UpdateSubject(string newSubject)
+    {
+        Subject = newSubject;
+        UpdatedAtUtc = DateTime.UtcNow;
+    }
+
+    /// <summary>
     /// Deactivates the member account, preventing further bookings.
     /// </summary>
     /// <param name="utcNow">Current UTC timestamp.</param>

@@ -15,6 +15,7 @@ import {
   CreateReservationRequest,
   CreateReservationResponse,
   JoinMatchRequest,
+  SlotSuggestionsResponse,
   JoinMatchResponse,
   MatchListParams,
   PaginatedResponse,
@@ -116,6 +117,10 @@ export class ApiService {
 
   cancelMatch(matchId: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/matches/${matchId}/cancel`, {});
+  }
+
+  getSlotSuggestions(): Observable<SlotSuggestionsResponse> {
+    return this.http.get<SlotSuggestionsResponse>(`${this.baseUrl}/matches/suggestions`);
   }
 
   // Reservations

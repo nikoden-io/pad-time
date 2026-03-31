@@ -103,3 +103,26 @@ export interface CreateReservationRequest {
 export interface CreateReservationResponse {
   reservationId: string;
 }
+
+/** AI confidence level for a slot suggestion. */
+export type SuggestionConfidence = 'strong_match' | 'good_fit' | 'worth_trying';
+
+/** A single AI-generated slot suggestion with reasoning. */
+export interface SlotSuggestion {
+  siteId: string;
+  siteName: string;
+  courtId: string;
+  courtLabel: string;
+  date: string;
+  startAtUtc: string;
+  endAtUtc: string;
+  reason: string;
+  confidenceTag: SuggestionConfidence;
+}
+
+/** Response containing AI-generated slot suggestions. */
+export interface SlotSuggestionsResponse {
+  suggestions: SlotSuggestion[];
+  generatedAtUtc: string;
+  fallbackUsed: boolean;
+}
