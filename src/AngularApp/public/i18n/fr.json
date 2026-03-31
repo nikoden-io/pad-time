@@ -224,10 +224,12 @@
   "suggestions": {
     "title": "Suggestions IA",
     "subtitle": "Basées sur votre historique",
+    "intro": "Nos recommandations personnalisées pour votre prochain match :",
     "noSuggestions": "Aucune suggestion disponible pour le moment",
     "loading": "Analyse de vos préférences...",
     "strong_match": "Idéal",
     "good_fit": "Bon choix",
-    "worth_trying": "À découvrir"
+    "worth_trying": "À découvrir",
+    "bookNow": "Réserver ce créneau"
   }
 }

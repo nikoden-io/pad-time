@@ -187,10 +187,12 @@
   "suggestions": {
     "title": "AI-suggesties",
     "subtitle": "Op basis van uw boekingsgeschiedenis",
+    "intro": "Onze gepersonaliseerde aanbevelingen voor uw volgende wedstrijd:",
     "noSuggestions": "Momenteel geen suggesties beschikbaar",
     "loading": "Uw voorkeuren analyseren...",
     "strong_match": "Sterke match",
     "good_fit": "Goede keuze",
-    "worth_trying": "Het proberen waard"
+    "worth_trying": "Het proberen waard",
+    "bookNow": "Boek dit tijdslot"
   }
 }

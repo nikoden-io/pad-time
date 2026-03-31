@@ -1,13 +1,22 @@
 <ng-container *transloco="let t">
-  <div class="suggestions-block">
+  <div class="suggestions-block" [class.collapsed]="collapsed()">
+    <!-- Rainbow border glow -->
+    <div class="rainbow-border"></div>
+
     <!-- Header -->
     <button class="suggestions-header" (click)="toggleCollapsed()">
       <span class="header-left">
-        <i class="pi pi-sparkles header-icon"></i>
+        <span class="ai-badge">
+          <span class="ai-badge-icon">
+            <i class="pi pi-sparkles"></i>
+          </span>
+          <span class="ai-badge-text">Powered by AI</span>
+        </span>
         <span class="header-title">{{ t('suggestions.title') }}</span>
+        <span class="header-divider"></span>
         <span class="header-subtitle">{{ t('suggestions.subtitle') }}</span>
       </span>
-      <i class="pi" [class.pi-chevron-down]="collapsed()" [class.pi-chevron-up]="!collapsed()"></i>
+      <i class="pi collapse-icon" [class.pi-chevron-down]="collapsed()" [class.pi-chevron-up]="!collapsed()"></i>
     </button>
 
     <!-- Body -->
@@ -16,10 +25,16 @@
         <!-- Loading state -->
         @if (loading()) {
           <div class="suggestions-loading">
-            <div class="skeleton-card" *ngFor="let i of [1, 2, 3]">
-              <div class="skeleton-line wide"></div>
-              <div class="skeleton-line medium"></div>
-              <div class="skeleton-line narrow"></div>
+            <p class="loading-text">
+              <i class="pi pi-spin pi-sparkles"></i>
+              {{ t('suggestions.loading') }}
+            </p>
+            <div class="skeleton-grid">
+              <div class="skeleton-card" *ngFor="let i of [1, 2, 3]">
+                <div class="skeleton-line wide"></div>
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line narrow"></div>
+              </div>
             </div>
           </div>
         }
@@ -31,21 +46,37 @@
 
         <!-- Suggestion cards -->
         @else {
+          <p class="suggestions-intro">{{ t('suggestions.intro') }}</p>
           <div class="suggestions-grid">
-            @for (s of suggestions(); track s.startAtUtc) {
-              <button class="suggestion-card" (click)="selectSuggestion(s)">
+            @for (s of suggestions(); track s.startAtUtc; let idx = $index) {
+              <button class="suggestion-card" (click)="selectSuggestion(s)" [style.animation-delay]="idx * 100 + 'ms'">
                 <div class="card-top">
+                  <span class="card-rank">#{{ idx + 1 }}</span>
                   <span class="confidence-badge" [attr.data-confidence]="s.confidenceTag">
+                    <i class="pi pi-check-circle"></i>
                     {{ t('suggestions.' + s.confidenceTag) }}
                   </span>
                 </div>
-                <div class="card-site">{{ s.siteName }}</div>
-                <div class="card-court">{{ s.courtLabel }}</div>
+                <div class="card-site">
+                  <i class="pi pi-map-marker"></i>
+                  {{ s.siteName }}
+                </div>
+                <div class="card-court">
+                  <i class="pi pi-th-large"></i>
+                  {{ s.courtLabel }}
+                </div>
                 <div class="card-datetime">
-                  <span class="card-date">{{ formatDate(s.startAtUtc) }}</span>
-                  <span class="card-time">{{ formatTime(s.startAtUtc) }} - {{ formatTime(s.endAtUtc) }}</span>
+                  <div class="datetime-date">
+                    <i class="pi pi-calendar"></i>
+                    {{ formatDate(s.startAtUtc) }}
+                  </div>
+                  <div class="datetime-time">{{ formatTime(s.startAtUtc) }} - {{ formatTime(s.endAtUtc) }}</div>
                 </div>
                 <div class="card-reason">{{ s.reason }}</div>
+                <div class="card-cta">
+                  {{ t('suggestions.bookNow') }}
+                  <i class="pi pi-arrow-right"></i>
+                </div>
               </button>
             }
           </div>

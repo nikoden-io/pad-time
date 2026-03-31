@@ -187,10 +187,12 @@
   "suggestions": {
     "title": "KI-Vorschläge",
     "subtitle": "Basierend auf Ihrer Buchungshistorie",
+    "intro": "Unsere personalisierten Empfehlungen für Ihr nächstes Spiel:",
     "noSuggestions": "Derzeit keine Vorschläge verfügbar",
     "loading": "Ihre Präferenzen werden analysiert...",
     "strong_match": "Starke Übereinstimmung",
     "good_fit": "Gute Wahl",
-    "worth_trying": "Einen Versuch wert"
+    "worth_trying": "Einen Versuch wert",
+    "bookNow": "Diesen Slot buchen"
   }
 }
