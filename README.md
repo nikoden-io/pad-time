@@ -1,123 +1,242 @@
-# Paddle Reservation Platform
+<div align="center">
 
-Paddle court reservation system with centralized authentication.
+# 🎾 Pad'Time
 
-## Architecture
+**A modern padel court reservation platform — with AI-powered slot suggestions.**
 
-```
-paddle-reservation/
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![Pad'AI](https://img.shields.io/badge/Pad'AI-Gemini-8B5CF6?logo=googlegemini&logoColor=white)](https://ai.google.dev/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](#license)
+[![Version](https://img.shields.io/badge/version-v2.1.0-blue.svg)](#)
+
+</div>
+
+---
+
+## ✨ Overview
+
+**Pad'Time** is a full-stack reservation platform for padel clubs. Players book courts and join public matches, admins steer the club from a rich KPI dashboard, and **Pad'AI** — our Gemini-powered assistant — suggests the best time slots and surfaces booking trends.
+
+It is built as a **modular .NET 10 monolith** with **Clean Architecture + CQRS** behind a **standalone Angular 21 SPA**, with centralized authentication handled by **Duende IdentityServer 7**.
+
+## 🚀 Key features
+
+### 🎾 Players
+- 📅 **Book a court** — sites, courts, multi-step calendar with conflict prevention
+- 👥 **Public & private matches** — create or join open matches, share with friends
+- 🤖 **Pad'AI suggestions** — smart slot recommendations based on availability and patterns
+- 💳 **Frictionless payment** — pay your share after booking, with a payment success overlay
+- 🏆 **Match history** — see upcoming, past and cancelled bookings at a glance
+- 🌍 **i18n** — FR / EN / NL / DE
+
+### 🛡️ Admins
+- 📊 **KPI dashboard** — revenue, occupancy, member activity in real time
+- 📈 **AI trends panel** — booking trends visualized via Gemini
+- 👤 **Member management** — categories, debts, activity history
+- 🔔 **Operational alerts** — incomplete matches, automatic debt creation
+- 💶 **Analytics & revenue** — turnover by site, court, period
+
+### 🔒 Platform
+- 🔐 **OAuth2 / OIDC** — Authorization Code + PKCE via Duende IdentityServer
+- 🏥 **Health endpoints** — `/health` and `/ready` for orchestration
+- 🚀 **CI/CD** — GitHub Actions pipeline (build, test, deploy)
+- 📦 **Containerized** — `docker-compose up` and the whole platform is online
+
+## 🏗️ Architecture
+
+```text
+pad-time/
 ├── src/
-│   ├── IdentityServer/     # Duende IdentityServer + ASP.NET Identity
-│   ├── BackendApi/         # API REST
-│   └── AngularApp/         # Angular web client
-├── docker-compose.yml
-├── .env
-└── README.md
+│   ├── IdentityServer/          🔐 Duende IdentityServer 7 + ASP.NET Identity
+│   ├── BackendApi/              ⚙️ .NET 10 modular monolith
+│   │   ├── PadTime.API/         ↳ ASP.NET Core minimal-API host
+│   │   ├── PadTime.Application/ ↳ CQRS (MediatR), validators, behaviors
+│   │   ├── PadTime.Domain/      ↳ Entities, value objects, domain rules
+│   │   └── PadTime.Infrastructure/ ↳ EF Core, Gemini client, persistence
+│   └── AngularApp/              🎨 Angular 21 + PrimeNG + Tailwind
+├── infra/                       ☁️  Bicep + deployment scripts (Azure)
+├── docs/                        📚 Architecture, API reference, user manual
+├── .github/workflows/           🤖 CI / CD pipelines
+└── docker-compose.yml           🐳 Local orchestration
 ```
 
-## Services
+### Domain model — Clean Architecture + CQRS
 
-| Service | Port Local | Technologie |
-|---------|------------|-------------|
-| identity-db | 5433 | PostgreSQL 18 |
-| identity-server | 5001 | .NET 10 + Duende |
+```
+┌────────────────┐   commands/queries   ┌────────────────┐
+│   Angular 21   │ ───────────────────▶ │  PadTime.API   │
+│   (SPA, OIDC)  │ ◀─── DTOs (JSON) ──  │  (Minimal API) │
+└────────────────┘                      └───────┬────────┘
+                                                │ MediatR
+                                                ▼
+                              ┌──────────────────────────────┐
+                              │      PadTime.Application     │
+                              │  Handlers · Validators · DTOs│
+                              └────────┬────────────┬────────┘
+                                       │            │
+                            ┌──────────▼──┐   ┌─────▼─────────────┐
+                            │   Domain    │   │  Infrastructure   │
+                            │   Entities  │   │  EF Core + Gemini │
+                            └─────────────┘   └───────┬───────────┘
+                                                      │
+                                                ┌─────▼─────┐
+                                                │ PostgreSQL│
+                                                └───────────┘
+```
 
-## Quick Start
+## 🧰 Tech stack
+
+| Layer            | Technology                                                                 |
+|------------------|----------------------------------------------------------------------------|
+| **Backend**      | .NET 10 · ASP.NET Core · MediatR 12 · FluentValidation · EF Core 10        |
+| **Auth**         | Duende IdentityServer 7.4 · ASP.NET Core Identity · OIDC + PKCE            |
+| **Frontend**     | Angular 21 (standalone) · PrimeNG 21 · Tailwind · angular-auth-oidc-client |
+| **AI**           | Google Gemini API (slot suggestions, trend analysis)                       |
+| **Database**     | PostgreSQL 18 (two schemas: identity + business)                           |
+| **Testing**      | xUnit · FluentAssertions · NSubstitute (BE) · Cucumber + Playwright (FE)   |
+| **Infra**        | Docker Compose · Azure Bicep · GitHub Actions                              |
+| **i18n**         | `@jsverse/transloco` (FR, EN, NL, DE)                                      |
+
+## 🐳 Quick start
 
 ### Prerequisites
-- Docker Desktop
-- .NET 10 SDK
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Node.js ≥ 20](https://nodejs.org/) (only for local Angular dev)
 
-###  Launch the complete environment
+### One-shot launch
 
 ```bash
-# Configuration
-cp .env.example .env 
+# 1. Copy environment variables
+cp .env.example .env
 
-# Running
+# 2. Lift the whole stack
 docker-compose up --build
-
-# Access
-# Identity Server: http://localhost:5001
 ```
 
-## Local Development
+| Service         | URL                          | Description                  |
+|-----------------|------------------------------|------------------------------|
+| Angular SPA     | http://localhost:4200        | Web client                   |
+| Backend API     | http://localhost:5002        | REST API + Swagger           |
+| Identity Server | http://localhost:5001        | OIDC authority               |
+| identity-db     | `localhost:5433`             | PostgreSQL (users)           |
+| api-db          | `localhost:5434`             | PostgreSQL (business)        |
 
-**Terminal 1** - PostgreSQL only:
+## 💻 Local development
+
+### Backend
+
 ```bash
-docker-compose up identity-db
+cd src/BackendApi
+dotnet restore
+dotnet run --project src/PadTime.API
 ```
 
-**Terminal 2** - IdentityServer locally:
+### Frontend
+
+```bash
+cd src/AngularApp
+npm install
+npm start            # http://localhost:4200
+```
+
+### Identity Server
+
 ```bash
 cd src/IdentityServer
 dotnet watch run
 ```
 
-Create `src/IdentityServer/appsettings.Development.json`:
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5433;Database=identity_db;Username=identity_user;Password=VotrePassword"
-  }
-}
-```
-
-## Databases
-
-### Migrations
+## 🧪 Testing
 
 ```bash
-# Create
-cd src/IdentityServer
-dotnet ef migrations add InitialMigration
+# Backend — unit tests (Domain + Application + behaviors)
+cd src/BackendApi
+dotnet test
 
-# Apply (local)
+# Frontend — unit tests
+cd src/AngularApp
+npm test
+
+# Frontend — E2E (Cucumber + Playwright)
+npm run e2e
+```
+
+The backend suite covers the **CQRS handlers**, **validators**, **domain entities**, and **pipeline behaviors** (logging + validation). See `src/BackendApi/tests/PadTime.Tests/` for the full layout.
+
+## 🗄️ Database & migrations
+
+```bash
+# Apply migrations locally
+cd src/BackendApi/src/PadTime.API
 dotnet ef database update
 
-# Apply (Docker)
-docker exec -it paddle-identity-server dotnet ef database update
+# Seed demo data (members, sites, courts, sample bookings)
+dotnet run -- --seed
 ```
 
-### Seed
+The `DemoSeeder` generates a complete club state — members across categories, sites in Brussels, courts, future and past bookings — perfect to demo the admin dashboard.
+
+## 🤖 Pad'AI configuration
+
+Pad'AI relies on the Google Gemini API. Provide a key via environment variable:
 
 ```bash
-# Local
-dotnet run /seed
-
-# Docker
-docker exec -it paddle-identity-server dotnet IdentityServer.dll /seed
+# .env
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.0-flash
 ```
 
-## Docker commands
+If the key is missing, the app falls back gracefully — booking still works, AI panels show a friendly "AI offline" notice.
+
+## 📚 Documentation
+
+The `docs/` folder contains the full bachelor project documentation:
+
+- 📘 [API Reference](docs/API-Reference.md)
+- 📗 [User Manual](docs/Manuel%20d'utilisation.md)
+- 📐 P0 — Project Charter
+- 🧭 P1 — Compréhension métier formalisée
+- 🏛️ P3 — Architecture cible
+- 🔒 P4 — Security model
+- 📊 P5 — Stratégie Data & Analytics
+- ✅ P7 — Qualité, CI/CD et critères de livraison
+
+## 🛠️ Useful Docker commands
 
 ```bash
-# Start
-docker-compose up                            # All services
-docker-compose up identity-db                # Specific service
-docker-compose up -d --build                 # Rebuild + detached mode
-
-# Stop
-docker-compose down                          # Stop 
-docker-compose down -v                       # Stop and delete volumes
-
-# Debug
-docker-compose logs -f                       # Real-time logs
-docker-compose logs -f identity-server       # Service specific real-time logs
-docker ps                                    # List all containers
-docker exec -it paddle-identity-server bash  # Shell into container
+docker-compose up -d --build              # Rebuild + detached
+docker-compose down -v                    # Stop + drop volumes
+docker-compose logs -f api                # Tail API logs
+docker exec -it pad-time-api bash         # Shell into the API container
 ```
 
-## Technical stack
+## 🚑 Troubleshooting
 
-- **Backend**: .NET 10, Duende IdentityServer 7.4.3, ASP.NET Core Identity, EF Core 10
-- **Database**: PostgreSQL 18
-- **Frontend**: Angular v21, angular-auth-oidc-client
+| Symptom                              | Fix                                                              |
+|--------------------------------------|------------------------------------------------------------------|
+| `connection refused` on db           | Wait for the health check — `docker ps` should show `(healthy)`  |
+| Port already in use                  | Edit the host-side port in `docker-compose.yml`                  |
+| Angular shows `401` on every call    | Re-login — your OIDC session has expired or cookies were cleared |
+| AI panel shows "AI offline"          | Set `GEMINI_API_KEY` in `.env` and restart the API               |
 
-## Troubleshooting
+## 📝 Changelog
 
-**Database connexion error**: Verify that `identity-db` is healthy with `docker ps`
+See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
-**Port already in use**: Change the ports in `docker-compose.yml`
+## 👤 Author
 
-**Container does not start**: `docker-compose logs -f <service-name>`
+**Nicolas Denoel** — Bachelor project, 2026.
+
+## 📄 License
+
+Released under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+<sub>Built with ❤️ and a lot of ☕ — powered by <strong>Pad'AI</strong> 🤖</sub>
+</div>

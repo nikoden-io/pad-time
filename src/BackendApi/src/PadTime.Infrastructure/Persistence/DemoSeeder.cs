@@ -470,6 +470,116 @@ public static class DemoSeeder
             context.Matches.Add(m);
         }
 
+        // ================================================================
+        // EXTRA DENSITY — saturate the demo window with realistic data.
+        //
+        // Each of the last 90 days gets 3 additional completed matches at
+        // varied hours / courts / organizers, so:
+        //   • analytics curves are dense and credible,
+        //   • per-player history is rich (≥15 matches each) →
+        //     PlayPattern fuels Pad'AI with strong day/time/court signals,
+        //   • revenue KPIs feel populated for any demo date in the window.
+        //
+        // Hour 7 (used by the base loop) and hour 17 weekly (double-header
+        // loop) are avoided to prevent (court, time) collisions.
+        // ================================================================
+
+        var extraHoursPast = new[] { 8, 10, 12, 14, 16, 18, 20 };
+
+        for (var d = -90; d <= -1; d++)
+        {
+            for (var slotIdx = 0; slotIdx < 3; slotIdx++)
+            {
+                var hourPick = extraHoursPast[(Math.Abs(d) * 3 + slotIdx) % extraHoursPast.Length];
+                var rotIdx = (Math.Abs(d) * 17 + slotIdx * 5) % courtRotation.Length;
+                var (siteId, courtId) = courtRotation[rotIdx];
+                var organizer = organizerRotation[(Math.Abs(d) + slotIdx * 7) % organizerRotation.Length];
+
+                var others = allPlayers
+                    .Where(p => p.Id != organizer.Id)
+                    .OrderBy(p => HashCode.Combine(p.Id, d, slotIdx, hourPick))
+                    .Take(3)
+                    .Select(p => p.Id)
+                    .ToArray();
+
+                var start = MatchDay(d, hourPick);
+
+                // 1 in 6 is private — variety in match types
+                if ((slotIdx + Math.Abs(d)) % 6 == 0)
+                    SeedFullPrivateMatch(context, siteId, courtId, organizer.Id, others, start);
+                else
+                    SeedFullMatch(context, siteId, courtId, organizer.Id, others, start);
+            }
+        }
+
+        // ── Extra upcoming variety (J+2 .. J+20) ────────────────────────
+        // Mix of partial / paid / private / public — calendar feels alive
+        // and Pad'AI's 7-day look-ahead has many candidate slots.
+
+        (int day, int hour, int siteIdx)[] upcomingExtras =
+        {
+            (2, 8, 0),  (2, 13, 1), (2, 20, 0),
+            (3, 8, 1),  (3, 12, 0), (3, 20, 1),
+            (4, 8, 0),  (4, 16, 1),
+            (5, 9, 1),  (5, 18, 0),
+            (6, 10, 0), (6, 14, 1), (6, 20, 0),
+            (7, 8, 1),  (7, 14, 0), (7, 20, 0),
+            (8, 8, 0),  (8, 16, 1),
+            (9, 11, 1), (9, 19, 0),
+            (10, 14, 1), (10, 20, 0),
+            (11, 9, 0),  (11, 18, 1),
+            (12, 8, 1),  (12, 19, 0),
+            (13, 10, 0), (13, 16, 1),
+            (15, 9, 0),  (15, 16, 1),
+            (16, 14, 1),
+            (17, 10, 0), (17, 19, 1),
+            (19, 9, 1),  (19, 18, 0),
+            (20, 10, 0),
+        };
+
+        for (var i = 0; i < upcomingExtras.Length; i++)
+        {
+            var (day, hour, siteIdx) = upcomingExtras[i];
+            var courts = siteIdx == 0 ? bxl : lge;
+            var court = courts[i % courts.Count];
+            var siteIdLocal = siteIdx == 0 ? brussels.Id : liege.Id;
+
+            var organizer = organizerRotation[i % organizerRotation.Length];
+            var creation = now.AddHours(-(i % 18 + 1));
+            var start = MatchDay(day, hour);
+
+            var matchType = (i % 3 == 0) ? PadMatchType.Private : PadMatchType.Public;
+            var m = Match.Create(siteIdLocal, court.Id, organizer.Id,
+                start, start.AddMinutes(90), matchType, creation).Value;
+
+            var pool = allPlayers.Where(p => p.Id != organizer.Id).ToList();
+            var extraCount = i % 4;   // 0..3 additional players
+
+            if (matchType == PadMatchType.Public)
+            {
+                for (var k = 0; k < extraCount; k++)
+                    m.JoinPublic(pool[(i * 11 + k * 7) % pool.Count].Id, creation);
+            }
+            else
+            {
+                for (var k = 0; k < extraCount; k++)
+                    m.AddParticipant(pool[(i * 13 + k * 5) % pool.Count].Id, creation);
+            }
+
+            // Half of these have partial payments
+            if (i % 2 == 0 && m.Participants.Count > 0)
+            {
+                var parts = m.Participants.Take(Math.Min(2, m.Participants.Count)).ToList();
+                foreach (var part in parts)
+                {
+                    m.ConfirmPayment(part.Id, creation);
+                    AddPaidPayment(context, m.Id, part.MemberId, part.Id, creation);
+                }
+            }
+
+            context.Matches.Add(m);
+        }
+
         context.SaveChanges();
     }
 
