@@ -238,5 +238,5 @@ Released under the [MIT License](LICENSE).
 ---
 
 <div align="center">
-<sub>Built with ❤️ and a lot of ☕ — powered by <strong>Pad'AI</strong> 🤖</sub>
+<sub>Built with ❤️ — powered by <strong>Pad'AI</strong> 🤖</sub>
 </div>
