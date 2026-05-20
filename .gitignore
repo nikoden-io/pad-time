@@ -63,3 +63,18 @@ Thumbs.db
 *.tmp
 *.swp
 src/BackendApi/.dotnet/
+
+# editor / IDE local config (untracked)
+.vscode/
+.idea/
+
+# AI-generated artifacts & report tooling
+docs/generate_report.py
+docs/*.docx
+docs/*.pdf
+~$*
+
+# scratch / debug captures
+**/debug-screenshot.png
+**/frontend-structure.txt
+scenarios.md

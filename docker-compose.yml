@@ -10,7 +10,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - identity-db-data:/var/lib/postgresql/data
+      - identity-db-data:/var/lib/postgresql
     networks:
       - paddle-network
     healthcheck:
@@ -30,7 +30,7 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - api-db-data:/var/lib/postgresql/data
+      - api-db-data:/var/lib/postgresql
     networks:
       - paddle-network
     healthcheck:
