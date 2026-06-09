@@ -46,8 +46,10 @@ Thumbs.db
 # dotenv / secrets
 **/.env
 **/.env.*
-!**/.env.example
 .env
+# but always track the template
+!**/.env.example
+!.env.example
 
 # containers / local data
 **/.docker/
