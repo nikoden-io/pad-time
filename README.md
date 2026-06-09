@@ -107,13 +107,59 @@ pad-time/
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [Node.js ≥ 20](https://nodejs.org/) (only for local Angular dev)
 
-### One-shot launch
+### Step 1 — Environment variables
+
+Create a `.env` file at the project root with the following content:
+
+```env
+# Identity Database (identity-db)
+POSTGRES_USER=identity_user
+POSTGRES_PASSWORD=Passw0rd!
+POSTGRES_DB=identity_db
+
+# API Database (api-db)
+API_POSTGRES_USER=padtime_user
+API_POSTGRES_PASSWORD=Passw0rd!
+API_POSTGRES_DB=padtime
+
+# Identity Server → identity-db connection
+DB_HOST=identity-db
+DB_PORT=5432
+DB_NAME=identity_db
+DB_USER=identity_user
+DB_PASSWORD=Passw0rd!
+
+# Backend API → api-db connection
+API_DB_HOST=api-db
+API_DB_PORT=5432
+API_DB_NAME=padtime
+API_DB_USER=padtime_user
+API_DB_PASSWORD=Passw0rd!
+
+# Gemini AI (optional — app works without it)
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### Step 2 — SSL certificates
+
+The Identity Server and Backend API require HTTPS certificates to start. Generate them with the .NET CLI:
+
+```powershell
+# Create the certs directory
+mkdir .docker/certs
+
+# Generate a dev HTTPS certificate as .pfx
+dotnet dev-certs https --export-path .docker/certs/identity-server.pfx --password "Passw0rd!" --trust
+
+# Copy it for the API container (same cert is fine for local dev)
+copy .docker/certs/identity-server.pfx .docker/certs/backend-api.pfx
+```
+
+> **Note:** On Linux/macOS, replace `copy` with `cp` and `mkdir` with `mkdir -p .docker/certs`.
+
+### Step 3 — Launch
 
 ```bash
-# 1. Copy environment variables
-cp .env.example .env
-
-# 2. Lift the whole stack
 docker-compose up --build
 ```
 
@@ -124,6 +170,53 @@ docker-compose up --build
 | Identity Server | http://localhost:5001        | OIDC authority               |
 | identity-db     | `localhost:5433`             | PostgreSQL (users)           |
 | api-db          | `localhost:5434`             | PostgreSQL (business)        |
+
+### Demo accounts
+
+All demo accounts use the password **`Passw0rd!`**
+
+#### Admin
+
+| Email | Role | Description |
+|-------|------|-------------|
+| admin@test.be | Admin global | Full access — KPI dashboard, member management, analytics, AI trends panel |
+
+#### Players — Global members
+
+| Email | Matricule | Scenario |
+|-------|-----------|----------|
+| alice@test.be | G1001 | Main demo player — organizes matches, books courts |
+| bob@test.be | G1002 | Has **15 €** debt (1 incomplete match) — can still book but debt is visible |
+| claire@test.be | G1003 | Regular player |
+| david@test.be | G1004 | Regular player |
+| helene@test.be | G1005 | Regular player |
+| kevin@test.be | G1006 | Regular player |
+| nathalie@test.be | G1007 | Regular player |
+
+#### Players — Site members
+
+| Email | Matricule | Site | Scenario |
+|-------|-----------|------|----------|
+| emma@test.be | S10001 | Brussels Padel Center | Site-affiliated player |
+| francois@test.be | S10002 | Liege Sport Complex | Site-affiliated player |
+| ibrahim@test.be | S10003 | Brussels Padel Center | Site-affiliated player |
+| lea@test.be | S10004 | Liege Sport Complex | Site-affiliated player |
+
+#### Players — Free members
+
+| Email | Matricule | Scenario |
+|-------|-----------|----------|
+| georges@test.be | L10001 | **Blocked** — 45 € debt (3 incomplete matches) — cannot create new matches |
+| julie@test.be | L10002 | Free member |
+| marc@test.be | L10003 | Free member |
+
+#### Key demo scenarios
+
+1. **Admin dashboard** — Log in as `admin@test.be` to see KPIs, revenue, occupancy, AI trends
+2. **Book a court** — Log in as `alice@test.be`, pick a site, court, date and time slot
+3. **Public match** — Create an open match as Alice, then join it as another player (e.g. `claire@test.be`)
+4. **Debt enforcement** — Log in as `georges@test.be` and try to create a match — blocked by 45 € debt
+5. **Pad'AI suggestions** — Any player can ask for smart slot recommendations (requires `GEMINI_API_KEY`)
 
 ## 💻 Local development
 
