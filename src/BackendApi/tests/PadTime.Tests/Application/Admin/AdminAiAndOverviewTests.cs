@@ -5,6 +5,7 @@ using PadTime.Application.Admin.Queries.GetAiTrends;
 using PadTime.Application.Admin.Queries.GetSiteOverview;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
+using PadTime.Domain.Common;
 using PadTime.Domain.Billing;
 using PadTime.Domain.Booking;
 using PadTime.Domain.Site;

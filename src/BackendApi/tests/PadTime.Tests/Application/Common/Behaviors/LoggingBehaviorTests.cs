@@ -33,5 +33,5 @@ public sealed class LoggingBehaviorTests
         await action.Should().ThrowAsync<InvalidOperationException>().WithMessage("boom");
     }
 
-    private sealed record TestRequest;
+    public sealed record TestRequest;
 }

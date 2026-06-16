@@ -6,6 +6,7 @@ using PadTime.Application.Admin.Queries.GetMembers;
 using PadTime.Application.Admin.Queries.GetRevenueAnalytics;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
+using PadTime.Domain.Common;
 using PadTime.Domain.Billing;
 using PadTime.Domain.Booking;
 using PadTime.Domain.Members;

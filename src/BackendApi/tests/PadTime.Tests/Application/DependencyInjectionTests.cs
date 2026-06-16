@@ -16,16 +16,14 @@ public sealed class DependencyInjectionTests
 
         services.AddApplication();
 
+        // Behaviors are registered as open generics (IPipelineBehavior<,>),
+        // so the descriptors carry the open generic service/implementation types.
         var descriptors = services
-            .Where(s => s.ServiceType == typeof(IPipelineBehavior<DummyRequest, DummyResponse>))
+            .Where(s => s.ServiceType == typeof(IPipelineBehavior<,>))
             .ToList();
 
-        descriptors.Should().ContainSingle(d => d.ImplementationType == typeof(LoggingBehavior<DummyRequest, DummyResponse>));
-        descriptors.Should().ContainSingle(d => d.ImplementationType == typeof(EnsureMemberExistsBehavior<DummyRequest, DummyResponse>));
-        descriptors.Should().ContainSingle(d => d.ImplementationType == typeof(ValidationBehavior<DummyRequest, DummyResponse>));
+        descriptors.Should().ContainSingle(d => d.ImplementationType == typeof(LoggingBehavior<,>));
+        descriptors.Should().ContainSingle(d => d.ImplementationType == typeof(EnsureMemberExistsBehavior<,>));
+        descriptors.Should().ContainSingle(d => d.ImplementationType == typeof(ValidationBehavior<,>));
     }
-
-    private sealed record DummyRequest : IRequest<DummyResponse>;
-
-    private sealed record DummyResponse;
 }

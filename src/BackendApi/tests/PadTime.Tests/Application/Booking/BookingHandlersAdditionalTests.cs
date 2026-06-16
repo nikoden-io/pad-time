@@ -5,6 +5,7 @@ using PadTime.Application.Booking.Queries.GetMatch;
 using PadTime.Application.Booking.Queries.GetPublicMatches;
 using PadTime.Application.Common.Interfaces;
 using PadTime.Application.Common.Interfaces.Repositories;
+using PadTime.Domain.Common;
 using PadTime.Domain.Booking;
 using PadTime.Domain.Members;
 using Xunit;
